@@ -9,8 +9,7 @@ use Illuminate\Notifications\Notifiable;
 // Import Eloquent relationship classes.
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class User extends Authenticatable
-{
+class User extends Authenticatable {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
@@ -29,6 +28,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'phone',
     ];
 
     /**
@@ -47,8 +48,7 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
+    protected function casts(): array {
         return [
             'email_verified_at' => 'datetime',
             // Ensures password is always hashed automatically when set.
@@ -62,8 +62,7 @@ class User extends Authenticatable
      * Defines a one-to-many relationship:
      * a user can have multiple cards.
      */
-    public function cards(): HasMany
-    {
+    public function cards(): HasMany {
         return $this->hasMany(Card::class);
     }
 }

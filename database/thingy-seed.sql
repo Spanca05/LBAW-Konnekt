@@ -33,6 +33,8 @@ CREATE TABLE users (
   name TEXT NOT NULL,
   email TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'JobSeeker',
+  phone TEXT NOT NULL,
   remember_token TEXT
 );
 
@@ -53,11 +55,14 @@ CREATE TABLE items (
 -- Insert value.
 --
 
-INSERT INTO users VALUES (
+INSERT INTO users (id, name, email, password, role, phone, remember_token) VALUES (
   DEFAULT,
   'John Doe',
   'admin@example.com',
-  '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W'
+  '$2y$10$HfzIhGCCaxqyaIdGgjARSuOKAcm1Uy82YfLuNaajn6JrjLWy9Sj/W',
+  'JobSeeker',
+  '+351912345678',
+  NULL
 ); -- Password is 1234. Generated using Hash::make('1234')
 
 INSERT INTO cards VALUES (DEFAULT, 'Things to do', 1);

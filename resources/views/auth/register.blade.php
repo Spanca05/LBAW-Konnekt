@@ -18,6 +18,28 @@
       <span id="name-error" class="error" role="alert">{{ $message }}</span>
     @enderror
 
+    <label for="role">Role</label>
+    <select id="role" name="role" required>
+        <option value="" disabled {{ old('role') ? '' : 'selected' }}>Select role</option>
+        <option value="JobSeeker" {{ old('role') === 'JobSeeker' ? 'selected' : '' }}>JobSeeker</option>
+        <option value="Employer" {{ old('role') === 'Employer' ? 'selected' : '' }}>Employer</option>
+    </select>
+    @error('role')
+      <span id="role-error" class="error" role="alert">{{ $message }}</span>
+    @enderror
+
+    <label for="phone">Phone Number</label>
+    <input
+        id="phone"
+        type="text"
+        name="phone"
+        value="{{ old('phone') }}"
+        autocomplete="tel"
+    >
+    @error('phone')
+      <span id="phone-error" class="error" role="alert">{{ $message }}</span>
+    @enderror
+
     <label for="email">E-Mail Address</label>
     <input
         id="email"

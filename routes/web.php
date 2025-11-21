@@ -46,3 +46,8 @@ Route::controller(RegisterController::class)->group(function () {
     Route::get('/register', 'showRegistrationForm')->name('register');
     Route::post('/register', 'register');
 });
+
+// Profile (current authenticated user)
+Route::middleware('auth')->get('/profile', function () {
+    return view('pages.profile', ['user' => auth()->user()]);
+})->name('profile');

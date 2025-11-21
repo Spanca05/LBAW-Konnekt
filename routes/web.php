@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\CardController;
+use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\ItemController;
 
 use App\Http\Controllers\Auth\LoginController;
@@ -12,25 +12,24 @@ use App\Http\Controllers\Auth\LogoutController;
 // Home
 Route::redirect('/', '/login');
 
-// Cards (authentication required)
-Route::middleware('auth')->controller(CardController::class)->group(function () {
-    Route::get('/cards', 'index')->name('cards.index');
-    Route::get('/cards/{card}', 'show')->name('cards.show');
+// JobPosts (authentication required)
+Route::middleware('auth')->controller(JobPostController::class)->group(function () {
+    Route::get('/jobposts', 'index')->name('jobposts.index');
+    Route::get('/jobposts/{jobpost}', 'show')->name('jobposts.show');
 });
 
 
-// API (authentication required)
-Route::middleware('auth')->controller(CardController::class)->group(function () {
-    Route::post('/api/cards', 'store');              // create card
-    Route::delete('/api/cards/{card}', 'destroy');   // delete card
+// API (authentication required) - JobPosts
+Route::middleware('auth')->controller(JobPostController::class)->group(function () {
+    Route::post('/api/jobposts', 'store');              // create jobpost
+    Route::delete('/api/jobposts/{jobpost}', 'destroy');   // delete jobpost
 });
 
 Route::middleware('auth')->controller(ItemController::class)->group(function () {
-    Route::post('/api/cards/{card}/items', 'store'); // add item to card
+    Route::post('/api/jobposts/{jobpost}/items', 'store'); // add item to jobpost
     Route::patch('/api/items/{item}', 'update');     // update item
     Route::delete('/api/items/{item}', 'destroy');   // delete item
 });
-
 
 // Authentication
 Route::controller(LoginController::class)->group(function () {

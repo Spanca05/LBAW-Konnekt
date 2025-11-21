@@ -47,7 +47,11 @@ Route::controller(RegisterController::class)->group(function () {
     Route::post('/register', 'register');
 });
 
-// Profile (current authenticated user)
-Route::middleware('auth')->get('/profile', function () {
-    return view('pages.profile', ['user' => auth()->user()]);
-})->name('profile');
+// Profile (current authenticated user) — controller-backed
+use App\Http\Controllers\ProfileController;
+
+Route::middleware('auth')->controller(ProfileController::class)->group(function () {
+    Route::get('/profile', 'show')->name('profile');
+    Route::get('/profile/edit', 'edit')->name('profile.edit');
+    Route::put('/profile', 'update')->name('profile.update');
+});

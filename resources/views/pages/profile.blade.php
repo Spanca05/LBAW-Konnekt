@@ -11,5 +11,8 @@
         <li><strong>Email:</strong> {{ $user->email }}</li>
         <li><strong>Phone:</strong> {{ $user->phone }}</li>
     </ul>
+    <p>
+        <a class="button" href="{{ route('profile.edit') }}">Edit profile</a>
+    </p>
 </section>
 @endsection

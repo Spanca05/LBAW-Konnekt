@@ -5,12 +5,18 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\ItemController;
 
+use App\Http\Controllers\HomeController;
+
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LogoutController;
 
 // Home
 Route::redirect('/', '/login');
+
+//Route::get('/cards', [CardController::class, 'index'])->name('cards.index');
+//Route::get('/cards/{card}', [CardController::class, 'show'])->name('cards.show');
+
 
 // Cards (authentication required)
 Route::middleware('auth')->controller(CardController::class)->group(function () {

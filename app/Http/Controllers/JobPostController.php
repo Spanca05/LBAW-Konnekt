@@ -29,5 +29,13 @@ class JobPostController extends Controller
         ]);
     }
 
+    public function show($id){
+        $jobPost = JobPost::findOrFail($id);
+
+        return view('pages.jobpost', [
+            'jobPost' => $jobPost
+        ]);
+    }
+
 
 }

@@ -15,7 +15,7 @@ use App\Http\Controllers\Auth\LogoutController;
 Route::redirect('/', '/login');
 
 Route::get('/jobposts', [App\Http\Controllers\JobPostController::class, 'index'])->name('pages.jobposts.index');
-
+Route::get('/jobposts/{jobpost}', [App\Http\Controllers\JobPostController::class, 'show'])->name('jobpost.show');
 
 //Route::get('/cards', [CardController::class, 'index'])->name('cards.index');
 //Route::get('/cards/{card}', [CardController::class, 'show'])->name('cards.show');

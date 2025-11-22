@@ -13,11 +13,18 @@
             <textarea id="description" name="description" required></textarea>
 
             <label for="salary">Salary:</label>
-            <input type="number" id="salary" name="salary" value="" required>
-            <!--
+            <input type="number" id="salary" name="salary" required>
+<!--
             <label for="location">Location:</label>
-            <input type="text" id="location" name="location" value="" required>
-            -->
+            <input type="text" id="location" name="location" required>
+-->
+            <select name="category_id" id="category_id" required>
+                <option value= "1">Coding</option>
+                <option value= "2">Marketing</option>
+                <option value= "3">Design</option>
+            </select>
+
+
             <label for="work_model">Work Model:</label>
             <select name="work_model" id="work_model" required>
                 <option value= "Remote">Remote</option>

@@ -17,7 +17,7 @@
         <span class="work_model">Work Model: {{ $jobPost->work_model }}</span>
     </div>
 
-    <p class="description">Description {{ $jobPost->description }} </p>
+    
 
 
 </article>

@@ -5,9 +5,10 @@
 @section('content')
     <section id="jobpost">
         @include('partials.jobpost', ['jobPost' => $jobPost])
+        <p class="description">Description {{ $jobPost->description }} </p>
         <button class="apply-button">Apply Now</button>
-        <button class="apply-button">Edit</button>
-        <a href="{{ route('pages.jobposts.index') }}" class="return"><button >return</button></a>
+        <a href="{{ route('pages.jobposts.index') }}"><button class="apply-button">Edit</button></a>
+        <a href="{{ route('pages.jobposts.index') }}" ><button class="return" >return</button></a>
     </section>
 
 @endsection

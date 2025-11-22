@@ -37,5 +37,26 @@ class JobPostController extends Controller
         ]);
     }
 
+    public function edit($id){
+        $jobPost = JobPost::findOrFail($id);
+
+        return view('pages.edit_jobpost', [
+            'jobPost' => $jobPost
+        ]);
+    }
+
+    public function update(Request $request, $id){
+        $jobPost = JobPost::findOrFail($id);
+
+        $jobPost->title = $request->input('title');
+        $jobPost->description = $request->input('description');
+        $jobPost->salary = $request->input('salary');
+        $jobPost->work_model = $request->input('work_model');
+
+        $jobPost->save();
+
+        return redirect()->route('jobpost.show', ['jobpost' => $jobPost->id]);
+    }
+
 
 }

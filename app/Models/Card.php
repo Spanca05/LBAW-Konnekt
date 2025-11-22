@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Card extends Model
 {
     // Disable default created_at and updated_at timestamps for this model.
-    public $timestamps = false;
+    public $timestamps = true;
 
     /**
      * The attributes that are mass assignable.
@@ -21,9 +21,14 @@ class Card extends Model
      *
      * @var list<string>
      */
+    //protected $table = 'jobpost';
     protected $fillable = [
-        'name',
-        'user_id',
+        'title',
+        'employer_id',
+        'salary',
+        'work_model',
+        'description',
+        'created_at',
     ];
 
     /**
@@ -44,7 +49,7 @@ class Card extends Model
      * a card can have many items. Items are always
      * returned ordered by their ID for consistent display.
      */
-    public function items(): HasMany
+    public function posts(): HasMany
     {
         return $this->hasMany(Item::class)->orderBy('id');
     }

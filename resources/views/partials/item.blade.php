@@ -1,7 +1,7 @@
-<li class="item" data-id="{{$item->id}}">
+<li class="post" data-id="{{$post->id}}">
     <label>
         {{-- Checkbox reflects whether the item is done --}}
-        <input type="checkbox" @checked($item->done)>
+        
 
         {{-- Item description --}}
         <span>{{ $item->description }}</span>

@@ -1,8 +1,8 @@
-<article class="jobpost" data-id="{{ $jobpost->id }}">
+<article class="jobpost" data-id="{{ $jobPost->id }}">
     <header>
         <h2>
-            {{-- Link to the card detail page --}}
-            <a href="{{ route('jobpost.show', $jobPost) }}">
+            {{-- Colocar link para o jobpost especifico --}}
+            <a href="#">
                 {{$jobPost->title }}
             </a>
         </h2>
@@ -13,7 +13,9 @@
     <div class="meta">
         <span class="salary">€{{ $jobPost->salary }}</span>
         <span class="employer">Employer ID: {{ $jobPost->employer_id }}</span>
+        <br>
+        <span class="work_model">Work Model: {{ $jobPost->work_model }}</span>
     </div>
 
-    <p class="description">{{ $jobPost->description }} </p>
+    <p class="description">Description {{ $jobPost->description }} </p>
 </article>

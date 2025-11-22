@@ -21,14 +21,15 @@ class JobPost extends Model
      *
      * @var list<string>
      */
-    //protected $table = 'jobpost';
+    protected $table = 'jobpost';
     protected $fillable = [
         'title',
         'employer_id',
         'salary',
         'work_model',
         'description',
-        'created_at',
+        'category_id',
+        'location_id'
     ];
     
 

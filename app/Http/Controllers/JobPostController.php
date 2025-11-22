@@ -45,6 +45,29 @@ class JobPostController extends Controller
         ]);
     }
 
+    public function create(){
+        return view('pages.create_jobpost');
+    }
+
+    public function store(Request $request){
+        $jobPost = new JobPost();
+
+        $jobPost->title = $request->title;
+        $jobPost->description = $request->description;
+        $jobPost->salary = $request->salary;
+        $jobPost->work_model = $request->work_model;
+
+        //$jobPost->employer_id = Auth::id();
+        $jobPost->employer_id = 2; // default value
+        $jobPost->category_id = 1; // default value
+        $jobPost->location_id = 1; // defaukt value
+
+        $jobPost->save();
+
+        return redirect()->route('jobpost.show', ['jobpost' => $jobPost->id]);
+    }
+
+
     public function update(Request $request, $id){
         $jobPost = JobPost::findOrFail($id);
 

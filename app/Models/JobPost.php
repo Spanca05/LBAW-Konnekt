@@ -31,6 +31,14 @@ class JobPost extends Model
         'category_id',
         'location_id'
     ];
+
+    public function jobLocation(): BelongsTo{
+        return $this->belongsTo(Location::class, 'location_id', 'id');
+    }
+
+    public function jobCategory(): BelongsTo{
+        return $this->belongsTo(Category::class, 'category_id', 'id');
+    }
     
 
 }

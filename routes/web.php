@@ -9,13 +9,18 @@ use App\Http\Controllers\HomeController;
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\Auth\LogoutController;
 
 // Home
 Route::redirect('/', '/login');
 
-Route::get('/jobposts', [App\Http\Controllers\JobPostController::class, 'index'])->name('pages.jobposts.index');
-Route::get('/jobposts/{jobpost}', [App\Http\Controllers\JobPostController::class, 'show'])->name('jobpost.show');
+Route::get('/jobposts', [JobPostController::class, 'index'])->name('pages.jobposts.index');
+Route::get('/jobposts/{jobpost}', [JobPostController::class, 'show'])->name('jobpost.show');
+Route::get('/jobposts/{jobpost}/edit_jobpost', [JobPostController::class, 'edit'])->name('jobpost.edit');
+Route::put('/jobposts/{jobpost}', [JobPostController::class, 'update'])->name('jobpost.update');
+
+
 
 //Route::get('/cards', [CardController::class, 'index'])->name('cards.index');
 //Route::get('/cards/{card}', [CardController::class, 'show'])->name('cards.show');

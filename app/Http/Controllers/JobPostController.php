@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Gate;
 
 
 use App\Models\JobPost;
+use App\Models\Location;
+use App\Models\Category;
 
 class JobPostController extends Controller
 {
@@ -38,10 +40,15 @@ class JobPostController extends Controller
     }
 
     public function edit($id){
-        $jobPost = JobPost::findOrFail($id);
+        $jobPost = JobPost::with('jobLocation')->findOrFail($id);
+        $jobPost = JobPost::with('jobCategory')->findOrFail($id);
+
+        $categories = Category::all();
+
 
         return view('pages.edit_jobpost', [
-            'jobPost' => $jobPost
+            'jobPost' => $jobPost,
+            'categories' => $categories
         ]);
     }
 

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Gate;
 use App\Models\JobPost;
 use App\Models\Location;
 use App\Models\Category;
+use App\Models\Notification;
 
 class JobPostController extends Controller
 {
@@ -64,6 +65,17 @@ class JobPostController extends Controller
 
         return redirect()->route('jobpost.show', ['jobpost' => $jobPost->id]);
     }
+
+    public function delete($id){
+        $jobPost = JobPost::findOrFail($id);
+        $jobPost->notifications()->delete();
+        \DB::table('jobpost_category')->where('jobpost_id', $jobPost->id)->delete(); ##tirar dependencia
+        $nome = $jobPost->title;
+        $jobPost->delete();
+        return redirect()->route('pages.jobposts.index')->with('success', "JobPost {$nome} Deleted!");
+    }
+
+
 
 
 }

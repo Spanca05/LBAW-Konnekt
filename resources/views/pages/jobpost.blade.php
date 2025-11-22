@@ -4,6 +4,11 @@
 
 @section('content')
     <section id="jobpost">
+        <form method = "POST" action="{{ route('jobpost.delete', ['jobpost' => $jobPost->id]) }}">
+            @csrf
+            @method('DELETE')
+            <button class="delete-button" onclick="return confirm('Do you want to delete?');">Delete</button>
+        </form>
         @include('partials.jobpost', ['jobPost' => $jobPost])
         <p class="description">Description {{ $jobPost->description }} </p>
         <button class="apply-button">Apply Now</button>

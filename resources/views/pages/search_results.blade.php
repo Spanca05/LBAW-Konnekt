@@ -10,11 +10,9 @@
     @else
         <ul>
         @foreach ($jobPosts as $jobpost)
-            <li>
-                <a href="{{ route('jobpost.show', $jobpost->id) }}">
-                    {{ $jobpost->title }}
-                </a>
-            </li>
+            <a href="{{ route('jobpost.show', $jobpost->id) }}">
+                @include('partials.jobpost', ['jobPost' => $jobpost])  
+            </a>
         @endforeach
         </ul>
     @endif

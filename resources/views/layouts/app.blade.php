@@ -22,7 +22,9 @@
                 <h1><a href="{{ route('pages.jobposts.index') }}">Konnekt!</a></h1>
 
                 @auth
-                    <a class="button" href="{{ url('/logout') }}"> Logout </a> <span>{{ Auth::user()->name }}</span>
+                    <a class="button" href="{{ url('/logout') }}">Logout </a> <a class="button" href="{{ route('profile') }}">{{ Auth::user()->name }}</a>
+                @else
+                    <a class="button button-outline" href="{{ route('register') }}">Register</a> <a class="button" href="{{ route('login') }}">Login</a>
                 @endauth
             </header>
 

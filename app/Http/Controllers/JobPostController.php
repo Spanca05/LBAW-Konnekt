@@ -89,5 +89,19 @@ class JobPostController extends Controller
         $jobPost->delete();
         return redirect()->route('pages.jobposts.index')->with('success', "JobPost {$nome} Deleted!");
     }
+
+
+    public function search(Request $request){
+        $query = $request->input('q');
+
+        $jobPosts = JobPost::where('title', 'ILIKE', "%{$query}%")   ## usar ILIKE em vez de LIKE por causa da maiuscula e miniscula
+            ->orderBy('created_at', 'desc')  ## ordenado do mais recente para o mais antigo 
+            ->get();
+
+        return view('pages.search_results', [
+            'jobPosts' => $jobPosts,
+            'query' => $query
+        ]);
+    }
 }
 

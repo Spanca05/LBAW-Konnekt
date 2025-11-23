@@ -11,10 +11,15 @@ use App\Http\Controllers\JobPostController;
     // Home
 Route::redirect('/', '/login');
 
+
+//resultados da pesquisa por jobpost
+Route::get('/jobposts/search', [JobPostController::class, 'search'])->name('jobpost.search');
+
 Route::get('/jobposts', [JobPostController::class, 'index'])->name('pages.jobposts.index');
 Route::get('/jobposts/{jobpost}', [JobPostController::class, 'show'])->name('jobpost.show');
 // pagina formulario criaçao jobpost
 Route::get('/create', [JobPostController::class, 'create'])->name('jobpost.create');
+
 
 // guardar novo jobpost na BD
 Route::post('/jobposts', [JobPostController::class, 'store'])->name('jobpost.store');

@@ -3,16 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use Illuminate\View\View;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
-
-
 use App\Models\JobPost;
-use App\Models\Location;
 use App\Models\Category;
-use App\Models\Notification;
+use Illuminate\Support\Facades\DB;
 
 class JobPostController extends Controller
 {
@@ -88,17 +81,13 @@ class JobPostController extends Controller
 
         return redirect()->route('jobpost.show', ['jobpost' => $jobPost->id]);
     }
-
     public function delete($id){
         $jobPost = JobPost::findOrFail($id);
         $jobPost->notifications()->delete();
-        \DB::table('jobpost_category')->where('jobpost_id', $jobPost->id)->delete(); ##tirar dependencia
+        DB::table('jobpost_category')->where('jobpost_id', $jobPost->id)->delete(); // remove dependency
         $nome = $jobPost->title;
         $jobPost->delete();
         return redirect()->route('pages.jobposts.index')->with('success', "JobPost {$nome} Deleted!");
     }
-
-
-
-
 }
+

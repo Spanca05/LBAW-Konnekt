@@ -29,6 +29,7 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $user = Auth::user();
+        if (! $user instanceof \App\Models\User) {abort(403);}
 
         $data = $request->validate([
             'name' => ['required', 'string', 'max:250'],

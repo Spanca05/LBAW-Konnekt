@@ -1,35 +1,9 @@
+-- Ensure schema is recreated cleanly to avoid dependency/drop-order issues.
+-- This drops the entire schema (including all tables, types, functions, triggers)
+-- and recreates it before defining types and tables.
+DROP SCHEMA IF EXISTS lbaw2582 CASCADE;
+CREATE SCHEMA lbaw2582;
 SET search_path TO lbaw2582;
-
------------------------------------------
--- DROP TABLES e TYPES (em ordem segura)
------------------------------------------
-
-DROP TABLE IF EXISTS 
-	users,
-    location,
-    category,
-    jobpost,
-    application,
-    favourite_job,
-    search_history,
-    cv,
-    skill,
-    skill_description_cv,
-    skill_description_jobpost,
-    notification,
-    report,
-    jobpost_category,
-    skill_category,
-    user_notification;
-
-DROP TYPE IF EXISTS
-	user_role,
-	type_notification,
-	type_report,
-	work_model,
-	application_status,
-	category_name,
-	skill_name;
 -----------------------------------------
 -- ENUM Types
 -----------------------------------------

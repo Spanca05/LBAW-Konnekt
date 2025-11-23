@@ -65,4 +65,14 @@ class User extends Authenticatable {
     public function cards(): HasMany {
         return $this->hasMany(Card::class);
     }
+
+    /**
+     * Get the applications owned by this user.
+     *
+     * Defines a one-to-many relationship:
+     * a user can have multiple applications.
+     */
+    public function applications(): HasMany {
+        return $this->hasMany(Application::class, 'jobseeker_id', 'id');
+    }
 }

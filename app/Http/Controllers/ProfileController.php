@@ -15,7 +15,13 @@ class ProfileController extends Controller
     public function show(Request $request)
     {
         $user = Auth::user();
-        return view('pages.profile', ['user' => $user]);
+        // If the user is a job seeker, load their applications (legacy schema uses jobseeker_id)
+        $applications = collect();
+        if ($user && isset($user->role) && $user->role === 'JobSeeker') {
+            $applications = $user->applications()->with('jobPost')->orderByDesc('date')->get();
+        }
+
+        return view('pages.profile', ['user' => $user, 'applications' => $applications]);
     }
 
     /** Show the edit form for the authenticated user's profile. */

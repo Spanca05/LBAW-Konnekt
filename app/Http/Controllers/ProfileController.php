@@ -39,11 +39,14 @@ class ProfileController extends Controller
 
         $user->name = $data['name'];
         $user->email = $data['email'];
-        $user->phone = $data['phone_number'] ?? $user->phone;
+        $user->phone_number = $data['phone_number'] ?? $user->phone_number;
 
         if (!empty($data['password'])) {
             $user->password = Hash::make($data['password']);
         }
+
+        // Persist the updated user model
+        $user->save();
 
         return redirect()->route('profile')->with('success', 'Profile updated successfully.');
     }

@@ -22,9 +22,9 @@
         <input id="email" name="email" type="email" value="{{ old('email', $user->email) }}">
         @error('email') <small class="error" role="alert">{{ $message }}</small> @enderror
 
-        <label for="phone">Phone</label>
-        <input id="phone" name="phone" type="text" value="{{ old('phone', $user->phone) }}">
-        @error('phone') <small class="error" role="alert">{{ $message }}</small> @enderror
+        <label for="phone_number">Phone</label>
+        <input id="phone_number" name="phone_number" type="text" value="{{ old('phone_number', $user->phone_number) }}">
+        @error('phone_number') <small class="error" role="alert">{{ $message }}</small> @enderror
 
         <label for="password">New password (leave blank to keep current)</label>
         <input id="password" name="password" type="password">

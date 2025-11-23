@@ -20,7 +20,5 @@
         <span class="category">Category ID: {{ $jobPost->category_id }}</span>
     </div>
 
-    
-
 
 </article>

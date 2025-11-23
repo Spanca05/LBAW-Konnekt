@@ -10,12 +10,21 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\JobPostController;
 
 // Home
 Route::redirect('/', '/login');
 
-Route::get('/jobposts', [App\Http\Controllers\JobPostController::class, 'index'])->name('pages.jobposts.index');
-Route::get('/jobposts/{jobpost}', [App\Http\Controllers\JobPostController::class, 'show'])->name('jobpost.show');
+Route::get('/jobposts', [JobPostController::class, 'index'])->name('pages.jobposts.index');
+Route::get('/jobposts/{jobpost}', [JobPostController::class, 'show'])->name('jobpost.show');
+// pagina formulario criaçao jobpost
+Route::get('/create', [JobPostController::class, 'create'])->name('jobpost.create');
+
+// guardar novo jobpost na BD
+Route::post('/jobposts', [JobPostController::class, 'store'])->name('jobpost.store');
+
+
+
 
 //Route::get('/cards', [CardController::class, 'index'])->name('cards.index');
 //Route::get('/cards/{card}', [CardController::class, 'show'])->name('cards.show');

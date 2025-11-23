@@ -11,10 +11,13 @@
     </header>
 
     <div class="meta">
-        <span class="salary">€{{ $jobPost->salary }}</span>
+        <span class="salary">Salary:{{ $jobPost->salary }}€</span>
+        <br>
         <span class="employer">Employer ID: {{ $jobPost->employer_id }}</span>
         <br>
         <span class="work_model">Work Model: {{ $jobPost->work_model }}</span>
+        <br>
+        <span class="category">Category ID: {{ $jobPost->category_id }}</span>
     </div>
 
     

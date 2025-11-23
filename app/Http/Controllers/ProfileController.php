@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -36,6 +37,7 @@ class ProfileController extends Controller
             'email' => ['required', 'email', 'max:250', Rule::unique('users')->ignore($user->id)],
             'phone_number' => ['required', 'string', 'max:20'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            'photo' => ['nullable', 'image', 'max:2048'],
         ]);
 
         $user->name = $data['name'];
@@ -44,6 +46,17 @@ class ProfileController extends Controller
 
         if (!empty($data['password'])) {
             $user->password = Hash::make($data['password']);
+        }
+
+        if ($request->hasFile('photo')) {
+            // Delete previous photo (if it exists)
+            if ($user->photo_path) {
+                Storage::disk('public')->delete($user->photo_path);
+            }
+
+            // Save new photo in storage/app/public/photos
+            $path = $request->file('photo')->store('photos', 'public');
+            $user->photo_path = $path;
         }
 
         // Persist the updated user model

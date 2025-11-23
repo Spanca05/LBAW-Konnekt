@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -30,6 +31,7 @@ class User extends Authenticatable {
         'password',
         'role',
         'phone_number',
+        'photo_path',
     ];
 
     /**
@@ -64,5 +66,10 @@ class User extends Authenticatable {
      */
     public function cards(): HasMany {
         return $this->hasMany(Card::class);
+    }
+
+    public function getPhotoUrlAttribute() 
+    {
+        return $this->photo_path ? Storage::url($this->photo_path) : null;
     }
 }

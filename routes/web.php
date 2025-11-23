@@ -1,12 +1,12 @@
-    <?php
+<?php
 
-    use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Route;
 
-    use App\Http\Controllers\CardController;
-    use App\Http\Controllers\ItemController;
+use App\Http\Controllers\CardController;
+use App\Http\Controllers\ItemController;
 
-    use App\Http\Controllers\HomeController;
-    use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProfileController;
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -17,21 +17,19 @@ use App\Http\Controllers\JobPostController;
     Route::redirect('/', '/login');
 
 Route::get('/jobposts', [JobPostController::class, 'index'])->name('pages.jobposts.index');
-Route::get('/jobposts/{jobpost}', [JobPostController::class, 'show'])->name('jobpost.show');
 // pagina formulario criaçao jobpost
-Route::get('/create', [JobPostController::class, 'create'])->name('jobpost.create');
-
+Route::get('/jobposts/create', [JobPostController::class, 'create'])->name('jobpost.create');
 // guardar novo jobpost na BD
 Route::post('/jobposts', [JobPostController::class, 'store'])->name('jobpost.store');
-    Route::get('/jobposts/{jobpost}/edit_jobpost', [JobPostController::class, 'edit'])->name('jobpost.edit');
-    Route::put('/jobposts/{jobpost}', [JobPostController::class, 'update'])->name('jobpost.update');
-    Route::delete('/jobposts/{jobpost}', [JobPostController::class, 'delete'])->name('jobpost.delete');
+Route::get('/jobposts/{jobpost}/edit', [JobPostController::class, 'edit'])->name('jobpost.edit');
+Route::put('/jobposts/{jobpost}', [JobPostController::class, 'update'])->name('jobpost.update');
+Route::delete('/jobposts/{jobpost}', [JobPostController::class, 'delete'])->name('jobpost.delete');
+Route::get('/jobposts/{jobpost}', [JobPostController::class, 'show'])->name('jobpost.show');
 
 
 
-
-    //Route::get('/cards', [CardController::class, 'index'])->name('cards.index');
-    //Route::get('/cards/{card}', [CardController::class, 'show'])->name('cards.show');
+//Route::get('/cards', [CardController::class, 'index'])->name('cards.index');
+//Route::get('/cards/{card}', [CardController::class, 'show'])->name('cards.show');
 
 
 // Cards (authentication required)

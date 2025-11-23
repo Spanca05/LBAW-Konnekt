@@ -65,9 +65,8 @@ class JobPostController extends Controller
         $jobPost->salary = $request->salary;
         $jobPost->work_model = $request->work_model;
         $jobPost->category_id = $request->category_id;
+        $jobPost->employer_id = Auth::id();
 
-        //$jobPost->employer_id = Auth::id();
-        $jobPost->employer_id = 2; // default value
         $jobPost->location_id = 1; // defaukt value
 
         $jobPost->save();

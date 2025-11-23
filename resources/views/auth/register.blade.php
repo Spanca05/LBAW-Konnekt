@@ -28,16 +28,16 @@
       <span id="role-error" class="error" role="alert">{{ $message }}</span>
     @enderror
 
-    <label for="phone">Phone Number</label>
+    <label for="phone_number">Phone Number</label>
     <input
-        id="phone"
+        id="phone_number"
         type="text"
-        name="phone"
-        value="{{ old('phone') }}"
+        name="phone_number"
+        value="{{ old('phone_number') }}"
         autocomplete="tel"
     >
-    @error('phone')
-      <span id="phone-error" class="error" role="alert">{{ $message }}</span>
+    @error('phone_number')
+      <span id="phone_number-error" class="error" role="alert">{{ $message }}</span>
     @enderror
 
     <label for="email">E-Mail Address</label>

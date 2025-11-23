@@ -39,7 +39,7 @@ class RegisterController extends Controller
         $request->validate([
             'name' => 'required|string|max:250',
             'role' => 'required|in:JobSeeker,Employer',
-            'phone' => 'required|string|max:20',
+            'phone_number' => 'required|string|max:20',
             'email' => 'required|email|max:250|unique:users',
             'password' => 'required|min:8|confirmed'
         ]);
@@ -48,7 +48,7 @@ class RegisterController extends Controller
         User::create([
             'name' => $request->name,
             'role' => $request->role,
-            'phone' => $request->phone,
+            'phone_number' => $request->phone_number,
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);
@@ -61,7 +61,7 @@ class RegisterController extends Controller
         $request->session()->regenerate();
 
         // Redirect to cards page with a success message.
-        return redirect()->route('cards.index')
+        return redirect()->route('pages.jobposts.index')
             ->withSuccess('You have successfully registered & logged in!');
     }
 }

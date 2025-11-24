@@ -45,6 +45,7 @@ CREATE TABLE users (
     role user_role NOT NULL, 
     password TEXT NOT NULL,
     phone_number TEXT NOT NULL,
+    photo_path TEXT,
     location_id INTEGER REFERENCES location(id),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL

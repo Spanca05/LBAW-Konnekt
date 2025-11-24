@@ -10,9 +10,13 @@
     <div class="message success" role="alert">{{ session('success') }}</div>
     @endif
 
-    <form method="POST" action="{{ route('profile.update') }}">
+    <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
+
+        <label for="photo">Profile Picture</label>
+        <input id="photo" name="photo" type="file" accept="image/*">
+        @error('photo') <small class="error" role="alert">{{ $message }}</small> @enderror
 
         <label for="name">Name</label>
         <input id="name" name="name" type="text" value="{{ old('name', $user->name) }}">

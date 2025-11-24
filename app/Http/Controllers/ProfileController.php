@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
@@ -12,10 +13,20 @@ class ProfileController extends Controller
     /**
      * Display the authenticated user's profile.
      */
-    public function show(Request $request)
+    public function show()
     {
         $user = Auth::user();
-        return view('pages.profile', ['user' => $user]);
+
+        $jobPosts = [];
+
+        if ($user->role === 'Employer') {
+            $jobPosts = $user->jobposts()->orderBy('created_at', 'desc')->get();
+        }
+
+        return view('pages.profile', [
+            'user' => $user,
+            'jobPosts' => $jobPosts
+        ]);
     }
 
     /** Show the edit form for the authenticated user's profile. */

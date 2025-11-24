@@ -28,6 +28,7 @@ Route::get('/jobposts/{jobpost}', [JobPostController::class, 'show'])->name('job
 
 
 
+
 //Route::get('/cards', [CardController::class, 'index'])->name('cards.index');
 //Route::get('/cards/{card}', [CardController::class, 'show'])->name('cards.show');
 

@@ -70,7 +70,9 @@ Route::controller(RegisterController::class)->group(function () {
 
 // Profile (authenticated user)
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+    Route::get('/profile', [ProfileController::class, 'showAuth'])->name('profile');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    //other users profile
+    Route::get('/users/{id}', [ProfileController::class, 'show'])->name('profile.other');
 });

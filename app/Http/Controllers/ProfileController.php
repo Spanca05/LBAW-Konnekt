@@ -13,7 +13,7 @@ class ProfileController extends Controller
     /**
      * Display the authenticated user's profile.
      */
-    public function show()
+    public function showAuth()
     {
         $user = Auth::user();
 
@@ -28,6 +28,23 @@ class ProfileController extends Controller
             'jobPosts' => $jobPosts
         ]);
     }
+
+    public function show($id)
+    {
+        $user = User::findOrFail($id);
+
+        $jobPosts = [];
+
+        if ($user->role === 'Employer') {
+            $jobPosts = $user->jobposts()->orderBy('created_at', 'desc')->get();
+        }
+
+        return view('pages.profile', [
+            'user' => $user,
+            'jobPosts' => $jobPosts
+        ]);
+    }
+
 
     /** Show the edit form for the authenticated user's profile. */
     public function edit(Request $request)

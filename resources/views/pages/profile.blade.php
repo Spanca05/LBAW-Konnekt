@@ -17,11 +17,13 @@
         <li><strong>Phone:</strong> {{ $user->phone_number}}</li>
         <li><strong>Role:</strong> {{ $user->role}}</li>
     </ul>
-    
-    <p>
-        <a class="button" href="{{ route('profile.edit') }}">Edit profile</a>
-        <a class="button" href="{{ route('jobpost.create') }}">Create New JobPost</a>
-    </p>
+
+    @if(auth()->id() === $user->id)
+        <p>
+            <a class="button" href="{{ route('profile.edit') }}">Edit profile</a>
+            <a class="button" href="{{ route('jobpost.create') }}">Create New JobPost</a>
+        </p>
+    @endif
 
 
 </section>

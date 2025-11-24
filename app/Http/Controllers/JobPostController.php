@@ -44,6 +44,8 @@ class JobPostController extends Controller
         $jobPost = JobPost::with('jobLocation')->findOrFail($id);
         $jobPost = JobPost::with('jobCategory')->findOrFail($id);
 
+        Gate::authorize('update', $jobPost);
+
         $categories = Category::all();
 
 
@@ -54,10 +56,12 @@ class JobPostController extends Controller
     }
 
     public function create(){
+        Gate::authorize('create', JobPost::class);
         return view('pages.create_jobpost');
     }
 
-    public function store(Request $request){
+    public function store(Request $request){ 
+        Gate::authorize('create', JobPost::class);
         $jobPost = new JobPost();
 
         $jobPost->title = $request->title;
@@ -76,7 +80,9 @@ class JobPostController extends Controller
 
 
     public function update(Request $request, $id){
+        
         $jobPost = JobPost::findOrFail($id);
+        Gate::authorize('update', $jobPost);
 
         $jobPost->title = $request->input('title');
         $jobPost->description = $request->input('description');
@@ -89,7 +95,9 @@ class JobPostController extends Controller
     }
 
     public function delete($id){
+        
         $jobPost = JobPost::findOrFail($id);
+        Gate::authorize('delete', $jobPost);
         $jobPost->notifications()->delete();
         \DB::table('jobpost_category')->where('jobpost_id', $jobPost->id)->delete(); ##tirar dependencia
         $nome = $jobPost->title;

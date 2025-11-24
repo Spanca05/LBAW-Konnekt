@@ -6,10 +6,14 @@
     <section id="jobpost">
         @include('partials.jobpost', ['jobPost' => $jobPost])
         <p class="description">Description: {{ $jobPost->description }} </p>
+        @if (auth()->id() != $jobPost->employer_id)
+            <a href="{{ route('profile.other', ['id' => $jobPost->employer_id]) }}">
+                <button class="view_profile">View {{ $jobPost->employer->name }}'s Profile</button>
+            </a>
+        @endif
         @if(auth()->check() && auth()->user()->role === 'JobSeeker')
             <button class="apply-button">Apply Now</button>
-        @endif
-        @if (auth()->id() === $jobPost->employer_id)
+        @elseif (auth()->id() === $jobPost->employer_id)
             <form method = "POST" action="{{ route('jobpost.delete', ['jobpost' => $jobPost->id]) }}">
                 @csrf
                 @method('DELETE')

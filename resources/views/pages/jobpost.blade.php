@@ -5,20 +5,22 @@
 @section('content')
 <section id="jobpost">
     @if(session('success'))
-    <div class="message success">{{ session('success') }}</div>
+        <div class="message success">{{ session('success') }}</div>
     @endif
     @if(session('error'))
-    <div class="message error">{{ session('error') }}</div>
+        <div class="message error">{{ session('error') }}</div>
     @endif
+
     @auth
-    @if(Auth::id() === $jobPost->employer_id)
-    <form method="POST" action="{{ route('jobpost.delete', ['jobpost' => $jobPost->id]) }}">
-        @csrf
-        @method('DELETE')
-        <button class="delete-button" onclick="return confirm('Do you want to delete?');">Delete</button>
-    </form>
-    @endif
+        @if(Auth::id() === $jobPost->employer_id)
+            <form method="POST" action="{{ route('jobpost.delete', ['jobpost' => $jobPost->id]) }}">
+                @csrf
+                @method('DELETE')
+                <button class="delete-button" onclick="return confirm('Do you want to delete?');">Delete</button>
+            </form>
+        @endif
     @endauth
+    
     @php
     $myApplication = null;
     if (Auth::check()) {
@@ -31,6 +33,7 @@
 
     @include('partials.jobpost', ['jobPost' => $jobPost])
     <p class="description">Description: {{ $jobPost->description }} </p>
+    
     @auth
         @if(Auth::user()->role === 'JobSeeker')
             @if(!$hasApplied)
@@ -43,9 +46,10 @@
             @endif
         @elseif(Auth::id() === $jobPost->employer_id)
             <a href="{{ route('jobpost.edit', ['jobpost' => $jobPost->id]) }}"><button class="edit-button">Edit</button></a>
-        @else
-            <a href="{{ route('login') }}" class="apply-button">Login to apply</a>
         @endif
+    @else
+        <a href="{{ route('login') }}" class="apply-button"><button>Login to apply</button></a>
+    
     @endauth
     <a href="{{ route('pages.jobposts.index') }}"><button class="return">return</button></a>
 </section>

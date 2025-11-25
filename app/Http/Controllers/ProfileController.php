@@ -91,7 +91,7 @@ class ProfileController extends Controller {
                 $attrs = [
                     'file_path' => $newPath,
                     'uploaded_at' => now(),
-                    'description' => $validatedCv['cv_description'] ?? ($cv->description ?? null),
+                    'description' => array_key_exists('cv_description', $validatedCv) ? $validatedCv['cv_description'] : ($cv->description ?? null),
                     'mime_type' => $detected ?: ($file->getClientMimeType() ?: null),
                 ];
 
@@ -101,8 +101,10 @@ class ProfileController extends Controller {
                     $user->cv()->create($attrs);
                 }
             } else {
-                // If no new file but description provided, update description only
-                if (isset($validatedCv['cv_description']) && $validatedCv['cv_description'] !== ($cv->description ?? null)) {
+                // If no new file: update description even when it's intentionally cleared.
+                // Note: Laravel's ConvertEmptyStringsToNull middleware turns empty strings into null,
+                // so check presence with array_key_exists on the validated array.
+                if (array_key_exists('cv_description', $validatedCv) && $validatedCv['cv_description'] !== ($cv->description ?? null)) {
                     if ($cv) {
                         $cv->update(['description' => $validatedCv['cv_description']]);
                     } else {

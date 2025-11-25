@@ -29,7 +29,7 @@ class CVController extends Controller {
         $newPath = null;
 
         $attrs = [
-            'description' => $validated['cv_description'] ?? ($cv->description ?? null),
+            'description' => array_key_exists('cv_description', $validated) ? $validated['cv_description'] : ($cv->description ?? null),
             'uploaded_at' => $cv->uploaded_at ?? null,
         ];
 

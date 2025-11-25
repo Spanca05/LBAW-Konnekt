@@ -16,6 +16,17 @@
         </div>
     @endif
 
+    <div class="meta">
+        <span class="salary">Salary:{{ $jobPost->salary }}€</span>
+        <br>
+        <span class="employer">Employer ID: {{ $jobPost->employer_id }}</span>
+        <br>
+        <span class="work_model">Work Model: {{ $jobPost->work_model }}</span>
+        <br>
+        <span class="category">Category ID: {{ $jobPost->category_id }}</span>
+    </div>
+    <p class="description">Description: {{ $jobPost->description }} </p>
+    
     <form method="POST" action="{{ route('jobpost.apply', ['jobpost' => $jobPost->id]) }}" enctype="multipart/form-data">
         @csrf
 

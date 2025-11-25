@@ -12,6 +12,20 @@ class ApplicationController extends Controller
 {
     public function create(JobPost $jobpost)
     {
+        $user = Auth::user();
+
+        // If the current user already applied, don't allow entering the apply form.
+        if ($user && $user->role === 'JobSeeker') {
+            $already = Application::where('jobpost_id', $jobpost->id)
+                ->where('jobseeker_id', $user->id)
+                ->exists();
+
+            if ($already) {
+                return redirect()->route('jobpost.show', ['jobpost' => $jobpost->id])
+                    ->with('error', 'You have already applied to this job.');
+            }
+        }
+
         return view('pages.jobpost_apply', ['jobPost' => $jobpost]);
     }
 

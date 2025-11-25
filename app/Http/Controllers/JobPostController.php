@@ -13,9 +13,8 @@ class JobPostController extends Controller
     /**
      * Display a listing of the user's cards.
      */
-    public function index()
+    public function index(Request $request)
     {
-
         // vai buscar todos os jobposts ordenados do mais recente para o mais antigo
         $jobPosts =JobPost::orderBy('created_at', 'desc')->get();
 
@@ -26,16 +25,20 @@ class JobPostController extends Controller
     }
 
     public function show($id){
-        $jobPost = JobPost::findOrFail($id);
+        $jobPost = JobPost::with('jobUser')->findOrFail($id);
+
+       // $name = $jobPost->jobUser->name;
 
         return view('pages.jobpost', [
             'jobPost' => $jobPost
+            //'name' =>$name
         ]);
     }
 
     public function edit($id){
-        $jobPost = JobPost::with('jobLocation')->findOrFail($id);
+        //$jobPost = JobPost::with('jobLocation')->findOrFail($id);
         $jobPost = JobPost::with('jobCategory')->findOrFail($id);
+
 
         $categories = Category::all();
 
@@ -92,15 +95,24 @@ class JobPostController extends Controller
 
 
     public function search(Request $request){
-        $query = $request->input('q');
-
-        $jobPosts = JobPost::where('title', 'ILIKE', "%{$query}%")   ## usar ILIKE em vez de LIKE por causa da maiuscula e miniscula
-            ->orderBy('created_at', 'desc')  ## ordenado do mais recente para o mais antigo 
+        $pesquisa = $request->input('q');
+        $jobPosts = JobPost::whereRaw(
+                "tsvectors @@ plainto_tsquery('english', ? )",   // n suporta buscas por sufixo, por exemplo "se" n dará "senior"
+                [$pesquisa]
+            )
+            ->orderByRaw(
+                "ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC",
+                [$pesquisa]
+            )
             ->get();
+
+        /*$jobPosts = JobPost::where('title', 'ILIKE', "%{$query}%")   ## usar ILIKE em vez de LIKE por causa da maiuscula e miniscula
+            ->orderBy('created_at', 'desc')  ## ordenado do mais recente para o mais antigo 
+            ->get();*/
 
         return view('pages.search_results', [
             'jobPosts' => $jobPosts,
-            'query' => $query
+            'query' => $pesquisa
         ]);
     }
 }

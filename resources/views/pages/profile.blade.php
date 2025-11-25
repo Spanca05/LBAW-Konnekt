@@ -19,11 +19,13 @@
     </ul>
 
     @if(auth()->id() === $user->id)
-        <p>
-            <a class="button" href="{{ route('profile.edit') }}">Edit profile</a>
-            <a class="button" href="{{ route('jobpost.create') }}">Create New JobPost</a>
-        </p>
+        <a class="button" href="{{ route('profile.edit') }}">Edit profile</a>
     @endif
+
+    @if(auth()->id() === $user->id && $user->role === 'Employer')
+        <a class="button" href="{{ route('jobpost.create') }}">Create New JobPost</a>
+    @endif
+
 
 
 </section>
@@ -31,9 +33,9 @@
 @if($user->role === 'Employer')
 
     <section id="jobposts">
-        @if(auth()->id() === $user->id && $user->role === 'Employer')
+        @if(auth()->id() === $user->id)
             <h2>My JobPosts</h2>
-        @elseif($user->role === 'Employer')
+        @else
             <h2>{{ $user->name }}'s JobPosts</h2>
         @endif
 

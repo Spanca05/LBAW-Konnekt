@@ -14,6 +14,7 @@ use App\Http\Controllers\Auth\RegisterController;
 
 use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\CVController;
+use App\Http\Controllers\ApplicationController;
 
 // Home
 Route::redirect('/', '/login');
@@ -85,4 +86,15 @@ Route::middleware('auth')->group(function () {
 
     // other users profile (public)
     Route::get('/users/{id}', [ProfileController::class, 'show'])->name('profile.other');
+});
+
+// Applications
+Route::middleware('auth')->group(function() {
+    Route::get('/jobposts/{jobpost}/apply', [ApplicationController::class,'create'])->name('jobpost.apply.form');
+    Route::post('/jobposts/{jobpost}/application', [ApplicationController::class,'store'])->name('jobpost.apply');
+    Route::get('/jobposts/{jobpost}/application', [ApplicationController::class,'index'])->name('jobpost.application'); // employer view
+    // Jobseeker application management
+    Route::get('/applications/{application}/edit', [ApplicationController::class, 'edit'])->name('applications.edit');
+    Route::put('/applications/{application}', [ApplicationController::class, 'update'])->name('applications.update');
+    Route::delete('/applications/{application}', [ApplicationController::class, 'destroy'])->name('applications.destroy');
 });

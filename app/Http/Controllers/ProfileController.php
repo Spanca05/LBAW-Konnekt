@@ -23,8 +23,8 @@ class ProfileController extends Controller
         }
 
 
+        
         $jobPosts = [];
-
         if ($user->role === 'Employer') {
             $jobPosts = $user->jobposts()->orderBy('created_at', 'desc')->get();
         }

@@ -16,6 +16,17 @@
         </div>
     @endif
 
+    <div class="meta">
+        <span class="salary">Salary:{{ $application->jobPost->salary }}€</span>
+        <br>
+        <span class="employer">Employer ID: {{ $application->jobPost->employer_id }}</span>
+        <br>
+        <span class="work_model">Work Model: {{ $application->jobPost->work_model }}</span>
+        <br>
+        <span class="category">Category ID: {{ $application->jobPost->category_id }}</span>
+    </div>
+    <p class="description">Description: {{ $application->jobPost->description }} </p>
+
     <form method="POST" action="{{ route('applications.update', ['application' => $application->id]) }}">
         @csrf
         @method('PUT')

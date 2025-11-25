@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 
 // Import Eloquent relationship classes.
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -71,5 +72,10 @@ class User extends Authenticatable {
     public function getPhotoUrlAttribute() 
     {
         return $this->photo_path ? Storage::url($this->photo_path) : null;
+    }
+
+    public function cv(): HasOne
+    {
+        return $this->hasOne(CV::class, 'jobseeker_id');
     }
 }

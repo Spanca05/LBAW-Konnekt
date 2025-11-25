@@ -3,19 +3,25 @@
 @section('title', 'Profile')
 
 @section('content')
-<section class="container">
-    <h2>My Profile</h2>
+<section class="profile_info">
+    @if(auth()->id() === $user->id)
+        <h2>My Profile</h2>
+    @else
+        <h2>{{ $user->name }}'s Profile</h2>
+    @endif
 
     <ul>
+        <li><strong>ID:</strong> {{ $user->id}}</li>
         <li><strong>Name:</strong> {{ $user->name}}</li>
         <li><strong>Email:</strong> {{ $user->email}}</li>
         <li><strong>Phone:</strong> {{ $user->phone_number}}</li>
+        <li><strong>Role:</strong> {{ $user->role}}</li>
     </ul>
     
     <p>
-        <a class="button" href="{{ route('profile.edit') }}">Edit profile</a>
+        <a class="button" href="{{ route('profile.edit') }}">Edit profile</a>   
     </p>
-    
+
     @if(isset($applications) && $applications->isNotEmpty())
         <section class="card">
             <h3>My Applications</h3>
@@ -51,4 +57,26 @@
         @endif
     @endif
 </section>
+
+@if($user->role === 'Employer')
+    <p>
+        <a class="button" href="{{ route('jobpost.create') }}">Create New JobPost</a>
+    </p>
+    <section id="jobposts">
+        @if(auth()->id() === $user->id && $user->role === 'Employer')
+            <h2>My JobPosts</h2>
+        @elseif($user->role === 'Employer')
+            <h2>{{ $user->name }}'s JobPosts</h2>
+        @endif
+
+        @foreach ($jobPosts as $jobPost)
+            {{-- Mostra cada job usando o partial --}}
+            @include('partials.jobpost', ['jobPost' => $jobPost])
+        @endforeach
+
+    </section>
+
+@endif
+
+
 @endsection

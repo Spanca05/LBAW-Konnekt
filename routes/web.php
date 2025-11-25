@@ -1,11 +1,17 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\ItemController;
+
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProfileController;
+
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\ProfileController;
+
 use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\ApplicationController;
 
@@ -13,15 +19,23 @@ use App\Http\Controllers\ApplicationController;
 Route::redirect('/', '/login');
 
 Route::get('/jobposts', [JobPostController::class, 'index'])->name('pages.jobposts.index');
-Route::get('/jobposts/{jobpost}', [JobPostController::class, 'show'])->name('jobpost.show');
 // pagina formulario criaçao jobpost
-Route::get('/create', [JobPostController::class, 'create'])->name('jobpost.create');
-
+Route::get('/jobposts/create', [JobPostController::class, 'create'])->name('jobpost.create');
 // guardar novo jobpost na BD
 Route::post('/jobposts', [JobPostController::class, 'store'])->name('jobpost.store');
-Route::get('/jobposts/{jobpost}/edit_jobpost', [JobPostController::class, 'edit'])->name('jobpost.edit');
+//Route::get('/jobposts/{jobpost}/edit_jobpost', [JobPostController::class, 'edit'])->name('jobpost.edit');
+//Route::put('/jobposts/{jobpost}', [JobPostController::class, 'update'])->name('jobpost.update');
+//Route::delete('/jobposts/{jobpost}', [JobPostController::class, 'delete'])->name('jobpost.delete');
+Route::get('/jobposts/{jobpost}/edit', [JobPostController::class, 'edit'])->name('jobpost.edit');
 Route::put('/jobposts/{jobpost}', [JobPostController::class, 'update'])->name('jobpost.update');
 Route::delete('/jobposts/{jobpost}', [JobPostController::class, 'delete'])->name('jobpost.delete');
+Route::get('/jobposts/{jobpost}', [JobPostController::class, 'show'])->name('jobpost.show');
+
+
+
+
+//Route::get('/cards', [CardController::class, 'index'])->name('cards.index');
+//Route::get('/cards/{card}', [CardController::class, 'show'])->name('cards.show');
 
 
 // Cards (authentication required)
@@ -60,9 +74,11 @@ Route::controller(RegisterController::class)->group(function () {
 
 // Profile (authenticated user)
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+    Route::get('/profile', [ProfileController::class, 'showAuth'])->name('profile');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    //other users profile
+    Route::get('/users/{id}', [ProfileController::class, 'show'])->name('profile.other');
 });
 
 // Applications

@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 
 // Import Eloquent relationship classes.
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\JobPost;
 
 class User extends Authenticatable {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -57,13 +58,13 @@ class User extends Authenticatable {
     }
 
     /**
-     * Get the cards owned by this user.
+     * Get the jobposts owned by this user.
      *
      * Defines a one-to-many relationship:
-     * a user can have multiple cards.
+     * a user can have multiple jobposts.
      */
-    public function cards(): HasMany {
-        return $this->hasMany(Card::class);
+    public function jobposts(): HasMany {
+        return $this->hasMany(JobPost::class, 'employer_id');
     }
 
     /**

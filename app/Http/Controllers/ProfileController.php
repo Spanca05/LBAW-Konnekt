@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
@@ -12,7 +13,7 @@ class ProfileController extends Controller
     /**
      * Display the authenticated user's profile.
      */
-    public function show(Request $request)
+    public function showAuth()
     {
         $user = Auth::user();
         // If the user is a job seeker, load their applications (legacy schema uses jobseeker_id)
@@ -21,8 +22,35 @@ class ProfileController extends Controller
             $applications = $user->applications()->with('jobPost')->orderByDesc('date')->get();
         }
 
-        return view('pages.profile', ['user' => $user, 'applications' => $applications]);
+
+        $jobPosts = [];
+
+        if ($user->role === 'Employer') {
+            $jobPosts = $user->jobposts()->orderBy('created_at', 'desc')->get();
+        }
+
+        return view('pages.profile', [
+            'user' => $user, 'applications' => $applications,
+            'jobPosts' => $jobPosts
+        ]);
     }
+
+    public function show($id)
+    {
+        $user = User::findOrFail($id);
+
+        $jobPosts = [];
+
+        if ($user->role === 'Employer') {
+            $jobPosts = $user->jobposts()->orderBy('created_at', 'desc')->get();
+        }
+
+        return view('pages.profile', [
+            'user' => $user,
+            'jobPosts' => $jobPosts
+        ]);
+    }
+
 
     /** Show the edit form for the authenticated user's profile. */
     public function edit(Request $request)

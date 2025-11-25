@@ -11,9 +11,13 @@
     </header>
 
     <div class="meta">
-        <span class="salary">Salary:{{ $jobPost->salary }}€</span>
+        @if (auth()->id() != $jobPost->employer_id)
+            <a href="{{ route('profile.other', ['id' => $jobPost->employer_id]) }}">
+                <button class="view_profile">{{ $jobPost->employer->name }}</button>
+            </a>
+        @endif      
         <br>
-        <span class="employer">Employer ID: {{ $jobPost->employer_id }}</span>
+        <span class="salary">Salary:{{ $jobPost->salary }}€</span>
         <br>
         <span class="work_model">Work Model: {{ $jobPost->work_model }}</span>
         <br>

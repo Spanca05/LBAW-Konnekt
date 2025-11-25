@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
@@ -12,19 +13,55 @@ class ProfileController extends Controller {
     /**
      * Display the authenticated user's profile.
      */
-    public function show(Request $request) {
+    public function showAuth(Request $request = null) {
+        /** @var \App\Models\User|null $user */
         $user = Auth::user();
-        return view('pages.profile', ['user' => $user]);
+        if (! $user instanceof User) {
+            abort(403);
+        }
+
+        $jobPosts = [];
+
+        if ($user->role === 'Employer') {
+            $jobPosts = $user->jobposts()->orderBy('created_at', 'desc')->get();
+        }
+
+        return view('pages.profile', [
+            'user' => $user,
+            'jobPosts' => $jobPosts
+        ]);
     }
+
+    public function show($id) {
+        $user = User::findOrFail($id);
+
+        $jobPosts = [];
+
+        if ($user->role === 'Employer') {
+            $jobPosts = $user->jobposts()->orderBy('created_at', 'desc')->get();
+        }
+
+        return view('pages.profile', [
+            'user' => $user,
+            'jobPosts' => $jobPosts
+        ]);
+    }
+
 
     /** Show the edit form for the authenticated user's profile. */
     public function edit(Request $request) {
+        /** @var \App\Models\User|null $user */
         $user = Auth::user();
+        if (! $user instanceof User) {
+            abort(403);
+        }
+
         return view('pages.profile_edit', ['user' => $user]);
     }
 
     /** Update the authenticated user's profile. */
     public function update(Request $request) {
+        /** @var \App\Models\User|null $user */
         $user = Auth::user();
         if (! $user instanceof \App\Models\User) {
             abort(403);
@@ -124,6 +161,7 @@ class ProfileController extends Controller {
      * Remove the authenticated user's profile photo.
      */
     public function destroyPhoto(Request $request) {
+        /** @var \App\Models\User|null $user */
         $user = Auth::user();
         if ($user && $user->photo_path) {
             Storage::disk('public')->delete($user->photo_path);

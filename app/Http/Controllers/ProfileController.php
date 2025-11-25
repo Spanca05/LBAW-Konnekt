@@ -23,30 +23,32 @@ class ProfileController extends Controller
         }
 
 
-        
-        $jobPosts = [];
-        if ($user->role === 'Employer') {
-            $jobPosts = $user->jobposts()->orderBy('created_at', 'desc')->get();
-        }
-
-        return view('pages.profile', [
-            'user' => $user, 'applications' => $applications,
-            'jobPosts' => $jobPosts
-        ]);
-    }
-
-    public function show($id)
-    {
-        $user = User::findOrFail($id);
 
         $jobPosts = [];
-
         if ($user->role === 'Employer') {
             $jobPosts = $user->jobposts()->orderBy('created_at', 'desc')->get();
         }
 
         return view('pages.profile', [
             'user' => $user,
+            'applications' => $applications,
+            'jobPosts' => $jobPosts
+        ]);
+    }
+
+    public function show($id)
+    {
+        $other = User::findOrFail($id);
+
+        $jobPosts = [];
+
+        if ($other->role === 'Employer') {
+            $jobPosts = $other->jobposts()->orderBy('created_at', 'desc')->get();
+        }
+
+        // Render the public profile view for other users
+        return view('pages.profile_other', [
+            'other' => $other,
             'jobPosts' => $jobPosts
         ]);
     }
@@ -63,7 +65,9 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $user = Auth::user();
-        if (! $user instanceof \App\Models\User) {abort(403);}
+        if (! $user instanceof \App\Models\User) {
+            abort(403);
+        }
 
         $data = $request->validate([
             'name' => ['required', 'string', 'max:250'],

@@ -14,7 +14,6 @@
         <li><strong>Name:</strong> {{ $user->name}}</li>
         <li><strong>Email:</strong> {{ $user->email}}</li>
         <li><strong>Phone:</strong> {{ $user->phone_number}}</li>
-        <li><strong>Role:</strong> {{ $user->role}}</li>
     </ul>
     
     <p>

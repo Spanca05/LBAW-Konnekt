@@ -14,7 +14,7 @@ class CV extends Model
         'jobseeker_id',
         'description',
         'file_path',
-        'size',
+        'mime_type',
         'uploaded_at',
         'updated_at',
     ];

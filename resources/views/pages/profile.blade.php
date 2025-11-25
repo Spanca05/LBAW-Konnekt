@@ -26,7 +26,7 @@
         <li><strong>Name:</strong> {{ $user->name}}</li>
         <li><strong>Email:</strong> {{ $user->email}}</li>
         <li><strong>Phone:</strong> {{ $user->phone_number}}</li>
-        @if(optional($user->cv)->file_path || optional($user->cv)->description)
+        @if($user->role === 'JobSeeker' && (optional($user->cv)->file_path || optional($user->cv)->description))
         <li>
             <strong>CV:</strong>
             @if(optional($user->cv)->file_path)

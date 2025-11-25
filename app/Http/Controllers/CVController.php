@@ -5,15 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\CV;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
 
-class CVController extends Controller 
-{
+class CVController extends Controller {
     /**
      * Store or update the authenticated user's CV (file + description).
      */
-    public function store(Request $request) 
-    {
+    public function store(Request $request) {
         $user = $request->user();
+
+        // Only JobSeekers are allowed to upload a CV
+        if (($user->role ?? null) !== 'JobSeeker') {
+            abort(403);
+        }
 
         $validated = $request->validate([
             'cv_file' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
@@ -23,20 +27,28 @@ class CVController extends Controller
         $cv = $user->cv;
 
         $newPath = null;
+
+        $attrs = [
+            'description' => $validated['cv_description'] ?? ($cv->description ?? null),
+            'uploaded_at' => $cv->uploaded_at ?? null,
+        ];
+
         if ($request->hasFile('cv_file')) {
             $file = $request->file('cv_file');
             $newPath = $file->store('cvs', 'public');
             if ($cv && $cv->file_path) {
                 Storage::disk('public')->delete($cv->file_path);
             }
-        }
 
-        $attrs = [
-            'description' => $validated['cv_description'] ?? ($cv->description ?? null),
-            'uploaded_at' => $request->hasFile('cv_file') ? now() : ($cv->uploaded_at ?? null),
-        ];
-        if ($newPath !== null) {
             $attrs['file_path'] = $newPath;
+            $attrs['uploaded_at'] = now();
+
+            // Persist mime_type (table has the column).
+            // Prefer client-reported MIME, fallback to the uploaded file's detected mime.
+            $mime = $file->getClientMimeType() ?: ($file->getMimeType() ?: null);
+            if ($mime) {
+                $attrs['mime_type'] = $mime;
+            }
         }
 
         if ($cv) {
@@ -57,6 +69,11 @@ class CVController extends Controller
         $user = $request->user();
         $cv = $user->cv;
 
+        // Only JobSeekers can have/download a CV
+        if (($user->role ?? null) !== 'JobSeeker') {
+            abort(403);
+        }
+
         if (!$cv || !$cv->file_path) {
             return redirect()->route('profile')->with('error', 'CV not found.');
         }
@@ -68,8 +85,25 @@ class CVController extends Controller
             return redirect()->route('profile')->with('error', 'CV file missing.');
         }
 
-        // Serve using the filesystem path to avoid the Storage::download linter/runtime differences
+        // Serve using the filesystem path and provide a friendly filename: <UserName>_CV.<ext>
         $fullPath = storage_path('app/public/' . ltrim($path, '/'));
-        return response()->download($fullPath);
+
+        // Determine extension from stored path
+        $ext = pathinfo($path, PATHINFO_EXTENSION) ?: 'bin';
+
+        // Build a safe username portion: replace non-alphanum with underscore, collapse underscores
+        $rawName = $user->name ?? 'user';
+        $safeName = preg_replace('/[^A-Za-z0-9]+/', '_', $rawName);
+        $safeName = trim($safeName, '_');
+        if ($safeName === '') {
+            $safeName = 'user';
+        }
+
+        $downloadName = $safeName . '_CV.' . $ext;
+
+        // Determine MIME type (prefer DB-stored value if available)
+        $mime = $cv->mime_type ?? mime_content_type($fullPath) ?? 'application/octet-stream';
+
+        return response()->download($fullPath, $downloadName, ['Content-Type' => $mime]);
     }
 }

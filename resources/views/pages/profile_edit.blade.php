@@ -11,6 +11,7 @@
     @endif
 
     {{-- CV upload form (separate) --}}
+    @if($user->role === 'JobSeeker')
     <form method="POST" action="{{ route('profile.cv.store') }}" enctype="multipart/form-data" style="margin-bottom:1.5rem">
         @csrf
 
@@ -32,6 +33,7 @@
             <button type="submit" class="button">Save CV</button>
         </p>
     </form>
+    @endif
 
     {{-- Profile form (photo, name, email, etc.) --}}
     <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">

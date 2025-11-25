@@ -13,24 +13,23 @@ class ProfileController extends Controller
     /**
      * Display the authenticated user's profile.
      */
-    public function show(Request $request)
-    {
+    public function show(Request $request) {
         $user = Auth::user();
         return view('pages.profile', ['user' => $user]);
     }
 
     /** Show the edit form for the authenticated user's profile. */
-    public function edit(Request $request)
-    {
+    public function edit(Request $request) {
         $user = Auth::user();
         return view('pages.profile_edit', ['user' => $user]);
     }
 
     /** Update the authenticated user's profile. */
-    public function update(Request $request)
-    {
+    public function update(Request $request) {
         $user = Auth::user();
-        if (! $user instanceof \App\Models\User) {abort(403);}
+        if (! $user instanceof \App\Models\User) {
+            abort(403);
+        }
 
         $data = $request->validate([
             'name' => ['required', 'string', 'max:250'],

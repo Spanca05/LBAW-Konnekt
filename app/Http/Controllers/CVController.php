@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 use App\Models\CV;
 use Illuminate\Support\Facades\Storage;
 
-class CVController extends Controller {
+class CVController extends Controller 
+{
     /**
      * Store or update the authenticated user's CV (file + description).
      */
-    public function store(Request $request) {
+    public function store(Request $request) 
+    {
         $user = $request->user();
 
         $validated = $request->validate([

@@ -16,31 +16,39 @@ class ProfileController extends Controller
     public function showAuth()
     {
         $user = Auth::user();
+        // If the user is a job seeker, load their applications (legacy schema uses jobseeker_id)
+        $applications = collect();
+        if ($user && isset($user->role) && $user->role === 'JobSeeker') {
+            $applications = $user->applications()->with('jobPost')->orderByDesc('date')->get();
+        }
+
+
 
         $jobPosts = [];
-
         if ($user->role === 'Employer') {
             $jobPosts = $user->jobposts()->orderBy('created_at', 'desc')->get();
         }
 
         return view('pages.profile', [
             'user' => $user,
+            'applications' => $applications,
             'jobPosts' => $jobPosts
         ]);
     }
 
     public function show($id)
     {
-        $user = User::findOrFail($id);
+        $other = User::findOrFail($id);
 
         $jobPosts = [];
 
-        if ($user->role === 'Employer') {
-            $jobPosts = $user->jobposts()->orderBy('created_at', 'desc')->get();
+        if ($other->role === 'Employer') {
+            $jobPosts = $other->jobposts()->orderBy('created_at', 'desc')->get();
         }
 
-        return view('pages.profile', [
-            'user' => $user,
+        // Render the public profile view for other users
+        return view('pages.profile_other', [
+            'other' => $other,
             'jobPosts' => $jobPosts
         ]);
     }
@@ -57,7 +65,9 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $user = Auth::user();
-        if (! $user instanceof \App\Models\User) {abort(403);}
+        if (! $user instanceof \App\Models\User) {
+            abort(403);
+        }
 
         $data = $request->validate([
             'name' => ['required', 'string', 'max:250'],

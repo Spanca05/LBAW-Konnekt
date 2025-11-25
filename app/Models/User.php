@@ -66,4 +66,14 @@ class User extends Authenticatable {
     public function jobposts(): HasMany {
         return $this->hasMany(JobPost::class, 'employer_id');
     }
+
+    /**
+     * Get the applications owned by this user.
+     *
+     * Defines a one-to-many relationship:
+     * a user can have multiple applications.
+     */
+    public function applications(): HasMany {
+        return $this->hasMany(Application::class, 'jobseeker_id', 'id');
+    }
 }

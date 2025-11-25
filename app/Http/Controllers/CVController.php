@@ -44,8 +44,8 @@ class CVController extends Controller {
             $attrs['uploaded_at'] = now();
 
             // Persist mime_type (table has the column).
-            // Prefer client-reported MIME, fallback to the uploaded file's detected mime.
-            $mime = $file->getClientMimeType() ?: ($file->getMimeType() ?: null);
+            // Prefer server-detected MIME (finfo), fallback to client-reported value.
+            $mime = $file->getMimeType() ?: ($file->getClientMimeType() ?: null);
             if ($mime) {
                 $attrs['mime_type'] = $mime;
             }
@@ -105,5 +105,28 @@ class CVController extends Controller {
         $mime = $cv->mime_type ?? mime_content_type($fullPath) ?? 'application/octet-stream';
 
         return response()->download($fullPath, $downloadName, ['Content-Type' => $mime]);
+    }
+
+    /**
+     * Delete the authenticated user's CV (file + DB row).
+     */
+    public function destroy(Request $request) {
+        $user = $request->user();
+        if (($user->role ?? null) !== 'JobSeeker') {
+            abort(403);
+        }
+
+        $cv = $user->cv;
+        if (! $cv) {
+            return redirect()->route('profile.edit')->with('error', 'No CV to delete.');
+        }
+
+        if ($cv->file_path) {
+            Storage::disk('public')->delete($cv->file_path);
+        }
+
+        $cv->delete();
+
+        return redirect()->route('profile.edit')->with('success', 'CV removed.');
     }
 }

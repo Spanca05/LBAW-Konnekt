@@ -67,4 +67,6 @@ Route::middleware('auth')->group(function () {
     // CV upload/download
     Route::post('/profile/cv', [\App\Http\Controllers\CVController::class, 'store'])->name('profile.cv.store');
     Route::get('/profile/cv/download', [CVController::class, 'download'])->name('profile.cv.download');
+    Route::delete('/profile/cv', [CVController::class, 'destroy'])->name('profile.cv.destroy');
+    Route::delete('/profile/photo', [ProfileController::class, 'destroyPhoto'])->name('profile.photo.destroy');
 });

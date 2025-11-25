@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\ItemController;
@@ -7,8 +8,9 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\JobPostController;
+use App\Http\Controllers\CVController;
 
-    // Home
+// Home
 Route::redirect('/', '/login');
 
 Route::get('/jobposts', [JobPostController::class, 'index'])->name('pages.jobposts.index');
@@ -62,4 +64,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    // CV upload/download
+    Route::post('/profile/cv', [\App\Http\Controllers\CVController::class, 'store'])->name('profile.cv.store');
+    Route::get('/profile/cv/download', [CVController::class, 'download'])->name('profile.cv.download');
 });

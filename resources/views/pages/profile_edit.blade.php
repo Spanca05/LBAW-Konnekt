@@ -10,6 +10,30 @@
     <div class="message success" role="alert">{{ session('success') }}</div>
     @endif
 
+    {{-- CV upload form (separate) --}}
+    <form method="POST" action="{{ route('profile.cv.store') }}" enctype="multipart/form-data" style="margin-bottom:1.5rem">
+        @csrf
+
+        <label for="cv_file">Upload CV (PDF, DOC, DOCX)</label>
+        <input id="cv_file" name="cv_file" type="file" accept=".pdf,.doc,.docx">
+        @error('cv_file') <small class="error" role="alert">{{ $message }}</small> @enderror
+
+        <label for="cv_description">CV Description / Summary</label>
+        <textarea id="cv_description" name="cv_description">{{ old('cv_description', optional($user->cv)->description) }}</textarea>
+        @error('cv_description') <small class="error" role="alert">{{ $message }}</small> @enderror
+
+        @if(optional($user->cv)->file_path)
+        <p>
+            <a class="button" href="{{ route('profile.cv.download') }}">Download current CV</a>
+        </p>
+        @endif
+
+        <p>
+            <button type="submit" class="button">Save CV</button>
+        </p>
+    </form>
+
+    {{-- Profile form (photo, name, email, etc.) --}}
     <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')

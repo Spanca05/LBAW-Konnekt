@@ -62,6 +62,8 @@ class ProfileController extends Controller
         // Persist the updated user model
         $user->save();
 
+        // CV handling moved to CVController::store
+
         return redirect()->route('profile')->with('success', 'Profile updated successfully.');
     }
 }

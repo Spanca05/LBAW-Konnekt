@@ -26,6 +26,17 @@
         <li><strong>Name:</strong> {{ $user->name}}</li>
         <li><strong>Email:</strong> {{ $user->email}}</li>
         <li><strong>Phone:</strong> {{ $user->phone_number}}</li>
+        @if(optional($user->cv)->file_path || optional($user->cv)->description)
+        <li>
+            <strong>CV:</strong>
+            @if(optional($user->cv)->file_path)
+            <a class="button" href="{{ route('profile.cv.download') }}">Download CV</a>
+            @endif
+            @if(optional($user->cv)->description)
+            <div style="margin-top:0.5rem">{{ $user->cv->description }}</div>
+            @endif
+        </li>
+        @endif
     </ul>
 
     <p>

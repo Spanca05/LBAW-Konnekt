@@ -14,7 +14,6 @@ class ProfileController extends Controller {
      * Display the authenticated user's profile.
      */
     public function showAuth(Request $request = null) {
-        /** @var \App\Models\User|null $user */
         $user = Auth::user();
         if (! $user instanceof User) {
             abort(403);
@@ -50,7 +49,6 @@ class ProfileController extends Controller {
 
     /** Show the edit form for the authenticated user's profile. */
     public function edit(Request $request) {
-        /** @var \App\Models\User|null $user */
         $user = Auth::user();
         if (! $user instanceof User) {
             abort(403);
@@ -61,7 +59,6 @@ class ProfileController extends Controller {
 
     /** Update the authenticated user's profile. */
     public function update(Request $request) {
-        /** @var \App\Models\User|null $user */
         $user = Auth::user();
         if (! $user instanceof \App\Models\User) {
             abort(403);
@@ -161,8 +158,10 @@ class ProfileController extends Controller {
      * Remove the authenticated user's profile photo.
      */
     public function destroyPhoto(Request $request) {
-        /** @var \App\Models\User|null $user */
         $user = Auth::user();
+        if (! $user instanceof User) {
+            abort(403);
+        }
         if ($user && $user->photo_path) {
             Storage::disk('public')->delete($user->photo_path);
             $user->photo_path = null;

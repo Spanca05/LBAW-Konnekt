@@ -6,18 +6,18 @@ use Illuminate\Http\Request;
 use App\Models\JobPost;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 
-class JobPostController extends Controller
-{
+class JobPostController extends Controller {
 
     /**
      * Display a listing of the user's cards.
      */
-    public function index()
-    {
+    public function index() {
 
         // vai buscar todos os jobposts ordenados do mais recente para o mais antigo
-        $jobPosts =JobPost::orderBy('created_at', 'desc')->get();
+        $jobPosts = JobPost::orderBy('created_at', 'desc')->get();
 
         // Render the 'pages.cards' view with the user's cards.
         return view('pages.jobposts', [
@@ -25,7 +25,7 @@ class JobPostController extends Controller
         ]);
     }
 
-    public function show($id){
+    public function show($id) {
         $jobPost = JobPost::findOrFail($id);
 
         return view('pages.jobpost', [
@@ -33,7 +33,7 @@ class JobPostController extends Controller
         ]);
     }
 
-    public function edit($id){
+    public function edit($id) {
         $jobPost = JobPost::with('jobLocation')->findOrFail($id);
         $jobPost = JobPost::with('jobCategory')->findOrFail($id);
 
@@ -48,12 +48,12 @@ class JobPostController extends Controller
         ]);
     }
 
-    public function create(){
+    public function create() {
         Gate::authorize('create', JobPost::class);
         return view('pages.create_jobpost');
     }
 
-    public function store(Request $request){ 
+    public function store(Request $request) {
         Gate::authorize('create', JobPost::class);
         $jobPost = new JobPost();
 
@@ -72,8 +72,8 @@ class JobPostController extends Controller
     }
 
 
-    public function update(Request $request, $id){
-        
+    public function update(Request $request, $id) {
+
         $jobPost = JobPost::findOrFail($id);
         Gate::authorize('update', $jobPost);
 
@@ -86,8 +86,8 @@ class JobPostController extends Controller
 
         return redirect()->route('jobpost.show', ['jobpost' => $jobPost->id]);
     }
-    public function delete($id){
-        
+    public function delete($id) {
+
         $jobPost = JobPost::findOrFail($id);
         Gate::authorize('delete', $jobPost);
         $jobPost->notifications()->delete();
@@ -97,4 +97,3 @@ class JobPostController extends Controller
         return redirect()->route('pages.jobposts.index')->with('success', "JobPost {$nome} Deleted!");
     }
 }
-

@@ -87,6 +87,7 @@
         <p>You have not applied to any jobs yet.</p>
         @endif
     </section>
+    
     @elseif($user->role === 'Employer')
     <section id="jobposts">
         @if(auth()->check() && auth()->id() === $user->id)

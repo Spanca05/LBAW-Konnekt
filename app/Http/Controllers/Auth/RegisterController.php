@@ -40,6 +40,7 @@ class RegisterController extends Controller
             'name' => 'required|string|max:250',
             'role' => 'required|in:JobSeeker,Employer',
             'phone_number' => 'required|string|max:20',
+            'location' => 'nullable|string|max:255',
             'email' => 'required|email|max:250|unique:users',
             'password' => 'required|min:8|confirmed'
         ]);
@@ -49,6 +50,7 @@ class RegisterController extends Controller
             'name' => $request->name,
             'role' => $request->role,
             'phone_number' => $request->phone_number,
+            'location' => $request->location ?? null,
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);

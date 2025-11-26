@@ -40,6 +40,18 @@
       <span id="phone_number-error" class="error" role="alert">{{ $message }}</span>
     @enderror
 
+    <label for="location">Location</label>
+    <input
+        id="location"
+        type="text"
+        name="location"
+        value="{{ old('location') }}"
+        autocomplete="street-address"
+    >
+    @error('location')
+      <span id="location-error" class="error" role="alert">{{ $message }}</span>
+    @enderror
+
     <label for="email">E-Mail Address</label>
     <input
         id="email"

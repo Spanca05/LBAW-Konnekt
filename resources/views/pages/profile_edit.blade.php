@@ -10,9 +10,20 @@
     <div class="message success" role="alert">{{ session('success') }}</div>
     @endif
 
-    <form method="POST" action="{{ route('profile.update') }}">
+    {{-- Unified profile + CV form --}}
+    <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
+
+        <label for="photo">Profile Picture</label>
+        <input id="photo" name="photo" type="file" accept="image/*">
+        @error('photo') <small class="error" role="alert">{{ $message }}</small> @enderror
+
+        @if($user->photo_path)
+        <p>
+            <em>Current photo uploaded.</em>
+        </p>
+        @endif
 
         <label for="name">Name</label>
         <input id="name" name="name" type="text" value="{{ old('name', $user->name) }}">
@@ -33,10 +44,44 @@
         <label for="password_confirmation">Confirm new password</label>
         <input id="password_confirmation" name="password_confirmation" type="password">
 
+        @if($user->role === 'JobSeeker')
+        <section style="margin-top:1rem">
+            <h3>Curriculum Vitae</h3>
+
+            <label for="cv_file">Upload CV (PDF, DOC, DOCX)</label>
+            <input id="cv_file" name="cv_file" type="file" accept=".pdf,.doc,.docx">
+            @error('cv_file') <small class="error" role="alert">{{ $message }}</small> @enderror
+
+            <label for="cv_description">CV Description / Summary</label>
+            <textarea id="cv_description" name="cv_description">{{ old('cv_description', optional($user->cv)->description) }}</textarea>
+            @error('cv_description') <small class="error" role="alert">{{ $message }}</small> @enderror
+        </section>
+        @endif
+
         <p>
             <button type="submit" class="button">Save changes</button>
             <a class="button" href="{{ route('profile') }}">Cancel</a>
         </p>
     </form>
+
+    @if($user->photo_path)
+    <form method="POST" action="{{ route('profile.photo.destroy') }}" style="margin-top:0.5rem">@csrf @method('DELETE')
+        <button class="button" type="submit">Remove photo</button>
+    </form>
+    @endif
+
+    @if(optional($user->cv)->file_path || optional($user->cv)->description)
+    <section style="margin-top:1rem">
+        @if(optional($user->cv)->file_path)
+        <p>
+            <a class="button" href="{{ route('profile.cv.download') }}">Download current CV</a>
+        </p>
+
+        <form method="POST" action="{{ route('profile.cv.destroy') }}" style="margin-top:0.5rem">@csrf @method('DELETE')
+            <button class="button" type="submit">Remove CV</button>
+        </form>
+        @endif
+    </section>
+    @endif
 </section>
 @endsection

@@ -13,9 +13,10 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 
 use App\Http\Controllers\JobPostController;
+use App\Http\Controllers\CVController;
 use App\Http\Controllers\ApplicationController;
 
-    // Home
+// Home
 Route::redirect('/', '/login');
 
 Route::get('/jobposts', [JobPostController::class, 'index'])->name('pages.jobposts.index');
@@ -77,7 +78,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'showAuth'])->name('profile');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    //other users profile
+
+    // CV download/remove (CV uploads handled by profile.update)
+    Route::get('/profile/cv/download', [CVController::class, 'download'])->name('profile.cv.download');
+    Route::delete('/profile/cv', [CVController::class, 'destroy'])->name('profile.cv.destroy');
+    Route::delete('/profile/photo', [ProfileController::class, 'destroyPhoto'])->name('profile.photo.destroy');
+
+    // other users profile (public)
     Route::get('/users/{id}', [ProfileController::class, 'show'])->name('profile.other');
 });
 

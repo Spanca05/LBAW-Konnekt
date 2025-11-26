@@ -5,7 +5,23 @@
 @section('content')
 <section class="container">
     <h2>Profile: {{ $other->name }}</h2>
-
+    
+    @if(!empty($other->photo_url))
+    <div style="margin-bottom: 1rem">
+        <img
+            src="{{ $other->photo_url }}"
+            alt="Profile Picture of {{ $other->name }}"
+            style="max-width: 150px; max-height:150px; object-fit:cover; border-radius:6px;">
+    </div>
+    @else
+    <div style="margin-bottom:1rem">
+        <img
+            src="{{ asset('images/avatar-placeholder.png') }}"
+            alt="No photo"
+            style="max-width:150px; max-height:150px; object-fit:cover; border-radius:6px;"> 
+    </div>
+    @endif
+    
     <ul>
         <li><strong>Name:</strong> {{ $other->name}}</li>
         <li><strong>Email:</strong> {{ $other->email}}</li>
@@ -19,11 +35,11 @@
             @foreach($jobPosts as $job)
             <li>
                 <a href="{{ route('jobpost.show', ['jobpost' => $job->id]) }}">{{ $job->title }}</a>
-                <section>
-                    <span class="salary">Salary:{{ $job->salary }}€</span>
-                    <span class="work_model">Work Model: {{ $job->work_model }}</span>
-                    <span class="category">Category ID: {{ $job->category_id }}</span>  
-                </section>
+                <p>
+                    Salary:{{ $job->salary }} <br>
+                    Work Model: {{ $job->work_model }} <br>
+                    Category ID: {{ $job->category_id }}  
+                </p>
             </li>
             @endforeach
         </ul>

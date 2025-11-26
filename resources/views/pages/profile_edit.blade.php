@@ -37,6 +37,10 @@
         <input id="phone_number" name="phone_number" type="text" value="{{ old('phone_number', $user->phone_number) }}">
         @error('phone_number') <small class="error" role="alert">{{ $message }}</small> @enderror
 
+        <label for="location">Location</label>
+        <input id="location" name="location" type="text" value="{{ old('location', $user->location) }}">
+        @error('location') <small class="error" role="alert">{{ $message }}</small> @enderror
+
         <label for="password">New password (leave blank to keep current)</label>
         <input id="password" name="password" type="password">
         @error('password') <small class="error" role="alert">{{ $message }}</small> @enderror

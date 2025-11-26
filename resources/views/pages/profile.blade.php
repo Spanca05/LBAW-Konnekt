@@ -32,7 +32,7 @@
         <li><strong>Phone:</strong> {{ $user->phone_number}}</li>
         <li><strong>Role:</strong> {{ $user->role}}</li>
 
-        @if(!empty($location))
+        @if(!empty($user->location))
             <li><strong>Location:</strong> {{ $user->location }}</li>
         @else
             <li><strong>Location:</strong> Not specified</li>

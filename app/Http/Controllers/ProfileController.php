@@ -84,6 +84,7 @@ class ProfileController extends Controller {
             'name' => ['required', 'string', 'max:250'],
             'email' => ['required', 'email', 'max:250', Rule::unique('users')->ignore($user->id)],
             'phone_number' => ['required', 'string', 'max:20'],
+            'location' => ['nullable', 'string', 'max:255'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'photo' => ['nullable', 'image', 'max:2048'],
         ]);
@@ -91,6 +92,8 @@ class ProfileController extends Controller {
         $user->name = $data['name'];
         $user->email = $data['email'];
         $user->phone_number = $data['phone_number'] ?? $user->phone_number;
+        // update location -> use array_key_exists to allow setting to null
+        $user->location = array_key_exists('location', $data) ? $data['location'] : $user->location;
 
         if (!empty($data['password'])) {
             $user->password = Hash::make($data['password']);

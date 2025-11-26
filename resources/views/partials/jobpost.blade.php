@@ -7,9 +7,11 @@
     <div class="meta">
         <span class="salary">Salary:{{ $jobPost->salary }}€</span>
         <br>
+        <span class="employer">Employer Name: {{ $jobPost->jobUser->name }}</span>
+        <br>
         <span class="work_model">Work Model: {{ $jobPost->work_model }}</span>
         <br>
-        <span class="category">Category ID: {{ $jobPost->category_id }}</span>
+        <span class="category">Category: {{ $jobPost->jobCategory->name }}</span>
     </div>
     <br>
 </article>

@@ -19,9 +19,18 @@ use App\Http\Controllers\ApplicationController;
 // Home
 Route::redirect('/', '/login');
 
+
+//resultados da pesquisa por jobpost
+Route::get('/jobposts/search', [JobPostController::class, 'search'])->name('jobpost.search');
+Route::get('/employers/search', [JobPostController::class, 'search'])->name('jobpost.search');
+
 Route::get('/jobposts', [JobPostController::class, 'index'])->name('pages.jobposts.index');
+Route::get('/jobposts/{jobpost}', [JobPostController::class, 'show'])->name('jobpost.show');
+Route::get('/employers/{pro}', [ProfileController::class, 'show'])->name('employer.show');
 // pagina formulario criaçao jobpost
 Route::get('/jobposts/create', [JobPostController::class, 'create'])->name('jobpost.create');
+
+
 // guardar novo jobpost na BD
 Route::post('/jobposts', [JobPostController::class, 'store'])->name('jobpost.store');
 //Route::get('/jobposts/{jobpost}/edit_jobpost', [JobPostController::class, 'edit'])->name('jobpost.edit');
@@ -31,6 +40,7 @@ Route::get('/jobposts/{jobpost}/edit', [JobPostController::class, 'edit'])->name
 Route::put('/jobposts/{jobpost}', [JobPostController::class, 'update'])->name('jobpost.update');
 Route::delete('/jobposts/{jobpost}', [JobPostController::class, 'delete'])->name('jobpost.delete');
 Route::get('/jobposts/{jobpost}', [JobPostController::class, 'show'])->name('jobpost.show');
+Route::get('/employers/{employer}', [JobPostController::class, 'show'])->name('employer.show');
 
 
 

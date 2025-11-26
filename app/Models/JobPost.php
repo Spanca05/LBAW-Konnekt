@@ -49,6 +49,10 @@ class JobPost extends Model
         return $this->hasMany(Notification::class, 'jobpost_id');
     }
 
+    public function jobUser(): BelongsTo{
+        return $this->belongsTo(User::class, 'employer_id', 'id');
+    }
+
     public function applications(): HasMany {
         return $this->hasMany(Application::class, 'jobpost_id', 'id');
     }

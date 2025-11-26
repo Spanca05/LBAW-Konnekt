@@ -70,6 +70,7 @@
     <p>
         @if(auth()->check() && auth()->id() === $user->id)
         <a class="button" href="{{ route('profile.edit') }}">Edit profile</a>
+        <a class="button" href="">Delete profile</a>
         @if(auth()->user()->role === 'Employer')
         <a class="button" href="{{ route('jobpost.create') }}">Create New JobPost</a>
         @endif

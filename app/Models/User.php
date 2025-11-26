@@ -87,4 +87,9 @@ class User extends Authenticatable {
     public function applications(): HasMany {
         return $this->hasMany(Application::class, 'jobseeker_id', 'id');
     }
+
+
+    public function skills() {
+        return $this->belongsToMany(Skill::class, 'skill_user', 'user_id', 'skill_id');
+    }
 }

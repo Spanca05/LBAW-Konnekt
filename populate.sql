@@ -4,29 +4,42 @@ SET search_path TO lbaw2582;
 -- LEVEL 0: Independent Tables (Location, Category, Skill)
 -----------------------------------------
 
--- R02: LOCATION (country, province, city, address, postal_code are NN) [1]
-
-INSERT INTO location (country, province, city, address, postal_code) VALUES
-('Portugal', 'Porto', 'Porto', 'Rua da Tecnologia 10', '4000-001'), -- ID 1 (Porto)
-('Portugal', 'Lisboa', 'Lisboa', 'Avenida Central 50', '1000-001'), -- ID 2 (Lisboa)
-('Portugal', 'Faro', 'Algarve', 'Praia da Rocha', '8500-001');      -- ID 3 (Faro)
-
-
 -- R03: CATEGORY (name is UK NN, using predefined ENUM category_name) [2]
 
 INSERT INTO category (name) VALUES
-('Coding'),    -- ID 1
-('Marketing'), -- ID 2
-('Design');    -- ID 3
+('Coding'),
+('Design'),
+('Marketing'),
+('Finance'),
+('Education'),
+('Healthcare'),
+('Engineering'),
+('HumanResources'),
+('Law'),
+('Management'),
+('Construction'),
+('Science');
 
 
 -- R09: SKILL (description is NN, name is UK NN, using predefined ENUM skill_name) [3, 4]
 
 INSERT INTO skill (name, description) VALUES
-('Python', 'Expert level programming skill.'),           -- ID 1
-('Social Media', 'Proficiency in social platform management.'), -- ID 2
-('Communication', 'Excellent verbal and written communication.'), -- ID 3
-('Problem Solving', 'Ability to resolve complex issues.');    -- ID 4
+('Communication', 'Ability to convey ideas clearly and effectively.'),
+('Teamwork', 'Ability to collaborate well with others.'),
+('ProblemSolving', 'Capacity to identify issues and find effective solutions.'),
+('CriticalThinking', 'Ability to analyze situations and make reasoned decisions.'),
+('Creativity', 'Ability to generate innovative and original ideas.'),
+('Adaptability', 'Capacity to adjust to changing conditions or environments.'),
+('Leadership', 'Ability to motivate, guide, and manage others.'),
+('TimeManagement', 'Skill in prioritizing tasks and managing time effectively.'),
+('AttentionToDetail', 'Ability to work with accuracy and precision.'),
+('Negotiation', 'Ability to mediate and reach beneficial agreements.'),
+('ProjectManagement', 'Capability to plan, organize, and oversee projects.'),
+('Research', 'Skill in gathering, analyzing, and interpreting information.'),
+('AnalyticalThinking', 'Ability to evaluate data, patterns, and trends.'),
+('CustomerService', 'Ability to assist customers efficiently and professionally.'),
+('Other', 'Skill that does not fit into predefined categories.');
+
 
 
 -----------------------------------------
@@ -34,16 +47,15 @@ INSERT INTO skill (name, description) VALUES
 -----------------------------------------
 
 -- R01: USERS (name, email, password, role, phone_number are NN) [1, 2]
--- Note: location_id is optional (nullable) [1].
 
-INSERT INTO users (name, email, password, role, phone_number, location_id) VALUES
+INSERT INTO users (name, email, password, role, phone_number, location) VALUES
 (
     'Admin Konnekt',
     'admin@konnekt.app',
     '$2y$12$2oCUXP1L6UvXDD9BzMjpQ.wxPGDsMZz1.U/nx8NLtrHil0MQfKWe2',
     'Admin',
     '910000000',
-    1 -- Location: Porto (ID 1)
+    'Porto' -- Location: Porto (ID 1)
 ), -- User ID 1 (Admin)
 (
     'Global Tech Solutions',
@@ -51,7 +63,7 @@ INSERT INTO users (name, email, password, role, phone_number, location_id) VALUE
     '$2y$12$6rs74q8ujRlPKuaHT6ABp.Hm6lS1oeqtcw3hbnJXiRslUTtwNXBjm',
     'Employer',
     '921111111',
-    2 -- Location: Lisboa (ID 2)
+    'Lisboa' -- Location: Lisboa (ID 2)
 ), -- User ID 2 (Employer)
 (
     'Jane Seeker',
@@ -59,7 +71,7 @@ INSERT INTO users (name, email, password, role, phone_number, location_id) VALUE
     '$2y$12$Oy5gpTqN42CRGFveMh7jZOiuwgQOTEOJE7liITSCgyXSq7MgWON.i',
     'JobSeeker',
     '932222222',
-    1 -- Location: Porto (ID 1)
+    'Porto' -- Location: Porto (ID 1)
 ), -- User ID 3 (JobSeeker, FTS Test Base)
 (
     'Remote Developer Corp',
@@ -75,23 +87,16 @@ INSERT INTO users (name, email, password, role, phone_number, location_id) VALUE
 -- LEVEL 2: Dependent on Users, Category, Location
 -----------------------------------------
 
--- R08: CV (jobseeker_id is UK NN, description is NN) [4]
-
-INSERT INTO cv (jobseeker_id, description) VALUES
-(
-    3, -- Jane Seeker (U3)
-    'Experienced full-stack developer specializing in Python.'
-); -- CV ID 1
 
 
 -- R04: JOBPOST (employer_id, category_id, title, salary, work_model, description are NN) [2, 5]
 -- T6 (check_positive_salary) and T9 (check_jobpost_location_requirement) will fire here.
 
-INSERT INTO jobpost (employer_id, category_id, location_id, title, salary, work_model, description) VALUES
+INSERT INTO jobpost (employer_id, category_id, location, title, salary, work_model, description) VALUES
 (
     2, -- Global Tech Solutions (U2)
     1, -- Coding
-    1, -- Location: Porto (L1)
+    'Porto', -- Location: Porto (L1)
     'Senior Python Developer',
     80000.00,
     'On-site', -- T9: Requires location, L1 provided.
@@ -109,7 +114,7 @@ INSERT INTO jobpost (employer_id, category_id, location_id, title, salary, work_
 (
     4, -- Remote Developer Corp (U4)
     3, -- Design
-    3, -- Location: Faro (L3)
+    'Faro', -- Location: Faro (L3)
     'Hybrid UX/UI Designer',
     45000.00,
     'Hybrid', -- T9: Requires location, L3 provided.
@@ -123,20 +128,17 @@ INSERT INTO jobpost (employer_id, category_id, location_id, title, salary, work_
 -- LEVEL 3: Linker Tables & Core Interactions
 -----------------------------------------
 
--- R10: SKILL_CV (Link CV1 to skills) [4]
-
-INSERT INTO skill_cv (cv_id, skill_id) VALUES
-(1, 1), -- CV 1 (U3) has Python (S1)
-(1, 2); -- CV 1 (U3) has Social Media (S2)
-
+INSERT INTO skill_user (user_id, skill_id) VALUES
+(3, 2), 
+(3, 3);
 
 -- R11: SKILL_JOBPOST (Link Job Posts to required skills) [6]
 
 INSERT INTO skill_jobpost (jobpost_id, skill_id) VALUES
-(1, 1), -- JP1 (Python Dev) requires Python (S1)
-(1, 4), -- JP1 requires Problem Solving (S4)
-(2, 2), -- JP2 (Marketing) requires Social Media (S2)
-(3, 3); -- JP3 (Designer) requires Communication (S3)
+(1, 2), 
+(1, 3), 
+(2, 5), 
+(3, 1); 
 
 
 -- R05: APPLICATION (T4 (duplicate check) and T7 (notify employer) fire here) [7]
@@ -186,8 +188,12 @@ INSERT INTO search_history (user_id, search) VALUES
 -- R17: JOBPOST_CATEGORY (Secondary category linkage) [8]
 
 INSERT INTO jobpost_category (category_id, jobpost_id) VALUES
-(1, 1), -- JP1 is Coding
-(2, 1); -- JP1 is also related to Marketing
+(1, 1), 
+(7, 1),
+(2, 2),
+(3, 2),
+(2, 3),
+(3, 3);
 
 
 -- R10: REPORT (Admin reporting on User U2) [9]

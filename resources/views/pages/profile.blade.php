@@ -43,6 +43,18 @@
             @endif
         </li>
         @endif
+
+        @if($user->role === 'JobSeeker')
+            @if($user->skills && count($user->skills))
+                <ul>
+                @foreach($user->skills as $skill)
+                    <li>{{ $skill->name ?? $skill }}</li>
+                @endforeach
+                </ul>
+            @else
+                <p>You have no Skills</p>
+            @endif
+        @endif
     </ul>
 
     <p>

@@ -19,6 +19,9 @@ class ProfileController extends Controller {
             abort(403);
         }
 
+        // Eager-load skills so the view can access them without extra queries.
+        $user->load('skills');
+
         // If the user is a job seeker, load their applications (legacy schema uses jobseeker_id)
         $applications = collect();
         if ($user && isset($user->role) && $user->role === 'JobSeeker') {
@@ -34,13 +37,16 @@ class ProfileController extends Controller {
         return view('pages.profile', [
             'user' => $user,
             'applications' => $applications,
-            'jobPosts' => $jobPosts
+            'jobPosts' => $jobPosts,
+            'skills' => $user->skills,
         ]);
     }
 
     public function show($id)
     {
-        $other = User::findOrFail($id);
+        //$other = User::findOrFail($id);
+
+        $other = User::with('skills')->findOrFail($id);
 
         $jobPosts = [];
 
@@ -48,10 +54,11 @@ class ProfileController extends Controller {
             $jobPosts = $other->jobposts()->orderBy('created_at', 'desc')->get();
         }
 
-        // Render the public profile view for other users
+        // Render the public profile sview for other users
         return view('pages.profile_other', [
             'other' => $other,
-            'jobPosts' => $jobPosts
+            'jobPosts' => $jobPosts,
+            'skills' => $other->skills
         ]);
     }
 

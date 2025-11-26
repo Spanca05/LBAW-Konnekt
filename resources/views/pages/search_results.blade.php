@@ -37,7 +37,7 @@
         @else
             @foreach ($employers as $employer)
 
-                {{--<a href="{{ route('profile.show', $employer->id) }}">--}}
+                <a href="{{ route('employer.show', $employer->id) }}">
 
                 <h2>{{$employer->name}} </h2>
                 <p>Email: {{$employer->email}}</p>

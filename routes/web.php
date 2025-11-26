@@ -40,6 +40,7 @@ Route::get('/jobposts/{jobpost}/edit', [JobPostController::class, 'edit'])->name
 Route::put('/jobposts/{jobpost}', [JobPostController::class, 'update'])->name('jobpost.update');
 Route::delete('/jobposts/{jobpost}', [JobPostController::class, 'delete'])->name('jobpost.delete');
 Route::get('/jobposts/{jobpost}', [JobPostController::class, 'show'])->name('jobpost.show');
+Route::get('/employers/{employer}', [JobPostController::class, 'show'])->name('employer.show');
 
 
 

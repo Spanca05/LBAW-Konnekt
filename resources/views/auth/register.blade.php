@@ -66,6 +66,21 @@
       <span id="email-error" class="error" role="alert">{{ $message }}</span>
     @enderror
 
+
+   <label>Select your skills</label>
+    @foreach($skills as $skill)
+        <label>
+            <input type="checkbox" name="skills[]" value="{{ $skill->id }}">
+            {{ $skill->name }}
+        </label>
+    @endforeach
+    @error('skills')
+        <small class="error" role="alert">{{ $message }}</small>
+    @enderror
+
+
+
+
     <label for="password">Password</label>
     <input
         id="password"

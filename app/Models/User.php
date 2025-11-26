@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\JobPost;
 use App\Models\CV;
+use App\Models\Skill;
 
 class User extends Authenticatable {
     /** @use HasFactory<\Database\Factories\UserFactory> */

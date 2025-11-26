@@ -38,8 +38,6 @@ class ProfileController extends Controller {
             'user' => $user,
             'applications' => $applications,
             'jobPosts' => $jobPosts
-            //'skills' => $user->skills,
-            //'location' => $user->location ?? null,
         ]);
     }
 

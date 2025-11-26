@@ -28,22 +28,33 @@
         <li><strong>Phone:</strong> {{ $other->phone_number}}</li>
     </ul>
 
-    @if(isset($jobPosts) && $jobPosts->isNotEmpty())
-    <section class="card">
-        <h3>Job Posts by {{ $other->name }}</h3>
-        <ul>
-            @foreach($jobPosts as $job)
-            <li>
-                <a href="{{ route('jobpost.show', ['jobpost' => $job->id]) }}">{{ $job->title }}</a>
-                <p>
-                    Salary:{{ $job->salary }} <br>
-                    Work Model: {{ $job->work_model }} <br>
-                    Category ID: {{ $job->category_id }}  
-                </p>
-            </li>
-            @endforeach
-        </ul>
-    </section>
+    @if ($other->role === 'Employer')
+        @if(isset($jobPosts) && $jobPosts->isNotEmpty())
+        <section class="card">
+            <h3>Job Posts by {{ $other->name }}</h3>
+            <ul>
+                @foreach($jobPosts as $job)
+                <li>
+                    <a href="{{ route('jobpost.show', ['jobpost' => $job->id]) }}"><strong>{{ $job->title }}</strong></a>
+                    <p>
+                        Salary:{{ $job->salary }} <br>
+                        Work Model: {{ $job->work_model }} <br>
+                        Category ID: {{ $job->category_id }}  
+                    </p>
+                </li>
+                @endforeach
+            </ul>
+        </section>
+        @endif
+    
+    @elseif ($other->role === 'JobSeeker')
+        @if(optional($other->cv)->file_path)    
+            <strong>CV:</strong>
+            <a class="button" href="{{ route('profile.cv.download') }}">Download CV</a>
+        @endif
+        @if(optional($other->cv)->description)
+            <div style="margin-top:0.5rem">{{ $user->cv->description }}</div>
+        @endif
     @endif
 
     <p><a class="button" href="{{ route('pages.jobposts.index') }}">return</a></p>

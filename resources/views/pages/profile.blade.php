@@ -72,7 +72,11 @@
                         @endif
                     </div>
                     <div style="display:flex;gap:8px">
-                        <a class="button" href="{{ route('applications.edit', ['application' => $app->id]) }}">Edit</a>
+                        @if($app->status === 'Rejected')
+                            <a class="button" href="{{ route('applications.edit', ['application' => $app->id]) }}">Resend</a>
+                        @elseif ($app->status === 'Pending')
+                            <a class="button" href="{{ route('applications.edit', ['application' => $app->id]) }}">Edit</a>
+                        @endif
                         <form method="POST" action="{{ route('applications.destroy', ['application' => $app->id]) }}" onsubmit="return confirm('Withdraw this application?');">
                             @csrf
                             @method('DELETE')
@@ -87,6 +91,7 @@
         <p>You have not applied to any jobs yet.</p>
         @endif
     </section>
+    
     @elseif($user->role === 'Employer')
     <section id="jobposts">
         @if(auth()->check() && auth()->id() === $user->id)

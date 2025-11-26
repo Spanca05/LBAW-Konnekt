@@ -7,6 +7,7 @@ use App\Models\Application;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use PhpParser\Node\Scalar\String_;
 
 class ApplicationController extends Controller
 {
@@ -92,6 +93,8 @@ class ApplicationController extends Controller
         ]);
 
         $application->motivation = $data['motivation'] ?? $application->motivation;
+        $application->status = 'Pending';
+        $application->date = now();
         $application->save();
 
         return redirect()->route('profile')->with('success', 'Application updated.');
@@ -112,5 +115,25 @@ class ApplicationController extends Controller
 
         $application->delete();
         return redirect()->route('profile')->with('success', 'Application withdrawn.');
+    }
+
+    public function status_update(Request $request, Application $application) 
+    {
+        $user = Auth::user();
+        // Only employer who owns the job post can change status
+        $jobPost = $application->jobPost;
+        if (!$user || !$jobPost || $user->id !== $jobPost->employer_id) {
+            abort(403);
+        }
+
+        $data = $request->validate([
+            'status' => ['required', 'in:Accepted,Rejected']
+        ]);
+
+        $application->status = $data['status'];
+        $application->date = now();
+        $application->save();
+
+        return back()->with('success', 'Application status updated.');
     }
 }

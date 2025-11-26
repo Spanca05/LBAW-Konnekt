@@ -18,7 +18,8 @@ INSERT INTO category (name) VALUES
 ('Law'),
 ('Management'),
 ('Construction'),
-('Science');
+('Science'),
+('Other');
 
 
 -- R09: SKILL (description is NN, name is UK NN, using predefined ENUM skill_name) [3, 4]

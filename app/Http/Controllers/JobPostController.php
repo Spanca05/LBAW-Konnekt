@@ -34,7 +34,7 @@ class JobPostController extends Controller {
     }
 
     public function edit($id) {
-        $jobPost = JobPost::with('jobLocation')->findOrFail($id);
+        //$jobPost = JobPost::with('jobLocation')->findOrFail($id);
         $jobPost = JobPost::with('jobCategory')->findOrFail($id);
 
         Gate::authorize('update', $jobPost);
@@ -55,16 +55,28 @@ class JobPostController extends Controller {
 
     public function store(Request $request) {
         Gate::authorize('create', JobPost::class);
+
+        // Validate input
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'salary' => 'required|numeric|min:0',
+            'work_model' => 'required|string',
+            'category_id' => 'required|integer',
+            'location' => 'nullable|string|max:255',
+        ]);
+
         $jobPost = new JobPost();
 
-        $jobPost->title = $request->title;
-        $jobPost->description = $request->description;
-        $jobPost->salary = $request->salary;
-        $jobPost->work_model = $request->work_model;
-        $jobPost->category_id = $request->category_id;
+        $jobPost->title = $validated['title'];
+        $jobPost->description = $validated['description'];
+        $jobPost->salary = $validated['salary'];
+        $jobPost->work_model = $validated['work_model'];
+        $jobPost->category_id = $validated['category_id'];
         $jobPost->employer_id = Auth::id();
+        // Explicitly assign location
+        $jobPost->location = array_key_exists('location', $validated) ? $validated['location'] : $jobPost->location;
 
-        $jobPost->location_id = 1; // defaukt value
 
         $jobPost->save();
 
@@ -81,6 +93,7 @@ class JobPostController extends Controller {
         $jobPost->description = $request->input('description');
         $jobPost->salary = $request->input('salary');
         $jobPost->work_model = $request->input('work_model');
+        $jobPost->location = $request->input('location');
 
         $jobPost->save();
 

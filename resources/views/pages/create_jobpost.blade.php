@@ -14,14 +14,34 @@
 
             <label for="salary">Salary:</label>
             <input type="number" id="salary" name="salary" required>
-<!--
-            <label for="location">Location:</label>
-            <input type="text" id="location" name="location" required>
--->
+
+            <label for="location">Location</label>
+            <input
+                id="location"
+                type="text"
+                name="location"
+                value=""
+                autocomplete="street-address"
+            >
+            @error('location')
+            <span id="location-error" class="error" role="alert">{{ $message }}</span>
+            @enderror
+        
+            Category:
             <select name="category_id" id="category_id" required>
-                <option value= "1">Coding</option>
-                <option value= "2">Marketing</option>
-                <option value= "3">Design</option>
+                <option value="1">Coding</option>
+                <option value="2">Design</option>
+                <option value="3">Marketing</option>
+                <option value="4">Finance</option>
+                <option value="5">Education</option>
+                <option value="6">Healthcare</option>
+                <option value="7">Engineering</option>
+                <option value="8">HumanResources</option>
+                <option value="9">Law</option>
+                <option value="10">Management</option>
+                <option value="11">Construction</option>
+                <option value="12">Science</option>
+                <option value="13">Other</option>
             </select>
 
 

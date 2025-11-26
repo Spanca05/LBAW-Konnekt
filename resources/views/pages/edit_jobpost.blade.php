@@ -16,8 +16,17 @@
                 <label for="salary">Salary:</label>
                 <input type="number" id="salary" name="salary" value="{{ $jobPost->salary }}" required>
 
-                <label for="location">Location:</label>
-                <p>{{ $jobPost->jobLocation->city ?? 'No location' }}</p>
+                <label for="location">Location</label>
+                <input
+                    id="location"
+                    type="text"
+                    name="location"
+                    value="{{ $jobPost->location }}"
+                    autocomplete="street-address"
+                >
+                @error('location')
+                <span id="location-error" class="error" role="alert">{{ $message }}</span>
+                @enderror
 
                 <label for="work_model">Work Model:</label>
                 <select name="work_model" id="work_model" required>

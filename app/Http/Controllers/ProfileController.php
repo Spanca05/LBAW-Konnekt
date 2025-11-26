@@ -79,6 +79,7 @@ class ProfileController extends Controller {
             'phone_number' => ['required', 'string', 'max:20'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'photo' => ['nullable', 'image', 'max:2048'],
+            'description' => ['nullable', 'string', 'max:2000'],
         ]);
 
         $user->name = $data['name'];
@@ -100,6 +101,12 @@ class ProfileController extends Controller {
             $user->photo_path = $path;
         }
 
+        if (!empty($data['description'])) {
+            $user->description = $data['description'];
+            //'description' => array_key_exists('cv_description', $validatedCv) ? $validatedCv['cv_description'] : ($cv->description ?? null),
+
+        }
+
         // Persist the updated user model
         $user->save();
 
@@ -107,7 +114,6 @@ class ProfileController extends Controller {
         if ($user->role === 'JobSeeker') {
             $validatedCv = $request->validate([
                 'cv_file' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
-                'cv_description' => 'nullable|string|max:2000',
             ]);
 
             $cv = $user->cv;
@@ -134,7 +140,6 @@ class ProfileController extends Controller {
                 $attrs = [
                     'file_path' => $newPath,
                     'uploaded_at' => now(),
-                    'description' => array_key_exists('cv_description', $validatedCv) ? $validatedCv['cv_description'] : ($cv->description ?? null),
                     'mime_type' => $detected ?: ($file->getClientMimeType() ?: null),
                 ];
 
@@ -143,21 +148,7 @@ class ProfileController extends Controller {
                 } else {
                     $user->cv()->create($attrs);
                 }
-            } else {
-                // If no new file: update description even when it's intentionally cleared.
-                // Note: Laravel's ConvertEmptyStringsToNull middleware turns empty strings into null,
-                // so check presence with array_key_exists on the validated array.
-                if (array_key_exists('cv_description', $validatedCv) && $validatedCv['cv_description'] !== ($cv->description ?? null)) {
-                    if ($cv) {
-                        $cv->update(['description' => $validatedCv['cv_description']]);
-                    } else {
-                        $user->cv()->create([
-                            'description' => $validatedCv['cv_description'],
-                            'uploaded_at' => null,
-                        ]);
-                    }
-                }
-            }
+            } 
         }
 
         return redirect()->route('profile')->with('success', 'Profile updated successfully.');

@@ -36,13 +36,14 @@ INSERT INTO skill (name, description) VALUES
 -- R01: USERS (name, email, password, role, phone_number are NN) [1, 2]
 -- Note: location_id is optional (nullable) [1].
 
-INSERT INTO users (name, email, password, role, phone_number, location_id) VALUES
+INSERT INTO users (name, email, password, role, phone_number, description, location_id) VALUES
 (
     'Admin Konnekt',
     'admin@konnekt.app',
     '$2y$12$2oCUXP1L6UvXDD9BzMjpQ.wxPGDsMZz1.U/nx8NLtrHil0MQfKWe2',
     'Admin',
     '910000000',
+    NULL,
     1 -- Location: Porto (ID 1)
 ), -- User ID 1 (Admin)
 (
@@ -51,6 +52,7 @@ INSERT INTO users (name, email, password, role, phone_number, location_id) VALUE
     '$2y$12$6rs74q8ujRlPKuaHT6ABp.Hm6lS1oeqtcw3hbnJXiRslUTtwNXBjm',
     'Employer',
     '921111111',
+    NULL,
     2 -- Location: Lisboa (ID 2)
 ), -- User ID 2 (Employer)
 (
@@ -59,6 +61,7 @@ INSERT INTO users (name, email, password, role, phone_number, location_id) VALUE
     '$2y$12$Oy5gpTqN42CRGFveMh7jZOiuwgQOTEOJE7liITSCgyXSq7MgWON.i',
     'JobSeeker',
     '932222222',
+    'Experienced full-stack developer specializing in Python.',
     1 -- Location: Porto (ID 1)
 ), -- User ID 3 (JobSeeker, FTS Test Base)
 (
@@ -67,6 +70,7 @@ INSERT INTO users (name, email, password, role, phone_number, location_id) VALUE
     '$2y$12$83Ev/z5M7gSJZkODU9J4N.gObXSnKOau.ldwmy3RHhn/yHWlxJFaG',
     'Employer',
     '943333333',
+    NULL,
     NULL -- Employer with NULL location
 ); -- User ID 4 (Employer)
 
@@ -77,10 +81,9 @@ INSERT INTO users (name, email, password, role, phone_number, location_id) VALUE
 
 -- R08: CV (jobseeker_id is UK NN, description is NN) [4]
 
-INSERT INTO cv (jobseeker_id, description) VALUES
+INSERT INTO cv (jobseeker_id) VALUES
 (
-    3, -- Jane Seeker (U3)
-    'Experienced full-stack developer specializing in Python.'
+    3 -- Jane Seeker (U3)
 ); -- CV ID 1
 
 

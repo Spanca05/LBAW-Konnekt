@@ -50,10 +50,10 @@
     @elseif ($other->role === 'JobSeeker')
         @if(optional($other->cv)->file_path)    
             <strong>CV:</strong>
-            <a class="button" href="{{ route('profile.cv.download') }}">Download CV</a>
+            <a class="button" href="{{ route('profile.cv.download_other', ['user' => $other->id]) }}">Download CV</a>
         @endif
         @if(optional($other->cv)->description)
-            <div style="margin-top:0.5rem">{{ $user->cv->description }}</div>
+            <div style="margin-top:0.5rem">{{ $other->cv->description }}</div>
         @endif
     @endif
 

@@ -69,11 +69,6 @@ class CVController extends Controller {
         $user = $request->user();
         $cv = $user->cv;
 
-        // Only JobSeekers can have/download a CV
-        if (($user->role ?? null) !== 'JobSeeker') {
-            abort(403);
-        }
-
         if (!$cv || !$cv->file_path) {
             return redirect()->route('profile')->with('error', 'CV not found.');
         }
@@ -103,6 +98,47 @@ class CVController extends Controller {
 
         // Determine MIME type (prefer DB-stored value if available)
         $mime = $cv->mime_type ?? mime_content_type($fullPath) ?? 'application/octet-stream';
+
+        return response()->download($fullPath, $downloadName, ['Content-Type' => $mime]);
+    }
+
+    public function downloadOther(Request $request, \App\Models\User $user) {
+        $requester = $request->user();
+        $cv = $user->cv;
+
+        if (!$cv || !$cv->file_path) {
+            return redirect()->back()->with('error', 'CV not found.');
+        }
+
+        if ($requester->id !==$user->id) {
+            if (($user->role ?? null) !== 'JobSeeker') {
+                abort(403);
+            }
+        }
+
+        $disk = Storage::disk('public');
+        if (! $disk->exists($cv->file_path)) {
+            return redirect()->back()->with('error', 'CV file missing.');
+        }
+
+        $fullPath = storage_path('app/public/' . ltrim($cv->file_path, '/'));
+
+        // Determine extension from stored path
+        $ext = pathinfo($cv->file_path, PATHINFO_EXTENSION) ?: 'bin';
+
+        // Build a safe username portion: replace non-alphanum with underscore, collapse underscores
+        $rawName = $user->name ?? 'user';
+        $safeName = preg_replace('/[^A-Za-z0-9]+/', '_', $rawName);
+        $safeName = trim($safeName, '_');
+        if ($safeName === '') {
+            $safeName = 'user';
+        }
+
+        $downloadName = $safeName . '_CV.' . $ext;
+
+        // Determine MIME type (prefer DB-stored value if available)
+        $mime = $cv->mime_type ?? mime_content_type($fullPath) ?? 'application/octet-stream';
+
 
         return response()->download($fullPath, $downloadName, ['Content-Type' => $mime]);
     }

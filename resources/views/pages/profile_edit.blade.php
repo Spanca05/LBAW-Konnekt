@@ -41,6 +41,21 @@
         <input id="location" name="location" type="text" value="{{ old('location', $user->location) }}">
         @error('location') <small class="error" role="alert">{{ $message }}</small> @enderror
 
+        @if ($user->role=='JobSeeker')
+            <label>Change your skills</label>
+            @foreach($skills as $skill)
+                <label>
+                    <input type="checkbox" name="skills[]" value="{{ $skill->id }}"
+                        {{ (collect(old('skills', $user->skills->pluck('id')))->contains($skill->id)) ? 'checked' : '' }}>
+                    {{ $skill->name }}
+                </label>
+            @endforeach
+            @error('skills')
+                <small class="error" role="alert">{{ $message }}</small>
+            @enderror
+        @endif
+
+
         <label for="password">New password (leave blank to keep current)</label>
         <input id="password" name="password" type="password">
         @error('password') <small class="error" role="alert">{{ $message }}</small> @enderror

@@ -67,7 +67,7 @@
     @enderror
 
 
-   <label>Select your skills</label>
+   <label>Select your skills (only for JobSeekers):</label>
     @foreach($skills as $skill)
         <label>
             <input type="checkbox" name="skills[]" value="{{ $skill->id }}">
@@ -77,9 +77,6 @@
     @error('skills')
         <small class="error" role="alert">{{ $message }}</small>
     @enderror
-
-
-
 
     <label for="password">Password</label>
     <input

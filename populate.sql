@@ -133,14 +133,6 @@ INSERT INTO skill_user (user_id, skill_id) VALUES
 (3, 2), 
 (3, 3);
 
--- R11: SKILL_JOBPOST (Link Job Posts to required skills) [6]
-
-INSERT INTO skill_jobpost (jobpost_id, skill_id) VALUES
-(1, 2), 
-(1, 3), 
-(2, 5), 
-(3, 1); 
-
 
 -- R05: APPLICATION (T4 (duplicate check) and T7 (notify employer) fire here) [7]
 

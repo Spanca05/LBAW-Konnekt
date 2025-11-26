@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Skill;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
@@ -68,7 +69,9 @@ class ProfileController extends Controller {
             abort(403);
         }
 
-        return view('pages.profile_edit', ['user' => $user]);
+        $skills = Skill::all(); // Todas as skills disponíveis
+
+        return view('pages.profile_edit', ['user' => $user, 'skills' => $skills]);
     }
 
     /** Update the authenticated user's profile. */
@@ -92,6 +95,13 @@ class ProfileController extends Controller {
         $user->phone_number = $data['phone_number'] ?? $user->phone_number;
         // update location -> use array_key_exists to allow setting to null
         $user->location = array_key_exists('location', $data) ? $data['location'] : $user->location;
+
+
+        // Se for JobSeeker, attach das skills (sem validação)
+        if ($user->role === 'JobSeeker') {
+            //adiciona novas skills e remove as que não estão no array.
+            $user->skills()->sync($request->input('skills', []));
+        }
 
         if (!empty($data['password'])) {
             $user->password = Hash::make($data['password']);

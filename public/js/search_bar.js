@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const searchInput = document.getElementById('search');
     const searchBtn = document.getElementById('search_button');
+    const filterBtn = document.getElementById('filter_button');
 
     function search() {
         const query = searchInput.value.trim();
@@ -20,5 +21,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
     searchBtn.addEventListener('click', search);
+
+    if (filterBtn) {
+        filterBtn.addEventListener('click', function () {
+            const query = new URLSearchParams(window.location.search).get('q') || '';
+            const type = 'search_jobpost';
+            const categoryId = document.querySelector('select[name="Categories"]').value;
+
+            window.location.href =`/jobposts/search?q=${encodeURIComponent(query)}&type=${type}&category_id=${categoryId}`;
+        });
+    }
 
 });

@@ -96,70 +96,67 @@ class JobPostController extends Controller
     }
 
 
-    public function search(Request $request){
+    public function search(Request $request)
+    {
         $pesquisa = $request->input('q');
-        if (!$pesquisa){
-            $jobPosts=JobPost::all();
-            $employers = User::all();
-        }
-        else{
-                $jobPosts = JobPost::whereRaw(
-                "tsvectors @@ plainto_tsquery('english', ? )",   // n suporta buscas por sufixo, por exemplo "se" n dará "senior"
-                [$pesquisa]
-            )
-            ->orderByRaw(
-                "ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC",
-                [$pesquisa]
-            )
-            ->get();
-
-            $employers = User::whereRaw(
-                "tsvectors @@ plainto_tsquery('english', ? )",   // n suporta buscas por sufixo, por exemplo "se" n dará "senior"
-                [$pesquisa]
-            )
-            ->orderByRaw(
-                "ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC",
-                [$pesquisa]
-            )
-            ->get();
-        }
-        
+        $categoryId = $request->input('category_id');
         $type = $request->input('type');
 
-        /*$jobPosts = JobPost::where('title', 'ILIKE', "%{$query}%")   ## usar ILIKE em vez de LIKE por causa da maiuscula e miniscula
-            ->orderBy('created_at', 'desc')  ## ordenado do mais recente para o mais antigo 
-            ->get();*/
+        $jobPosts = JobPost::query();
+        $employers = User::query();
+
+        if ($type === 'search_jobpost') {
+
+            // FILTRO DE TEXTO
+            if ($pesquisa) {
+                $jobPosts->whereRaw(
+                    "tsvectors @@ plainto_tsquery('english', ?)",
+                    [$pesquisa]
+                )
+                ->orderByRaw(
+                    "ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC",
+                    [$pesquisa]
+                );
+            }
+
+            // FILTRO DE CATEGORIA
+            if ($categoryId && $categoryId !== 'all') {
+                $jobPosts->where('category_id', $categoryId);
+            }
+
+            return view('pages.search_results', [
+                'type' => $type,
+                'jobPosts' => $jobPosts->get(),
+                'employers' => collect(),
+                'query' => $pesquisa,
+                'selectedCategory' => $categoryId,
+                'categories' => Category::all(),
+            ]);
+        }
+
+        // SEARCH EMPLOYERS
+        if ($pesquisa) {
+            $employers->whereRaw(
+                "tsvectors @@ plainto_tsquery('english', ?)",
+                [$pesquisa]
+            )
+            ->orderByRaw(
+                "ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC",
+                [$pesquisa]
+            );
+        }
 
         return view('pages.search_results', [
-            'type' =>$type,
-            'jobPosts' => $jobPosts,
-            'employers' => $employers,
-            'query' => $pesquisa
+            'type' => $type,
+            'jobPosts' => collect(),
+            'employers' => $employers->get(),
+            'query' => $pesquisa,
+            'selectedCategory' => null,
+            'categories' => Category::all(),
         ]);
     }
 
 
-   /* public function searchEmployers(Request $request){
-        $pesquisa = $request->input('q');
-        $employers = User::whereRaw(
-                "tsvectors @@ plainto_tsquery('english', ? )",   // n suporta buscas por sufixo, por exemplo "se" n dará "senior"
-                [$pesquisa]
-            )
-            ->orderByRaw(
-                "ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC",
-                [$pesquisa]
-            )
-            ->get();
-
-        /*$jobPosts = JobPost::where('title', 'ILIKE', "%{$query}%")   ## usar ILIKE em vez de LIKE por causa da maiuscula e miniscula
-            ->orderBy('created_at', 'desc')  ## ordenado do mais recente para o mais antigo 
-            ->get();*/
-
-        /*return view('pages.search_results', [
-            'type' =>'employer',
-            'employers' => $employers,
-            'query' => $pesquisa
-        ]);
-    }*/
+   
 }
 

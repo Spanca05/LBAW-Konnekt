@@ -2,8 +2,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Skill extends Model
 {
@@ -20,5 +19,10 @@ class Skill extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'skill_user', 'skill_id', 'user_id');
+    }
+
+    public function jobposts(): BelongsToMany
+    {
+        return $this->belongsToMany(JobPost::class, 'skill_jobpost', 'skill_id', 'jobpost_id');
     }
 }

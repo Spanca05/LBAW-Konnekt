@@ -29,7 +29,7 @@ class JobPost extends Model
         'work_model',
         'description',
         'category_id',
-        'location_id'
+        'location'
     ];
 
 

@@ -32,6 +32,27 @@
         <li><strong>Phone:</strong> {{ $user->phone_number}}</li>
         <li><strong>Role:</strong> {{ $user->role}}</li>
 
+        @if(!empty($location))
+            <li><strong>Location:</strong> {{ $user->location }}</li>
+        @else
+            <li><strong>Location:</strong> Not specified</li>
+        @endif
+
+        @if($user->role === 'JobSeeker')
+            <li>
+                <strong>Skills:</strong>
+            @if($user->skills && count($user->skills))
+                <ul>
+                @foreach($user->skills as $skill)
+                    <li>{{ $skill->name}}</li>
+                @endforeach
+                </ul>
+            @else
+                <p>You have no Skills</p>
+            @endif
+            </li>
+        @endif
+
         @if($user->role === 'JobSeeker' && (optional($user->cv)->file_path || optional($user->cv)->description))
         <li>
             <strong>CV:</strong>
@@ -43,18 +64,7 @@
             @endif
         </li>
         @endif
-
-        @if($user->role === 'JobSeeker')
-            @if($user->skills && count($user->skills))
-                <ul>
-                @foreach($user->skills as $skill)
-                    <li>{{ $skill->name ?? $skill }}</li>
-                @endforeach
-                </ul>
-            @else
-                <p>You have no Skills</p>
-            @endif
-        @endif
+        
     </ul>
 
     <p>

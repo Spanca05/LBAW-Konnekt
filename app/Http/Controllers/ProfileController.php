@@ -20,7 +20,7 @@ class ProfileController extends Controller {
         }
 
         // Eager-load skills so the view can access them without extra queries.
-        $user->load('skills');
+        //$user->load('skills');
 
         // If the user is a job seeker, load their applications (legacy schema uses jobseeker_id)
         $applications = collect();
@@ -37,8 +37,9 @@ class ProfileController extends Controller {
         return view('pages.profile', [
             'user' => $user,
             'applications' => $applications,
-            'jobPosts' => $jobPosts,
-            'skills' => $user->skills,
+            'jobPosts' => $jobPosts
+            //'skills' => $user->skills,
+            //'location' => $user->location ?? null,
         ]);
     }
 
@@ -46,7 +47,7 @@ class ProfileController extends Controller {
     {
         //$other = User::findOrFail($id);
 
-        $other = User::with('skills')->findOrFail($id);
+        $other = User::findOrFail($id);
 
         $jobPosts = [];
 
@@ -58,7 +59,6 @@ class ProfileController extends Controller {
         return view('pages.profile_other', [
             'other' => $other,
             'jobPosts' => $jobPosts,
-            'skills' => $other->skills
         ]);
     }
 

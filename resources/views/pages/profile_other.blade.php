@@ -26,9 +26,29 @@
         <li><strong>Name:</strong> {{ $other->name}}</li>
         <li><strong>Email:</strong> {{ $other->email}}</li>
         <li><strong>Phone:</strong> {{ $other->phone_number}}</li>
+        @if(!empty($other->location))
+            <li><strong>Location:</strong> {{ $other->location }}</li>
+        @else
+            <li><strong>Location:</strong>Not specified</li>
+        @endif
+        <li><strong>Role:</strong> {{ $other->role}}</li>
+        @if($other->role === 'JobSeeker')
+            <li>
+                <strong>Skills:</strong>
+            @if($other->skills && count($other->skills))
+                <ul>
+                @foreach($other->skills as $skill)
+                    <li>{{ $skill->name}}</li>
+                @endforeach
+                </ul>
+            @else
+                <p>{{ $other->name }} has no Skills</p>
+            @endif
+            </li>
+        @endif
     </ul>
 
-    @if(isset($jobPosts) && $jobPosts->isNotEmpty())
+    @if($other->role==='Employer' && isset($jobPosts) && $jobPosts->isNotEmpty())
     <section class="card">
         <h3>Job Posts by {{ $other->name }}</h3>
         <ul>

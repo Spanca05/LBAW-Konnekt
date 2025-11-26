@@ -22,7 +22,7 @@
         <img
             src="{{ asset('images/avatar-placeholder.png') }}"
             alt="No photo"
-            style="max-width:150px; max-height:150px; object-fit:cover; border-radius:6px;">
+            style="max-width:150px; max-height:150px; object-fit:cover; border-radius:6px;"> 
     </div>
     @endif
 

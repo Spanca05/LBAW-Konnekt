@@ -24,29 +24,33 @@ class ProfileController extends Controller {
         if ($user && isset($user->role) && $user->role === 'JobSeeker') {
             $applications = $user->applications()->with('jobPost')->orderByDesc('date')->get();
         }
-        
-        $jobPosts = [];
-        if ($user->role === 'Employer') {
-            $jobPosts = $user->jobposts()->orderBy('created_at', 'desc')->get();
-        }
 
-        return view('pages.profile', [
-            'user' => $user, 'applications' => $applications,
-            'jobPosts' => $jobPosts
-        ]);
-    }
-
-    public function show($id) {
-        $user = User::findOrFail($id);
 
         $jobPosts = [];
-
         if ($user->role === 'Employer') {
             $jobPosts = $user->jobposts()->orderBy('created_at', 'desc')->get();
         }
 
         return view('pages.profile', [
             'user' => $user,
+            'applications' => $applications,
+            'jobPosts' => $jobPosts
+        ]);
+    }
+
+    public function show($id)
+    {
+        $other = User::findOrFail($id);
+
+        $jobPosts = [];
+
+        if ($other->role === 'Employer') {
+            $jobPosts = $other->jobposts()->orderBy('created_at', 'desc')->get();
+        }
+
+        // Render the public profile view for other users
+        return view('pages.profile_other', [
+            'other' => $other,
             'jobPosts' => $jobPosts
         ]);
     }

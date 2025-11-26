@@ -1,13 +1,7 @@
 <article class="jobpost" data-id="{{ $jobPost->id }}">
     <header>
-        <h2>
-            {{-- vai para pagina especifica de cada jobpost --}}
-            <a href="{{ route('jobpost.show', ['jobpost' => $jobPost->id]) }}">
-                {{$jobPost->title }}
-            </a>
-        </h2>
-        {{-- Delete button (JS handles behavior) --}}
-        {{-- <a href="#" class="delete">&#10761;</a> --}}
+        <h2><a href="{{ route('jobpost.show', ['jobpost' => $jobPost->id]) }}">{{$jobPost->title }}</a></h2>
+        <h4><a href="{{ route('profile.other', ['id' => $jobPost->employer_id]) }}"> Employer: {{ $jobPost->employer->name }}</a></h4>
     </header>
 
     <div class="meta">
@@ -19,6 +13,5 @@
         <br>
         <span class="category">Category: {{ $jobPost->jobCategory->name }}</span>
     </div>
-
-
+    <br>
 </article>

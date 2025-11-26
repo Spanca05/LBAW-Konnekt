@@ -32,6 +32,11 @@ class JobPost extends Model
         'location_id'
     ];
 
+
+    public function employer(): BelongsTo{
+        return $this->belongsTo(User::class, 'employer_id');
+    }
+
     public function jobLocation(): BelongsTo{
         return $this->belongsTo(Location::class, 'location_id', 'id');
     }
@@ -44,7 +49,11 @@ class JobPost extends Model
         return $this->hasMany(Notification::class, 'jobpost_id');
     }
 
-        public function jobUser(): BelongsTo{
+    public function jobUser(): BelongsTo{
         return $this->belongsTo(User::class, 'employer_id', 'id');
+    }
+
+    public function applications(): HasMany {
+        return $this->hasMany(Application::class, 'jobpost_id', 'id');
     }
 }

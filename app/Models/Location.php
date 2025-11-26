@@ -25,7 +25,6 @@ class Location extends Model
     protected $fillable = [
         'country',
         'id',
-        'salary',
         'province',
         'city',
         'address',

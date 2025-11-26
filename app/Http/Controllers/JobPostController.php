@@ -8,9 +8,10 @@ use App\Models\JobPost;
 use App\Models\User;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 
-class JobPostController extends Controller
-{
+class JobPostController extends Controller {
 
     /**
      * Display a listing of the user's cards.
@@ -18,7 +19,7 @@ class JobPostController extends Controller
     public function index(Request $request)
     {
         // vai buscar todos os jobposts ordenados do mais recente para o mais antigo
-        $jobPosts =JobPost::orderBy('created_at', 'desc')->get();
+        $jobPosts = JobPost::orderBy('created_at', 'desc')->get();
 
         // Render the 'pages.cards' view with the user's cards.
         return view('pages.jobposts', [
@@ -37,10 +38,11 @@ class JobPostController extends Controller
         ]);
     }
 
-    public function edit($id){
-        //$jobPost = JobPost::with('jobLocation')->findOrFail($id);
+    public function edit($id) {
+        $jobPost = JobPost::with('jobLocation')->findOrFail($id);
         $jobPost = JobPost::with('jobCategory')->findOrFail($id);
 
+        Gate::authorize('update', $jobPost);
 
         $categories = Category::all();
 
@@ -51,11 +53,13 @@ class JobPostController extends Controller
         ]);
     }
 
-    public function create(){
+    public function create() {
+        Gate::authorize('create', JobPost::class);
         return view('pages.create_jobpost');
     }
 
-    public function store(Request $request){
+    public function store(Request $request) {
+        Gate::authorize('create', JobPost::class);
         $jobPost = new JobPost();
 
         $jobPost->title = $request->title;
@@ -63,9 +67,8 @@ class JobPostController extends Controller
         $jobPost->salary = $request->salary;
         $jobPost->work_model = $request->work_model;
         $jobPost->category_id = $request->category_id;
+        $jobPost->employer_id = Auth::id();
 
-        //$jobPost->employer_id = Auth::id();
-        $jobPost->employer_id = 2; // default value
         $jobPost->location_id = 1; // defaukt value
 
         $jobPost->save();
@@ -74,8 +77,10 @@ class JobPostController extends Controller
     }
 
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $id) {
+
         $jobPost = JobPost::findOrFail($id);
+        Gate::authorize('update', $jobPost);
 
         $jobPost->title = $request->input('title');
         $jobPost->description = $request->input('description');
@@ -86,8 +91,10 @@ class JobPostController extends Controller
 
         return redirect()->route('jobpost.show', ['jobpost' => $jobPost->id]);
     }
-    public function delete($id){
+    public function delete($id) {
+
         $jobPost = JobPost::findOrFail($id);
+        Gate::authorize('delete', $jobPost);
         $jobPost->notifications()->delete();
         DB::table('jobpost_category')->where('jobpost_id', $jobPost->id)->delete(); // remove dependency
         $nome = $jobPost->title;
@@ -159,4 +166,3 @@ class JobPostController extends Controller
 
    
 }
-

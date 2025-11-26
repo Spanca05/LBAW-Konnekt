@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 // Import Eloquent relationship classes.
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\JobPost;
+use App\Models\CV;
 
 class User extends Authenticatable {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -30,6 +34,7 @@ class User extends Authenticatable {
         'password',
         'role',
         'phone_number',
+        'photo_path',
     ];
 
     /**
@@ -57,12 +62,29 @@ class User extends Authenticatable {
     }
 
     /**
-     * Get the cards owned by this user.
+     * Get the jobposts owned by this user.
      *
      * Defines a one-to-many relationship:
-     * a user can have multiple cards.
+     * a user can have multiple jobposts.
      */
-    public function cards(): HasMany {
-        return $this->hasMany(Card::class);
+    public function jobposts(): HasMany {
+        return $this->hasMany(JobPost::class, 'employer_id');
+    }
+
+    public function getPhotoUrlAttribute() {
+        return $this->photo_path ? Storage::url($this->photo_path) : null;
+    }
+
+    public function cv(): HasOne {
+        return $this->hasOne(CV::class, 'jobseeker_id');
+    }
+    /**
+     * Get the applications owned by this user.
+     *
+     * Defines a one-to-many relationship:
+     * a user can have multiple applications.
+     */
+    public function applications(): HasMany {
+        return $this->hasMany(Application::class, 'jobseeker_id', 'id');
     }
 }

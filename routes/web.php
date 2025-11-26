@@ -78,6 +78,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'showAuth'])->name('profile');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // CV download/remove (CV uploads handled by profile.update)
     Route::get('/profile/cv/download', [CVController::class, 'download'])->name('profile.cv.download');

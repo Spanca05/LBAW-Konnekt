@@ -70,7 +70,13 @@
     <p>
         @if(auth()->check() && auth()->id() === $user->id)
         <a class="button" href="{{ route('profile.edit') }}">Edit profile</a>
-        <a class="button" href="">Delete profile</a>
+        <form action="{{ route('profile.destroy') }}" method="POST">
+            @csrf
+            @method('DELETE')
+            <button class="button" onclick="return confirm('Are you sure you want to delete your account? This action is irreversible.')">
+                Delete profile
+            </button>
+        </form>
         @if(auth()->user()->role === 'Employer')
         <a class="button" href="{{ route('jobpost.create') }}">Create New JobPost</a>
         @endif

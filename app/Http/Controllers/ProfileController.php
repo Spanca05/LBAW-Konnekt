@@ -181,6 +181,28 @@ class ProfileController extends Controller {
         return redirect()->route('profile')->with('success', 'Profile updated successfully.');
     }
 
+    //delete profile
+    public function destroy(Request $request)
+    {
+        $user = Auth::user();
+
+        if (! $user instanceof User) {
+            abort(403);
+        }
+
+        Auth::logout(); // Termina a sessão antes de apagar profile
+
+        // O trigger faz soft delete
+        $user->delete();
+
+        // Invalidar a sessão
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/')->with('success', 'Your account has been deleted.');
+    }
+
+
     /**
      * Remove the authenticated user's profile photo.
      */

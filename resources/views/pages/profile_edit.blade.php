@@ -37,6 +37,10 @@
         <input id="phone_number" name="phone_number" type="text" value="{{ old('phone_number', $user->phone_number) }}">
         @error('phone_number') <small class="error" role="alert">{{ $message }}</small> @enderror
 
+        <label for="description">Description</label>
+        <input id="description" name="description" type="text" value="{{ old('description', $user->description) }}">
+        @error('description') <small class="error" role="alert">{{ $message }}</small> @enderror
+
         <label for="password">New password (leave blank to keep current)</label>
         <input id="password" name="password" type="password">
         @error('password') <small class="error" role="alert">{{ $message }}</small> @enderror
@@ -51,10 +55,6 @@
             <label for="cv_file">Upload CV (PDF, DOC, DOCX)</label>
             <input id="cv_file" name="cv_file" type="file" accept=".pdf,.doc,.docx">
             @error('cv_file') <small class="error" role="alert">{{ $message }}</small> @enderror
-
-            <label for="cv_description">CV Description / Summary</label>
-            <textarea id="cv_description" name="cv_description">{{ old('cv_description', optional($user->cv)->description) }}</textarea>
-            @error('cv_description') <small class="error" role="alert">{{ $message }}</small> @enderror
         </section>
         @endif
 
@@ -70,7 +70,7 @@
     </form>
     @endif
 
-    @if(optional($user->cv)->file_path || optional($user->cv)->description)
+    @if(optional($user->cv)->file_path)
     <section style="margin-top:1rem">
         @if(optional($user->cv)->file_path)
         <p>

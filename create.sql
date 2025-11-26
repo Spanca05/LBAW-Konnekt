@@ -46,6 +46,7 @@ CREATE TABLE users (
     password TEXT NOT NULL,
     phone_number TEXT NOT NULL,
     photo_path TEXT,
+    description TEXT,
     location_id INTEGER REFERENCES location(id),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
@@ -97,7 +98,6 @@ CREATE TABLE cv (
     jobseeker_id INTEGER NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
     file_path TEXT,
     mime_type TEXT,
-    description TEXT,
     uploaded_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL

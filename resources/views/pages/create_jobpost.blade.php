@@ -14,6 +14,9 @@
 
             <label for="salary">Salary:</label>
             <input type="number" id="salary" name="salary" required>
+            @error('salary')
+                <span class="error">{{ $message }}</span>
+            @enderror
 
             <label for="location">Location</label>
             <input

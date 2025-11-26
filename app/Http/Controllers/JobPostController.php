@@ -56,15 +56,17 @@ class JobPostController extends Controller {
     public function store(Request $request) {
         Gate::authorize('create', JobPost::class);
 
-        // Validate input
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'salary' => 'required|numeric|min:0',
-            'work_model' => 'required|string',
-            'category_id' => 'required|integer',
-            'location' => 'nullable|string|max:255',
-        ]);
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'salary' => 'required|integer|min:0', // evita salários negativos
+        'category_id' => 'required|integer',
+        'work_model' => 'required|in:Remote,On-site,Hybrid',
+        'location' => 'nullable|string|required_unless:work_model,Remote'
+    ], [
+        'salary.min' => 'Salary cannot be negative.',
+        'location.required_unless' => 'Location is required unless the job is Remote.'
+    ]);
 
         $jobPost = new JobPost();
 
@@ -88,17 +90,35 @@ class JobPostController extends Controller {
 
         $jobPost = JobPost::findOrFail($id);
         Gate::authorize('update', $jobPost);
+        
 
-        $jobPost->title = $request->input('title');
-        $jobPost->description = $request->input('description');
-        $jobPost->salary = $request->input('salary');
-        $jobPost->work_model = $request->input('work_model');
-        $jobPost->location = $request->input('location');
+        // Validação
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'salary' => 'required|numeric|min:0', // evita salários negativos
+            'category_id' => 'required|integer|exists:category,id',
+            'work_model' => 'required|in:Remote,On-site,Hybrid',
+            'location' => 'nullable|string|required_unless:work_model,Remote'
+        ], [
+            'salary.min' => 'Salary cannot be negative.',
+            'location.required_unless' => 'Location is required unless the job is Remote.'
+        ]);
+
+        // Atualiza os campos
+        $jobPost->title = $validated['title'];
+        $jobPost->description = $validated['description'];
+        $jobPost->salary = $validated['salary'];
+        $jobPost->work_model = $validated['work_model'];
+        $jobPost->category_id = $validated['category_id'];
+        $jobPost->location = $validated['location'] ?? null;
+
 
         $jobPost->save();
 
         return redirect()->route('jobpost.show', ['jobpost' => $jobPost->id]);
     }
+    
     public function delete($id) {
 
         $jobPost = JobPost::findOrFail($id);

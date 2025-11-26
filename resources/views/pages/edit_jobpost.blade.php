@@ -1,48 +1,58 @@
-    @extends('layouts.app')
+@extends('layouts.app')
 
-    @section('title', 'Edit Job Post | ' . config('app.name'))
+@section('title', 'Edit Job Post | ' . config('app.name'))
 
-    @section('content')
-        <section id="edit_jobpost">
-            <form method="POST" action="{{ route('jobpost.update', ['jobpost' => $jobPost->id]) }}">
-                @csrf
-                @method('PUT')
-                <label for="title">Title:</label>   
-                <input type="text" id="title" name="title" value="{{ $jobPost->title }}" required>
+@section('content')
+<section id="edit_jobpost">
 
-                <label for="description">Description:</label>
-                <textarea id="description" name="description" required>{{ $jobPost->description }}</textarea>
-
-                <label for="salary">Salary:</label>
-                <input type="number" id="salary" name="salary" value="{{ $jobPost->salary }}" required>
-
-                <label for="location">Location</label>
-                <input
-                    id="location"
-                    type="text"
-                    name="location"
-                    value="{{ $jobPost->location }}"
-                    autocomplete="street-address"
-                >
-                @error('location')
-                <span id="location-error" class="error" role="alert">{{ $message }}</span>
-                @enderror
-
-                <label for="work_model">Work Model:</label>
-                <select name="work_model" id="work_model" required>
-                    <option value= "Remote" {{ $jobPost->work_model == 'Remote' ? 'selected' : '' }}>Remote</option>
-                    <option value= "On-site" {{ $jobPost->work_model == 'On-site' ? 'selected' : '' }}>On-site</option>
-                    <option value= "Hybrid" {{ $jobPost->work_model == 'Hybrid' ? 'selected' : '' }}>Hybrid</option>
-                </select>
-
-                <label for="category">Category:</label>
-                <select name="category" id="category" required>
-                    @foreach ($categories as $category)
-                    <option value = "{{$category->name}}" {{$jobPost->jobCategory->name == $category->name ? 'selected' : ''}}>{{$category->name}}</option>
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
                 @endforeach
-                </select>
-                <button type="submit">Update</button>
-            </form>
-        </section>
+            </ul>
+        </div>
+    @endif
 
-    @endsection
+    <form method="POST" action="{{ route('jobpost.update', ['jobpost' => $jobPost->id]) }}">
+        @csrf
+        @method('PUT')
+
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" 
+               value="{{ old('title', $jobPost->title) }}" required>
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required>{{ old('description', $jobPost->description) }}</textarea>
+
+        <label for="salary">Salary:</label>
+        <input type="number" id="salary" name="salary" 
+               value="{{ old('salary', $jobPost->salary) }}" required>
+
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" 
+               value="{{ old('location', $jobPost->location) }}" 
+               autocomplete="street-address">
+
+        <label for="work_model">Work Model:</label>
+        <select name="work_model" id="work_model" required>
+            <option value="Remote" {{ old('work_model', $jobPost->work_model) == 'Remote' ? 'selected' : '' }}>Remote</option>
+            <option value="On-site" {{ old('work_model', $jobPost->work_model) == 'On-site' ? 'selected' : '' }}>On-site</option>
+            <option value="Hybrid" {{ old('work_model', $jobPost->work_model) == 'Hybrid' ? 'selected' : '' }}>Hybrid</option>
+        </select>
+
+        <label for="category_id">Category:</label>
+        <select name="category_id" id="category_id" required>
+            @foreach ($categories as $category)
+                <option value="{{ $category->id }}" 
+                    {{ old('category_id', $jobPost->category_id) == $category->id ? 'selected' : '' }}>
+                    {{ $category->name }}
+                </option>
+            @endforeach
+        </select>
+
+        <button type="submit">Update</button>
+    </form>
+</section>
+@endsection

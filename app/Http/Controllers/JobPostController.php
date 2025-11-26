@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
 use App\Models\JobPost;
+use App\Models\User;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
 
@@ -96,7 +98,50 @@ class JobPostController extends Controller
 
     public function search(Request $request){
         $pesquisa = $request->input('q');
-        $jobPosts = JobPost::whereRaw(
+        if (!$pesquisa){
+            $jobPosts=JobPost::all();
+            $employers = User::all();
+        }
+        else{
+                $jobPosts = JobPost::whereRaw(
+                "tsvectors @@ plainto_tsquery('english', ? )",   // n suporta buscas por sufixo, por exemplo "se" n dará "senior"
+                [$pesquisa]
+            )
+            ->orderByRaw(
+                "ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC",
+                [$pesquisa]
+            )
+            ->get();
+
+            $employers = User::whereRaw(
+                "tsvectors @@ plainto_tsquery('english', ? )",   // n suporta buscas por sufixo, por exemplo "se" n dará "senior"
+                [$pesquisa]
+            )
+            ->orderByRaw(
+                "ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC",
+                [$pesquisa]
+            )
+            ->get();
+        }
+        
+        $type = $request->input('type');
+
+        /*$jobPosts = JobPost::where('title', 'ILIKE', "%{$query}%")   ## usar ILIKE em vez de LIKE por causa da maiuscula e miniscula
+            ->orderBy('created_at', 'desc')  ## ordenado do mais recente para o mais antigo 
+            ->get();*/
+
+        return view('pages.search_results', [
+            'type' =>$type,
+            'jobPosts' => $jobPosts,
+            'employers' => $employers,
+            'query' => $pesquisa
+        ]);
+    }
+
+
+   /* public function searchEmployers(Request $request){
+        $pesquisa = $request->input('q');
+        $employers = User::whereRaw(
                 "tsvectors @@ plainto_tsquery('english', ? )",   // n suporta buscas por sufixo, por exemplo "se" n dará "senior"
                 [$pesquisa]
             )
@@ -110,10 +155,11 @@ class JobPostController extends Controller
             ->orderBy('created_at', 'desc')  ## ordenado do mais recente para o mais antigo 
             ->get();*/
 
-        return view('pages.search_results', [
-            'jobPosts' => $jobPosts,
+        /*return view('pages.search_results', [
+            'type' =>'employer',
+            'employers' => $employers,
             'query' => $pesquisa
         ]);
-    }
+    }*/
 }
 

@@ -5,8 +5,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function search() {
         const query = searchInput.value.trim();
-        if (query.length > 0) {
-            window.location.href = `/jobposts/search?q=${encodeURIComponent(query)}`;
+        const type = document.getElementById("search_type").value;
+        if (query.length >= 0) {
+            if (type=="search_employer"){
+                window.location.href = `/employers/search?q=${encodeURIComponent(query)}&type=${type}`;
+            }
+            else window.location.href = `/jobposts/search?q=${encodeURIComponent(query)}&type=${type}`;
         }
     }
 

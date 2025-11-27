@@ -25,22 +25,17 @@ Route::get('/jobposts/search', [JobPostController::class, 'search'])->name('jobp
 Route::get('/employers/search', [JobPostController::class, 'search'])->name('jobpost.search');
 
 Route::get('/jobposts', [JobPostController::class, 'index'])->name('pages.jobposts.index');
+
+Route::get('/jobposts/create', [JobPostController::class, 'create'])->name('jobpost.create');
 Route::get('/jobposts/{jobpost}', [JobPostController::class, 'show'])->name('jobpost.show');
 Route::get('/employers/{pro}', [ProfileController::class, 'show'])->name('employer.show');
-// pagina formulario criaçao jobpost
-Route::get('/jobposts/create', [JobPostController::class, 'create'])->name('jobpost.create');
 
 
 // guardar novo jobpost na BD
 Route::post('/jobposts', [JobPostController::class, 'store'])->name('jobpost.store');
-//Route::get('/jobposts/{jobpost}/edit_jobpost', [JobPostController::class, 'edit'])->name('jobpost.edit');
-//Route::put('/jobposts/{jobpost}', [JobPostController::class, 'update'])->name('jobpost.update');
-//Route::delete('/jobposts/{jobpost}', [JobPostController::class, 'delete'])->name('jobpost.delete');
 Route::get('/jobposts/{jobpost}/edit', [JobPostController::class, 'edit'])->name('jobpost.edit');
 Route::put('/jobposts/{jobpost}', [JobPostController::class, 'update'])->name('jobpost.update');
 Route::delete('/jobposts/{jobpost}', [JobPostController::class, 'delete'])->name('jobpost.delete');
-Route::get('/jobposts/{jobpost}', [JobPostController::class, 'show'])->name('jobpost.show');
-Route::get('/employers/{employer}', [JobPostController::class, 'show'])->name('employer.show');
 
 
 
@@ -100,10 +95,10 @@ Route::middleware('auth')->group(function () {
 });
 
 // Applications
-Route::middleware('auth')->group(function() {
-    Route::get('/jobposts/{jobpost}/apply', [ApplicationController::class,'create'])->name('jobpost.apply.form');
-    Route::post('/jobposts/{jobpost}/application', [ApplicationController::class,'store'])->name('jobpost.apply');
-    Route::get('/jobposts/{jobpost}/application', [ApplicationController::class,'index'])->name('jobpost.application'); // employer view
+Route::middleware('auth')->group(function () {
+    Route::get('/jobposts/{jobpost}/apply', [ApplicationController::class, 'create'])->name('jobpost.apply.form');
+    Route::post('/jobposts/{jobpost}/application', [ApplicationController::class, 'store'])->name('jobpost.apply');
+    Route::get('/jobposts/{jobpost}/application', [ApplicationController::class, 'index'])->name('jobpost.application'); // employer view
     // Jobseeker application management
     Route::get('/applications/{application}/edit', [ApplicationController::class, 'edit'])->name('applications.edit');
     Route::put('/applications/{application}', [ApplicationController::class, 'update'])->name('applications.update');

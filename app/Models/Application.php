@@ -7,16 +7,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Application extends Model
 {
-    /**
-     * Use the singular database table name `application`.
-     */
+    
     protected $table = 'application';
     
     public $timestamps = false;
 
-    /**
-     * Allow mass assignment for the fields that exist in the DB.
-     */
     protected $fillable = [
         'jobseeker_id',
         'jobpost_id',

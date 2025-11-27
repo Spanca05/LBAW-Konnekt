@@ -32,10 +32,8 @@
         <li><strong>Phone:</strong> {{ $user->phone_number}}</li>
         <li><strong>Role:</strong> {{ $user->role}}</li>
         <li><strong>Description:</strong>
-            @if($user->description !== null)
-            <div style="margin-top:0.5rem">{{ $user->description }}</div>
-            @else
-            No description.
+            @if($user->description !== null) {{ $user->description }}
+            @else No description.
             @endif
         </li>
 
@@ -46,8 +44,7 @@
         @endif
 
         @if($user->role === 'JobSeeker')
-            <li>
-                <strong>Skills:</strong>
+            <li><strong>Skills:</strong>
             @if($user->skills && count($user->skills))
                 <ul>
                 @foreach($user->skills as $skill)
@@ -81,9 +78,9 @@
                 Delete profile
             </button>
         </form>
-        @if(auth()->user()->role === 'Employer')
-        <a class="button" href="{{ route('jobpost.create') }}">Create New JobPost</a>
-        @endif
+            @if(auth()->user()->role === 'Employer')
+            <a class="button" href="{{ route('jobpost.create') }}">Create New JobPost</a>
+            @endif
         @endif
     </p>
 

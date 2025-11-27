@@ -43,20 +43,20 @@ INSERT INTO skill (name, description) VALUES
 
 
 
-INSERT INTO users (name, email, password, role, phone_number, description, location) VALUES
-('Platform Admin','admin2@konnekt.app','$2y$12$2oCUXP1L6UvXDD9BzMjpQ.wxPGDsMZz1.U/nx8NLtrHil0MQfKWe2','Admin','910000001',NULL,'Porto'),
-('AlphaSoft Ltd','alpha@company.com','$2y$12$6rs74q8ujRlPKuaHT6ABp.Hm6lS1oeqtcw3hbnJXiRslUTtwNXBjm','Employer','921000001',NULL,'Lisboa'),
-('Beta Marketing','beta@marketing.com','$2y$12$6rs74q8ujRlPKuaHT6ABp.Hm6lS1oeqtcw3hbnJXiRslUTtwNXBjm','Employer','921000002',NULL,'Porto'),
-('Gamma Design Studio','gamma@design.com','$2y$12$6rs74q8ujRlPKuaHT6ABp.Hm6lS1oeqtcw3hbnJXiRslUTtwNXBjm','Employer','921000003',NULL,'Faro'),
-('Remote Works Inc','remote@works.com','$2y$12$83Ev/z5M7gSJZkODU9J4N.gObXSnKOau.ldwmy3RHhn/yHWlxJFaG','Employer','921000004',NULL,NULL),
-('Delta Solutions','delta@solutions.com','$2y$12$6rs74q8ujRlPKuaHT6ABp.Hm6lS1oeqtcw3hbnJXiRslUTtwNXBjm','Employer','921000005',NULL,'Braga'),
+INSERT INTO users (name, email, password, role, phone_number, description, location) VALUES       
+('Platform Admin','admin2@konnekt.app','$2y$12$.4RtSVi/mvffMdS6zL79BeLniEfZkHUdF3PfaN0c6CZH6c9uQkMkG','Admin','910000001',NULL,'Porto'),   
+('AlphaSoft Ltd','alpha@company.com','$2y$12$.4RtSVi/mvffMdS6zL79BeLniEfZkHUdF3PfaN0c6CZH6c9uQkMkG','Employer','921000001',NULL,'Lisboa'),
+('Beta Marketing','beta@marketing.com','$2y$12$.4RtSVi/mvffMdS6zL79BeLniEfZkHUdF3PfaN0c6CZH6c9uQkMkG','Employer','921000002',NULL,'Porto'),
+('Gamma Design Studio','gamma@design.com','$2y$12$.4RtSVi/mvffMdS6zL79BeLniEfZkHUdF3PfaN0c6CZH6c9uQkMkG','Employer','921000003',NULL,'Faro'),
+('Remote Works Inc','remote@works.com','$2y$12$.4RtSVi/mvffMdS6zL79BeLniEfZkHUdF3PfaN0c6CZH6c9uQkMkG','Employer','921000004',NULL,NULL),
+('Delta Solutions','delta@solutions.com','$2y$12$.4RtSVi/mvffMdS6zL79BeLniEfZkHUdF3PfaN0c6CZH6c9uQkMkG','Employer','921000005',NULL,'Braga'),
 
-('Alice Jobseeker','alice.seeker@example.com','$2y$12$Oy5gpTqN42CRGFveMh7jZOiuwgQOTEOJE7liITSCgyXSq7MgWON.i','JobSeeker','932000001','Full-stack developer with 5 years of experience.','Porto'),
-('Bob Candidate','bob.candidate@example.com','$2y$12$Oy5gpTqN42CRGFveMh7jZOiuwgQOTEOJE7liITSCgyXSq7MgWON.i','JobSeeker','932000002','Front-end developer, React specialist.','Lisboa'),
-('Catarina Hunter','catarina.h@example.com','$2y$12$Oy5gpTqN42CRGFveMh7jZOiuwgQOTEOJE7liITSCgyXSq7MgWON.i','JobSeeker','932000003','Marketing professional, SEO and analytics.','Coimbra'),
-('David Applicant','david.app@example.com','$2y$12$Oy5gpTqN42CRGFveMh7jZOiuwgQOTEOJE7liITSCgyXSq7MgWON.i','JobSeeker','932000004','UX/UI designer with mobile-first focus.','Faro'),
-('Eva Seeker','eva.seeker@example.com','$2y$12$Oy5gpTqN42CRGFveMh7jZOiuwgQOTEOJE7liITSCgyXSq7MgWON.i','JobSeeker','932000005','Data analyst skilled in SQL and Python.','Braga'),
-('Frank Hunter','frank.h@example.com','$2y$12$Oy5gpTqN42CRGFveMh7jZOiuwgQOTEOJE7liITSCgyXSq7MgWON.i','JobSeeker','932000006','Project manager with PMP certification.','Lisboa');
+('Alice Jobseeker','alice.seeker@example.com','$2y$12$.4RtSVi/mvffMdS6zL79BeLniEfZkHUdF3PfaN0c6CZH6c9uQkMkG','JobSeeker','932000001','Full-stack developer with 5 years of experience.','Porto'),
+('Bob Candidate','bob.candidate@example.com','$2y$12$.4RtSVi/mvffMdS6zL79BeLniEfZkHUdF3PfaN0c6CZH6c9uQkMkG','JobSeeker','932000002','Front-end developer, React specialist.','Lisboa'),
+('Catarina Hunter','catarina.h@example.com','$2y$12$.4RtSVi/mvffMdS6zL79BeLniEfZkHUdF3PfaN0c6CZH6c9uQkMkG','JobSeeker','932000003','Marketing professional, SEO and analytics.','Coimbra'),
+('David Applicant','david.app@example.com','$2y$12$.4RtSVi/mvffMdS6zL79BeLniEfZkHUdF3PfaN0c6CZH6c9uQkMkG','JobSeeker','932000004','UX/UI designer with mobile-first focus.','Faro'),
+('Eva Seeker','eva.seeker@example.com','$2y$12$.4RtSVi/mvffMdS6zL79BeLniEfZkHUdF3PfaN0c6CZH6c9uQkMkG','JobSeeker','932000005','Data analyst skilled in SQL and Python.','Braga'),
+('Frank Hunter','frank.h@example.com','$2y$12$.4RtSVi/mvffMdS6zL79BeLniEfZkHUdF3PfaN0c6CZH6c9uQkMkG','JobSeeker','932000006','Project manager with PMP certification.','Lisboa');
 
 -- ---------------------------
 -- CVs (for jobseekers)

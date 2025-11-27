@@ -173,9 +173,13 @@ class JobPostController extends Controller {
                 $jobPosts->where('category_id', $categoryId);
             }
 
+             // Aqui aplicas a filtragem de employers deletados
+            $jobPosts = $jobPosts->with('employer')->get()
+                                ->filter(fn($jp) => ! $jp->isOwnerDeleted());
+
             return view('pages.search_results', [
                 'type' => $type,
-                'jobPosts' => $jobPosts->get(),
+                'jobPosts' => $jobPosts,
                 'employers' => collect(),
                 'query' => $pesquisa,
                 'selectedCategory' => $categoryId,
@@ -195,10 +199,13 @@ class JobPostController extends Controller {
             );
         }
 
+        $employers = $employers->get() // transforma em Collection
+                       ->filter(fn($user) => ! $user->isDeleted());
+
         return view('pages.search_results', [
             'type' => $type,
             'jobPosts' => collect(),
-            'employers' => $employers->get(),
+            'employers' => $employers,
             'query' => $pesquisa,
             'selectedCategory' => null,
             'categories' => Category::all(),

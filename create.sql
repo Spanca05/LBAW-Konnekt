@@ -164,7 +164,12 @@ CREATE TABLE report (
     reported_user_id INTEGER REFERENCES users(id)
 );
 
---retirado user_notification
+CREATE TABLE user_notification (
+    notification_id INTEGER NOT NULL REFERENCES notification(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    PRIMARY KEY (notification_id, user_id)
+);
+
 
 CREATE TABLE jobpost_category (
     category_id INTEGER NOT NULL REFERENCES category(id),
@@ -414,6 +419,7 @@ BEFORE INSERT OR UPDATE ON jobpost
 FOR EACH ROW
 EXECUTE FUNCTION check_positive_salary();
 
+/*
 -- Trigger 7
 
 
@@ -503,6 +509,7 @@ AFTER INSERT ON jobpost
 FOR EACH ROW
 EXECUTE FUNCTION notify_new_job_posting();
 
+*/
 -- Trigger 9
 
 CREATE OR REPLACE FUNCTION check_jobpost_location_requirement()
@@ -528,7 +535,7 @@ BEFORE INSERT OR UPDATE ON jobpost
 FOR EACH ROW
 EXECUTE FUNCTION check_jobpost_location_requirement();
 
-
+/*
 -- Trigger 10
 
 CREATE OR REPLACE FUNCTION notification_mark_seen()
@@ -550,7 +557,7 @@ EXECUTE FUNCTION notification_mark_seen();
 
 -- Trigger 11
 
-/*
+
 CREATE OR REPLACE FUNCTION notify_matching_job_seekers()
 RETURNS TRIGGER AS $$
 DECLARE

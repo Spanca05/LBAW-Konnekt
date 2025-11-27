@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\CVController;
 use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\AdminController;
 
 // Home
 Route::redirect('/', '/login');
@@ -72,4 +73,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/applications/{application}', [ApplicationController::class, 'destroy'])->name('applications.destroy');
     // Employer update application status
     Route::patch('/applications/{application}/status', [ApplicationController::class, 'status_update'])->name('applications.status.update');
+});
+
+// Admin dashboard
+Route::middleware('auth')->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+    Route::post('/admin/create-admin', [AdminController::class, 'createAdmin'])->name('admin.create');
 });

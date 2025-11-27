@@ -8,7 +8,9 @@
     <section id="jobposts">
         @foreach ($jobPosts as $jobPost)
             {{-- Mostra cada job usando o partial --}}
-            @include('partials.jobpost', ['jobPost' => $jobPost])
+            @if ($jobPost->employer)
+                @include('partials.jobpost', ['jobPost' => $jobPost])
+            @endif
         @endforeach
     </section>
 @endsection

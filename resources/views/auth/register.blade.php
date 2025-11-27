@@ -40,6 +40,18 @@
       <span id="phone_number-error" class="error" role="alert">{{ $message }}</span>
     @enderror
 
+    <label for="location">Location</label>
+    <input
+        id="location"
+        type="text"
+        name="location"
+        value="{{ old('location') }}"
+        autocomplete="street-address"
+    >
+    @error('location')
+      <span id="location-error" class="error" role="alert">{{ $message }}</span>
+    @enderror
+
     <label for="email">E-Mail Address</label>
     <input
         id="email"
@@ -53,6 +65,19 @@
     @error('email')
       <span id="email-error" class="error" role="alert">{{ $message }}</span>
     @enderror
+
+   <div id="skills-wrapper">
+      <label>Select your skills (only for JobSeekers)</label>
+        @foreach($skills as $skill)
+            <label>
+                <input type="checkbox" name="skills[]" value="{{ $skill->id }}">
+                {{ $skill->name }}
+            </label>
+        @endforeach
+        @error('skills')
+            <small class="error" role="alert">{{ $message }}</small>
+        @enderror
+    </div>
 
     <label for="password">Password</label>
     <input

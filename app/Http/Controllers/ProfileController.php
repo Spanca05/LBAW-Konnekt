@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Skill;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
@@ -15,9 +16,12 @@ class ProfileController extends Controller {
      */
     public function showAuth(Request $request = null) {
         $user = Auth::user();
-        if (! $user instanceof User) {
+        if (! $user instanceof User || $user->isDeleted()) {
             abort(403);
         }
+
+        // Eager-load skills so the view can access them without extra queries.
+        //$user->load('skills');
 
         // If the user is a job seeker, load their applications (legacy schema uses jobseeker_id)
         $applications = collect();
@@ -40,7 +44,14 @@ class ProfileController extends Controller {
 
     public function show($id)
     {
+        //$other = User::findOrFail($id);
+
         $other = User::findOrFail($id);
+
+        if ($other->isDeleted()) {
+            abort(404);
+        }
+   
 
         $jobPosts = [];
 
@@ -48,10 +59,10 @@ class ProfileController extends Controller {
             $jobPosts = $other->jobposts()->orderBy('created_at', 'desc')->get();
         }
 
-        // Render the public profile view for other users
+        // Render the public profile sview for other users
         return view('pages.profile_other', [
             'other' => $other,
-            'jobPosts' => $jobPosts
+            'jobPosts' => $jobPosts,
         ]);
     }
 
@@ -59,17 +70,19 @@ class ProfileController extends Controller {
     /** Show the edit form for the authenticated user's profile. */
     public function edit(Request $request) {
         $user = Auth::user();
-        if (! $user instanceof User) {
+        if (! $user instanceof User || $user->isDeleted()) {
             abort(403);
         }
 
-        return view('pages.profile_edit', ['user' => $user]);
+        $skills = Skill::all(); // Todas as skills disponíveis
+
+        return view('pages.profile_edit', ['user' => $user, 'skills' => $skills]);
     }
 
     /** Update the authenticated user's profile. */
     public function update(Request $request) {
         $user = Auth::user();
-        if (! $user instanceof \App\Models\User) {
+        if (! $user instanceof \App\Models\User || $user->isDeleted()) {
             abort(403);
         }
 
@@ -77,13 +90,24 @@ class ProfileController extends Controller {
             'name' => ['required', 'string', 'max:250'],
             'email' => ['required', 'email', 'max:250', Rule::unique('users')->ignore($user->id)],
             'phone_number' => ['required', 'string', 'max:20'],
+            'location' => ['nullable', 'string', 'max:255'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'photo' => ['nullable', 'image', 'max:2048'],
+            'description' => ['nullable', 'string', 'max:2000'],
         ]);
 
         $user->name = $data['name'];
         $user->email = $data['email'];
         $user->phone_number = $data['phone_number'] ?? $user->phone_number;
+        // update location -> use array_key_exists to allow setting to null
+        $user->location = array_key_exists('location', $data) ? $data['location'] : $user->location;
+
+
+        // Se for JobSeeker, attach das skills (sem validação)
+        if ($user->role === 'JobSeeker') {
+            //adiciona novas skills e remove as que não estão no array.
+            $user->skills()->sync($request->input('skills', []));
+        }
 
         if (!empty($data['password'])) {
             $user->password = Hash::make($data['password']);
@@ -100,6 +124,12 @@ class ProfileController extends Controller {
             $user->photo_path = $path;
         }
 
+        if (!empty($data['description'])) {
+            $user->description = $data['description'];
+            //'description' => array_key_exists('cv_description', $validatedCv) ? $validatedCv['cv_description'] : ($cv->description ?? null),
+
+        }
+
         // Persist the updated user model
         $user->save();
 
@@ -107,7 +137,6 @@ class ProfileController extends Controller {
         if ($user->role === 'JobSeeker') {
             $validatedCv = $request->validate([
                 'cv_file' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
-                'cv_description' => 'nullable|string|max:2000',
             ]);
 
             $cv = $user->cv;
@@ -134,7 +163,6 @@ class ProfileController extends Controller {
                 $attrs = [
                     'file_path' => $newPath,
                     'uploaded_at' => now(),
-                    'description' => array_key_exists('cv_description', $validatedCv) ? $validatedCv['cv_description'] : ($cv->description ?? null),
                     'mime_type' => $detected ?: ($file->getClientMimeType() ?: null),
                 ];
 
@@ -143,32 +171,40 @@ class ProfileController extends Controller {
                 } else {
                     $user->cv()->create($attrs);
                 }
-            } else {
-                // If no new file: update description even when it's intentionally cleared.
-                // Note: Laravel's ConvertEmptyStringsToNull middleware turns empty strings into null,
-                // so check presence with array_key_exists on the validated array.
-                if (array_key_exists('cv_description', $validatedCv) && $validatedCv['cv_description'] !== ($cv->description ?? null)) {
-                    if ($cv) {
-                        $cv->update(['description' => $validatedCv['cv_description']]);
-                    } else {
-                        $user->cv()->create([
-                            'description' => $validatedCv['cv_description'],
-                            'uploaded_at' => null,
-                        ]);
-                    }
-                }
-            }
+            } 
         }
 
         return redirect()->route('profile')->with('success', 'Profile updated successfully.');
     }
+
+    //delete profile
+    public function destroy(Request $request)
+    {
+        $user = Auth::user();
+
+        if (! $user instanceof User || $user->isDeleted()) {
+            abort(403);
+        }
+
+        Auth::logout(); // Termina a sessão antes de apagar profile
+
+        // O trigger faz soft delete
+        $user->delete();
+
+        // Invalidar a sessão
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/')->with('success', 'Your account has been deleted.');
+    }
+
 
     /**
      * Remove the authenticated user's profile photo.
      */
     public function destroyPhoto(Request $request) {
         $user = Auth::user();
-        if (! $user instanceof User) {
+        if (! $user instanceof User || $user->isDeleted()) {
             abort(403);
         }
         if ($user && $user->photo_path) {

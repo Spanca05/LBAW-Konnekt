@@ -22,7 +22,7 @@
         <img
             src="{{ asset('images/avatar-placeholder.png') }}"
             alt="No photo"
-            style="max-width:150px; max-height:150px; object-fit:cover; border-radius:6px;"> 
+            style="max-width:150px; max-height:150px; object-fit:cover; border-radius:6px;">
     </div>
     @endif
 
@@ -31,6 +31,34 @@
         <li><strong>Email:</strong> {{ $user->email}}</li>
         <li><strong>Phone:</strong> {{ $user->phone_number}}</li>
         <li><strong>Role:</strong> {{ $user->role}}</li>
+        <li><strong>Description:</strong>
+            @if($user->description !== null)
+            <div style="margin-top:0.5rem">{{ $user->description }}</div>
+            @else
+            No description.
+            @endif
+        </li>
+
+        @if(!empty($user->location))
+            <li><strong>Location:</strong> {{ $user->location }}</li>
+        @else
+            <li><strong>Location:</strong> Not specified</li>
+        @endif
+
+        @if($user->role === 'JobSeeker')
+            <li>
+                <strong>Skills:</strong>
+            @if($user->skills && count($user->skills))
+                <ul>
+                @foreach($user->skills as $skill)
+                    <li><strong>{{ $skill->name}}</strong>: {{ $skill->description}}</li>
+                @endforeach
+                </ul>
+            @else
+                <p>You have no Skills</p>
+            @endif
+            </li>
+        @endif
 
         @if($user->role === 'JobSeeker' && (optional($user->cv)->file_path || optional($user->cv)->description))
         <li>
@@ -38,16 +66,21 @@
             @if(optional($user->cv)->file_path)
             <a class="button" href="{{ route('profile.cv.download') }}">Download CV</a>
             @endif
-            @if(optional($user->cv)->description)
-            <div style="margin-top:0.5rem">{{ $user->cv->description }}</div>
-            @endif
         </li>
         @endif
+        
     </ul>
 
     <p>
         @if(auth()->check() && auth()->id() === $user->id)
         <a class="button" href="{{ route('profile.edit') }}">Edit profile</a>
+        <form action="{{ route('profile.destroy') }}" method="POST">
+            @csrf
+            @method('DELETE')
+            <button class="button" onclick="return confirm('Are you sure you want to delete your account? This action is irreversible.')">
+                Delete profile
+            </button>
+        </form>
         @if(auth()->user()->role === 'Employer')
         <a class="button" href="{{ route('jobpost.create') }}">Create New JobPost</a>
         @endif
@@ -73,9 +106,9 @@
                     </div>
                     <div style="display:flex;gap:8px">
                         @if($app->status === 'Rejected')
-                            <a class="button" href="{{ route('applications.edit', ['application' => $app->id]) }}">Resend</a>
+                        <a class="button" href="{{ route('applications.edit', ['application' => $app->id]) }}">Resend</a>
                         @elseif ($app->status === 'Pending')
-                            <a class="button" href="{{ route('applications.edit', ['application' => $app->id]) }}">Edit</a>
+                        <a class="button" href="{{ route('applications.edit', ['application' => $app->id]) }}">Edit</a>
                         @endif
                         <form method="POST" action="{{ route('applications.destroy', ['application' => $app->id]) }}" onsubmit="return confirm('Withdraw this application?');">
                             @csrf
@@ -91,7 +124,7 @@
         <p>You have not applied to any jobs yet.</p>
         @endif
     </section>
-    
+
     @elseif($user->role === 'Employer')
     <section id="jobposts">
         @if(auth()->check() && auth()->id() === $user->id)

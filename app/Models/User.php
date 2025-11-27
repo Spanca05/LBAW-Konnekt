@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\JobPost;
 use App\Models\CV;
+use App\Models\Skill;
 
 class User extends Authenticatable {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -35,6 +36,8 @@ class User extends Authenticatable {
         'role',
         'phone_number',
         'photo_path',
+        'location',
+        'description'
     ];
 
     /**
@@ -87,4 +90,20 @@ class User extends Authenticatable {
     public function applications(): HasMany {
         return $this->hasMany(Application::class, 'jobseeker_id', 'id');
     }
+
+
+    public function skills() {
+        return $this->belongsToMany(Skill::class, 'skill_user', 'user_id', 'skill_id');
+    }
+
+    public function isDeleted() {
+        return preg_match('/^deleted_\d+@delete\.app$/', $this->email) &&
+        preg_match('/^Anonym\d+$/', $this->name) &&
+        preg_match('/^DELETED_USER_\d+$/', $this->password) &&
+        $this->phone_number === '000000000' && 
+        $this->location === null &&
+        $this->photo_path === null;
+    }
+    
 }
+

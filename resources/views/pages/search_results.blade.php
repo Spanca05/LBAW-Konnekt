@@ -3,7 +3,10 @@
 @section('Results')
 
 @section('content')
-    <h2>Results for: "{{$query }}"</h2>
+    @if($query!="")
+        <h2>Results for: "{{$query }}"</h2>
+    @endif
+    
 
     @if($jobPosts->isEmpty() && $employers->isEmpty())
         @if($type=='search_jobpost')

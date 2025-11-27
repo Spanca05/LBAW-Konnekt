@@ -26,6 +26,7 @@
                 @else
                     <a class="button button-outline" href="{{ route('register') }}">Register</a> <a class="button" href="{{ route('login') }}">Login</a>
                 @endauth
+                @if(Route::currentRouteName() !== 'login' and Route::currentRouteName() !=='register')
                 <div class="search">
                     <input type="text" id="search" class="search" placeholder="Search jobposts...">
                     <select class="search_type" id="search_type">
@@ -35,7 +36,7 @@
                         
                     <button id="search_button" class="search_button">Search</button>
                 </div>
-
+                @endif
             </header>
 
             <section id="content">

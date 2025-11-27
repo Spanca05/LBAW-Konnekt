@@ -1,0 +1,384 @@
+openapi: 3.0.0
+info:
+  version: '1.0'
+  title: 'LBAW Konnekt Web API'
+  description: 'Web Resources Specification (A7) for Konnekt'
+servers:
+  - url: http://localhost
+    description: Local development server
+
+tags:
+  - name: Authentication
+    description: Login, logout, register
+  - name: Users
+    description: User profiles and CV
+  - name: JobPosts
+    description: Job posts management
+  - name: Applications
+    description: Job applications management
+
+paths:
+  /login:
+    get:
+      summary: Show login form
+      tags:
+        - Authentication
+      responses:
+        '200':
+          description: Login form
+    post:
+      summary: Authenticate user
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        '302':
+          description: Redirect after login
+
+  /logout:
+    get:
+      summary: Logout user
+      tags:
+        - Authentication
+      responses:
+        '302':
+          description: Redirect after logout
+
+  /register:
+    get:
+      summary: Show registration form
+      tags:
+        - Authentication
+      responses:
+        '200':
+          description: Registration form
+    post:
+      summary: Register a new user
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                role:
+                  type: string
+                  enum: [JobSeeker, Employer]
+                email:
+                  type: string
+                phone_number:
+                  type: string
+                password:
+                  type: string
+              required:
+                - name
+                - email
+                - role
+                - password
+      responses:
+        '302':
+          description: Redirect after registration
+
+  /profile:
+    get:
+      summary: Get authenticated user's profile
+      tags:
+        - Users
+      responses:
+        '200':
+          description: User profile
+    put:
+      summary: Update authenticated user's profile
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                phone_number:
+                  type: string
+                password:
+                  type: string
+                password_confirmation:
+                  type: string
+                photo:
+                  type: string
+                  format: binary
+                cv_file:
+                  type: string
+                  format: binary
+                cv_description:
+                  type: string
+      responses:
+        '302':
+          description: Profile updated successfully
+
+  /profile/cv/download:
+    get:
+      summary: Download authenticated user's CV
+      tags:
+        - Users
+      responses:
+        '200':
+          description: CV file download
+
+  /profile/cv:
+    delete:
+      summary: Delete authenticated user's CV
+      tags:
+        - Users
+      responses:
+        '302':
+          description: CV deleted
+
+  /profile/photo:
+    delete:
+      summary: Delete authenticated user's photo
+      tags:
+        - Users
+      responses:
+        '302':
+          description: Photo deleted
+
+  /users/{id}:
+    get:
+      summary: Get another user's profile
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User profile
+
+  /jobposts:
+    get:
+      summary: List all job posts
+      tags:
+        - JobPosts
+      responses:
+        '200':
+          description: List of job posts
+    post:
+      summary: Create a new job post
+      tags:
+        - JobPosts
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                salary:
+                  type: number
+                work_model:
+                  type: string
+                category_id:
+                  type: integer
+      responses:
+        '302':
+          description: Job post created
+
+  /jobposts/{jobpost}:
+    get:
+      summary: Show a job post
+      tags:
+        - JobPosts
+      parameters:
+        - name: jobpost
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Job post details
+    put:
+      summary: Update a job post
+      tags:
+        - JobPosts
+      parameters:
+        - name: jobpost
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                salary:
+                  type: number
+                work_model:
+                  type: string
+      responses:
+        '302':
+          description: Job post updated
+    delete:
+      summary: Delete a job post
+      tags:
+        - JobPosts
+      parameters:
+        - name: jobpost
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: Job post deleted
+
+  /jobposts/{jobpost}/apply:
+    get:
+      summary: Show application form for a job post
+      tags:
+        - Applications
+      parameters:
+        - name: jobpost
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Application form
+
+  /jobposts/{jobpost}/application:
+    post:
+      summary: Submit application to a job post
+      tags:
+        - Applications
+      parameters:
+        - name: jobpost
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                motivation:
+                  type: string
+      responses:
+        '302':
+          description: Application submitted
+    get:
+      summary: List applications for a job post (Employer)
+      tags:
+        - Applications
+      parameters:
+        - name: jobpost
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of applications
+
+  /applications/{application}:
+    put:
+      summary: Update a job application
+      tags:
+        - Applications
+      parameters:
+        - name: application
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                motivation:
+                  type: string
+      responses:
+        '302':
+          description: Application updated
+    delete:
+      summary: Delete a job application
+      tags:
+        - Applications
+      parameters:
+        - name: application
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: Application deleted
+
+  /applications/{application}/status:
+    patch:
+      summary: Update application status (Accept/Reject) by employer
+      tags:
+        - Applications
+      parameters:
+        - name: application
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [Accepted, Rejected]
+      responses:
+        '302':
+          description: Application status updated
+

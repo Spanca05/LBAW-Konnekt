@@ -18,16 +18,16 @@ tags:
   - name: "M02: JobPosts and Employers"
   - name: "M03: Applications"
   - name: "M04: CVs"
-  - name: "M05: Static Pages & Misc"
+  - name: "M05: Admin & Static Pages"
 
 paths:
   /:
     get:
-      operationId: R001
-      summary: "R001: Redirect root to login"
+      operationId: R501
+      summary: "R501: Redirect root to login"
       description: "Redirects the root URL to the login page. Access: PUB"
       tags:
-        - "M05: Static Pages & Misc"
+        - "M05: Admin & Static Pages"
       responses:
         "302":
           description: "Redirect to /login"
@@ -548,11 +548,28 @@ paths:
       responses:
         "302":
           description: "Redirect to profile with success message"
+    delete:
+      operationId: R108
+      summary: "R108: Delete authenticated user account"
+      description: "Permanently delete the authenticated user's account. Access: USR/EMP"
+      tags:
+        - "M01: Authentication and Individual Profile"
+      responses:
+        "302":
+          description: "Redirect after account deletion"
+          headers:
+            Location:
+              schema:
+                type: string
+              examples:
+                302Success:
+                  description: "Successful deletion. Redirect to login."
+                  value: "/login"
 
   /profile/edit:
     get:
-      operationId: R108
-      summary: "R108: Edit profile form"
+      operationId: R109
+      summary: "R109: Edit profile form"
       description: "Show edit profile form. Access: USR/EMP"
       tags:
         - "M01: Authentication and Individual Profile"
@@ -611,8 +628,8 @@ paths:
 
   /profile/photo:
     delete:
-      operationId: R109
-      summary: "R109: Delete authenticated user photo"
+      operationId: R110
+      summary: "R110: Delete authenticated user photo"
       description: "Delete authenticated user's profile photo. Access: USR/EMP"
       tags:
         - "M01: Authentication and Individual Profile"
@@ -678,13 +695,60 @@ paths:
               schema:
                 type: string
 
+  /admin:
+    get:
+      operationId: R502
+      summary: "R502: Admin dashboard"
+      description: "Admin dashboard overview. Access: ADM"
+      tags:
+        - "M05: Admin & Static Pages"
+      responses:
+        "200":
+          description: "Admin dashboard (HTML)"
+
+  /admin/create-admin:
+    post:
+      operationId: R503
+      summary: "R503: Create Admin account"
+      description: "Create a new admin account. Access: ADM"
+      tags:
+        - "M05: Admin & Static Pages"
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                phone_number:
+                  type: string
+                password:
+                  type: string
+              required:
+                - name
+                - email
+                - phone_number
+                - password
+      responses:
+        "302":
+          description: "Redirect to admin dashboard with success message"
+          headers:
+            Location:
+              schema:
+                type: string
+
   /storage/{path}:
     get:
-      operationId: R501
-      summary: "R501: Serve stored file"
+      operationId: R504
+      summary: "R504: Serve stored file"
       description: "Serve a file from storage. Access: DEPENDS"
       tags:
-        - "M05: Static Pages & Misc"
+        - "M05: Admin & Static Pages"
       parameters:
         - in: path
           name: path
@@ -702,11 +766,11 @@ paths:
 
   /up:
     get:
-      operationId: R502
-      summary: "R502: Application health check"
+      operationId: R505
+      summary: "R505: Application health check"
       description: "Check if the application is running. Access: PUB"
       tags:
-        - "M05: Static Pages & Misc"
+        - "M05: Admin & Static Pages"
       responses:
         "200":
           description: "Application is up"

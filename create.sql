@@ -354,6 +354,7 @@ BEGIN
         password = v_new_password,           
         phone_number = '000000000',
         location = NULL,         
+        photo_path = NULL,
         updated_at = NOW()                   
     WHERE 
         id = OLD.id;

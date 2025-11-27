@@ -17,7 +17,12 @@ class JobPostController extends Controller {
     public function index() {
 
         // vai buscar todos os jobposts ordenados do mais recente para o mais antigo
-        $jobPosts = JobPost::orderBy('created_at', 'desc')->get();
+        //$jobPosts = JobPost::orderBy('created_at', 'desc')->get();
+
+        $jobPosts = JobPost::with('employer')
+            ->get()
+            ->filter(fn($jobPost) => ! $jobPost->isOwnerDeleted()) // só mantém os válidos
+            ->sortByDesc('created_at');
 
         // Render the 'pages.cards' view with the user's cards.
         return view('pages.jobposts', [
@@ -27,6 +32,10 @@ class JobPostController extends Controller {
 
     public function show($id) {
         $jobPost = JobPost::findOrFail($id);
+
+        if ($jobPost->isOwnerDeleted()) {
+            abort(404);
+        }
 
         return view('pages.jobpost', [
             'jobPost' => $jobPost

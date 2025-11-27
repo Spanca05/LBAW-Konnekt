@@ -16,7 +16,7 @@ class ProfileController extends Controller {
      */
     public function showAuth(Request $request = null) {
         $user = Auth::user();
-        if (! $user instanceof User) {
+        if (! $user instanceof User || $user->isDeleted()) {
             abort(403);
         }
 
@@ -48,6 +48,11 @@ class ProfileController extends Controller {
 
         $other = User::findOrFail($id);
 
+        if ($other->isDeleted()) {
+            abort(404);
+        }
+   
+
         $jobPosts = [];
 
         if ($other->role === 'Employer') {
@@ -65,7 +70,7 @@ class ProfileController extends Controller {
     /** Show the edit form for the authenticated user's profile. */
     public function edit(Request $request) {
         $user = Auth::user();
-        if (! $user instanceof User) {
+        if (! $user instanceof User || $user->isDeleted()) {
             abort(403);
         }
 
@@ -77,7 +82,7 @@ class ProfileController extends Controller {
     /** Update the authenticated user's profile. */
     public function update(Request $request) {
         $user = Auth::user();
-        if (! $user instanceof \App\Models\User) {
+        if (! $user instanceof \App\Models\User || $user->isDeleted()) {
             abort(403);
         }
 
@@ -186,7 +191,7 @@ class ProfileController extends Controller {
     {
         $user = Auth::user();
 
-        if (! $user instanceof User) {
+        if (! $user instanceof User || $user->isDeleted()) {
             abort(403);
         }
 
@@ -208,7 +213,7 @@ class ProfileController extends Controller {
      */
     public function destroyPhoto(Request $request) {
         $user = Auth::user();
-        if (! $user instanceof User) {
+        if (! $user instanceof User || $user->isDeleted()) {
             abort(403);
         }
         if ($user && $user->photo_path) {

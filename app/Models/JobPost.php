@@ -32,10 +32,21 @@ class JobPost extends Model
         'location'
     ];
 
-
+    /*
     public function employer(): BelongsTo{
         return $this->belongsTo(User::class, 'employer_id');
     }
+    */
+
+    public function employer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'employer_id')
+            ->where('email', 'NOT LIKE', 'deleted_%@delete.app')
+            ->where('name', 'NOT LIKE', 'Anonym%')
+            ->where('password', 'NOT LIKE', 'DELETED_USER_%');
+    }
+
+
 
     public function jobCategory(): BelongsTo{
         return $this->belongsTo(Category::class, 'category_id', 'id');
@@ -47,5 +58,9 @@ class JobPost extends Model
 
     public function applications(): HasMany {
         return $this->hasMany(Application::class, 'jobpost_id', 'id');
+    }
+
+    public function isOwnerDeleted(): bool {
+        return $this->employer && $this->employer->isDeleted();
     }
 }

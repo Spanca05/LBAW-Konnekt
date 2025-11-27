@@ -58,7 +58,7 @@
                 <p>
                     Salary:{{ $job->salary }} <br>
                     Work Model: {{ $job->work_model }} <br>
-                    Category ID: {{ $job->category_id }}  
+                    Category: {{ $job->jobCategory->name  }}  
                 </p>
             </li>
             @endforeach

@@ -127,7 +127,14 @@ paths:
               properties:
                 name:
                   type: string
+                role:
+                  type: string
+                  enum: [JobSeeker, Employer]
+                phone_number:
+                  type: string
                 password:
+                  type: string
+                password_confirmation:
                   type: string
                 email:
                   type: string
@@ -135,8 +142,12 @@ paths:
                 picture:
                   type: string
               required:
+                - name
+                - role
+                - phone_number
                 - email
                 - password
+                - password_confirmation
       responses:
         "302":
           description: "Redirect after processing the new user information."
@@ -530,6 +541,10 @@ paths:
                 cv_file:
                   type: string
                   format: binary
+              required:
+                - name
+                - email
+                - phone_number
       responses:
         "302":
           description: "Redirect to profile with success message"

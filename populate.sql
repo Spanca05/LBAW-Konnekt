@@ -43,169 +43,94 @@ INSERT INTO skill (name, description) VALUES
 
 
 
------------------------------------------
--- LEVEL 1: Dependent on Location (Users)
------------------------------------------
-
--- R01: USERS (name, email, password, role, phone_number are NN) [1, 2]
-
 INSERT INTO users (name, email, password, role, phone_number, description, location) VALUES
-(
-    'Admin Konnekt',
-    'admin@konnekt.app',
-    '$2y$12$2oCUXP1L6UvXDD9BzMjpQ.wxPGDsMZz1.U/nx8NLtrHil0MQfKWe2',
-    'Admin',
-    '910000000',
-    NULL,
-    'Porto' -- Location: Porto (ID 1)
-), -- User ID 1 (Admin)
-(
-    'Global Tech Solutions',
-    'employer_tech@global.com',
-    '$2y$12$6rs74q8ujRlPKuaHT6ABp.Hm6lS1oeqtcw3hbnJXiRslUTtwNXBjm',
-    'Employer',
-    '921111111',
-    NULL,
-    'Lisboa' -- Location: Lisboa (ID 2)
-), -- User ID 2 (Employer)
-(
-    'Jane Seeker',
-    'jane.seeker@email.com',
-    '$2y$12$Oy5gpTqN42CRGFveMh7jZOiuwgQOTEOJE7liITSCgyXSq7MgWON.i',
-    'JobSeeker',
-    '932222222',
-    'Experienced full-stack developer specializing in Python.',
-    'Porto' -- Location: Porto (ID 1)
- -- Location: Porto (ID 1)
-), -- User ID 3 (JobSeeker, FTS Test Base)
-(
-    'Remote Developer Corp',
-    'remote_emp@corp.com',
-    '$2y$12$83Ev/z5M7gSJZkODU9J4N.gObXSnKOau.ldwmy3RHhn/yHWlxJFaG',
-    'Employer',
-    '943333333',
-    NULL,
-    NULL -- Employer with NULL location
-); -- User ID 4 (Employer)
+('Platform Admin','admin2@konnekt.app','$2y$12$2oCUXP1L6UvXDD9BzMjpQ.wxPGDsMZz1.U/nx8NLtrHil0MQfKWe2','Admin','910000001',NULL,'Porto'),
+('AlphaSoft Ltd','alpha@company.com','$2y$12$6rs74q8ujRlPKuaHT6ABp.Hm6lS1oeqtcw3hbnJXiRslUTtwNXBjm','Employer','921000001',NULL,'Lisboa'),
+('Beta Marketing','beta@marketing.com','$2y$12$6rs74q8ujRlPKuaHT6ABp.Hm6lS1oeqtcw3hbnJXiRslUTtwNXBjm','Employer','921000002',NULL,'Porto'),
+('Gamma Design Studio','gamma@design.com','$2y$12$6rs74q8ujRlPKuaHT6ABp.Hm6lS1oeqtcw3hbnJXiRslUTtwNXBjm','Employer','921000003',NULL,'Faro'),
+('Remote Works Inc','remote@works.com','$2y$12$83Ev/z5M7gSJZkODU9J4N.gObXSnKOau.ldwmy3RHhn/yHWlxJFaG','Employer','921000004',NULL,NULL),
+('Delta Solutions','delta@solutions.com','$2y$12$6rs74q8ujRlPKuaHT6ABp.Hm6lS1oeqtcw3hbnJXiRslUTtwNXBjm','Employer','921000005',NULL,'Braga'),
 
+('Alice Jobseeker','alice.seeker@example.com','$2y$12$Oy5gpTqN42CRGFveMh7jZOiuwgQOTEOJE7liITSCgyXSq7MgWON.i','JobSeeker','932000001','Full-stack developer with 5 years of experience.','Porto'),
+('Bob Candidate','bob.candidate@example.com','$2y$12$Oy5gpTqN42CRGFveMh7jZOiuwgQOTEOJE7liITSCgyXSq7MgWON.i','JobSeeker','932000002','Front-end developer, React specialist.','Lisboa'),
+('Catarina Hunter','catarina.h@example.com','$2y$12$Oy5gpTqN42CRGFveMh7jZOiuwgQOTEOJE7liITSCgyXSq7MgWON.i','JobSeeker','932000003','Marketing professional, SEO and analytics.','Coimbra'),
+('David Applicant','david.app@example.com','$2y$12$Oy5gpTqN42CRGFveMh7jZOiuwgQOTEOJE7liITSCgyXSq7MgWON.i','JobSeeker','932000004','UX/UI designer with mobile-first focus.','Faro'),
+('Eva Seeker','eva.seeker@example.com','$2y$12$Oy5gpTqN42CRGFveMh7jZOiuwgQOTEOJE7liITSCgyXSq7MgWON.i','JobSeeker','932000005','Data analyst skilled in SQL and Python.','Braga'),
+('Frank Hunter','frank.h@example.com','$2y$12$Oy5gpTqN42CRGFveMh7jZOiuwgQOTEOJE7liITSCgyXSq7MgWON.i','JobSeeker','932000006','Project manager with PMP certification.','Lisboa');
 
------------------------------------------
--- LEVEL 2: Dependent on Users, Category, Location
------------------------------------------
+-- ---------------------------
+-- CVs (for jobseekers)
+-- ---------------------------
+INSERT INTO cv (jobseeker_id, uploaded_at, file_path, mime_type)
+VALUES
+(7, now(), NULL, NULL),
+(8, now(), NULL, NULL),
+(9, now(), NULL, NULL),
+(10, now(), NULL, NULL),
+(11, now(), NULL, NULL),
+(12, now(), NULL, NULL);
 
--- R08: CV (jobseeker_id is UK NN, description is NN) [4]
-
-INSERT INTO cv (jobseeker_id) VALUES
-(
-    3 -- Jane Seeker (U3)
-); -- CV ID 1
-
-
--- R04: JOBPOST (employer_id, category_id, title, salary, work_model, description are NN) [2, 5]
--- T6 (check_positive_salary) and T9 (check_jobpost_location_requirement) will fire here.
-
+-- ---------------------------
+-- JOBPOSTS (12 total) -- ensure location logic respected
+-- ---------------------------
+-- Employer IDs (based on insertion order): 2..6 are employers above
 INSERT INTO jobpost (employer_id, category_id, location, title, salary, work_model, description) VALUES
-(
-    2, -- Global Tech Solutions (U2)
-    1, -- Coding
-    'Porto', -- Location: Porto (L1)
-    'Senior Python Developer',
-    80000.00,
-    'On-site', -- T9: Requires location, L1 provided.
-    'We require a senior developer specializing in microservices using Python.'
-), -- JobPost ID 1 (JP1)
-(
-    2, -- Global Tech Solutions (U2)
-    2, -- Marketing
-    NULL,
-    'Digital Marketing Specialist',
-    55000.00,
-    'Remote', -- T9: Location NULL is mandatory.
-    'Manage international marketing campaigns remotely, requiring Social Media skills.'
-), -- JobPost ID 2 (JP2)
-(
-    4, -- Remote Developer Corp (U4)
-    3, -- Design
-    'Faro', -- Location: Faro (L3)
-    'Hybrid UX/UI Designer',
-    45000.00,
-    'Hybrid', -- T9: Requires location, L3 provided.
-    'Design focused on mobile interfaces with strong Communication skills.'
-); -- JobPost ID 3 (JP3)
+(2, 1, 'Lisboa', 'Senior Backend Engineer', 90000.00, 'On-site', 'Work on scalable APIs and microservices.'),
+(2, 2, NULL, 'Remote Content Marketer', 45000.00, 'Remote', 'Create content strategies for SaaS products.'),
+(3, 3, 'Porto', 'UI/UX Designer (Hybrid)', 48000.00, 'Hybrid', 'Design interfaces for web and mobile.'),
+(3, 2, NULL, 'SEO Specialist (Remote)', 42000.00, 'Remote', 'Optimize organic traffic and search rankings.'),
+(4, 3, 'Faro', 'Senior Product Designer', 70000.00, 'On-site', 'Design product experiences and lead design sprints.'),
+(4, 1, 'Faro', 'Front-end Developer (On-site)', 52000.00, 'On-site', 'React/TypeScript development for client projects.'),
+(5, 1, NULL, 'DevOps Engineer (Remote)', 75000.00, 'Remote', 'Infrastructure as code and CI/CD pipelines.'),
+(5, 7, 'Lisboa', 'Civil Engineer (On-site)', 65000.00, 'On-site', 'Site engineering and project management.'),
+(6, 4, 'Braga', 'Financial Analyst (Hybrid)', 58000.00, 'Hybrid', 'Financial modelling and reporting.'),
+(6, 1, 'Braga', 'Junior Backend Developer', 30000.00, 'On-site', 'Assist in backend services and APIs.'),
+(2, 12, NULL, 'Research Scientist (Remote)', 68000.00, 'Remote', 'Research projects with data-driven focus.'),
+(3, 5, 'Porto', 'Education Program Manager', 47000.00, 'On-site', 'Manage educational programs and partnerships.');
 
--- Triggers T8 (notify_new_job_posting) and T11 (notify_matching_job_seekers) fired for JP1, JP2, JP3.
-
-
------------------------------------------
--- LEVEL 3: Linker Tables & Core Interactions
------------------------------------------
-
-INSERT INTO skill_user (user_id, skill_id) VALUES
-(3, 2), 
-(3, 3);
-
-
--- R05: APPLICATION (T4 (duplicate check) and T7 (notify employer) fire here) [7]
-
--- A1: Jane Seeker (U3) applies to JP1 (Python Dev, Employer U2)
-INSERT INTO application (jobseeker_id, jobpost_id, motivation) VALUES
-(
-    3, 
-    1, 
-    'Applying due to perfect skill match.'
-); -- Application ID 1 (A1)
-
-
--- TEST T4 (Duplicate Check) - This should FAIL if executed, proving the trigger works.
-/*
-INSERT INTO application (jobseeker_id, jobpost_id, motivation) VALUES
-(3, 1, 'Second attempt.'); -- Expects RAISE EXCEPTION
-*/
-
-
--- R06: FAVOURITE_JOB [5]
-
-INSERT INTO favourite_job (jobseeker_id, jobpost_id) VALUES
-(
-    3, -- Jane Seeker (U3)
-    2  -- Remote Social Media Manager (JP2)
-);
-
-
--- R07: SEARCH_HISTORY (T8 (limit history) fires here) [7]
-
--- Insert 11 rows to test T8 (limit_search_history) on user U3, ensuring only the 10 newest remain.
-INSERT INTO search_history (user_id, search) VALUES
-(3, 'Oldest search - SHOULD BE DELETED'), -- ID 1
-(3, 'Python Porto'),                     -- ID 2
-(3, 'Remote Marketing'),                 -- ID 3
-(3, 'Design Hybrid'),                    -- ID 4
-(3, 'SQL Developer'),                    -- ID 5
-(3, 'HR Manager'),                       -- ID 6
-(3, 'Latest Search 1'),                  -- ID 7
-(3, 'Latest Search 2'),                  -- ID 8
-(3, 'Latest Search 3'),                  -- ID 9
-(3, 'Latest Search 4'),                  -- ID 10
-(3, 'Newest Search - SHOULD BE KEPT');   -- ID 11 (T8 deletes ID 1)
-
-
--- R17: JOBPOST_CATEGORY (Secondary category linkage) [8]
-
+-- ---------------------------
+-- JOBPOST_CATEGORY links (secondary categories)
+-- ---------------------------
 INSERT INTO jobpost_category (category_id, jobpost_id) VALUES
-(1, 1), 
-(7, 1),
+(1, 1),
+(2, 1),
 (2, 2),
-(3, 2),
-(2, 3),
-(3, 3);
+(3, 3),
+(3, 4),
+(1, 6),
+(1, 7),
+(7, 8),
+(4, 9),
+(1, 10),
+(12, 11),
+(5, 12);
 
+-- ---------------------------
+-- SKILL_USER links (jobseekers to skills)
+-- (skill IDs correspond to your skill inserts order: 1..15)
+-- ---------------------------
+INSERT INTO skill_user (user_id, skill_id) VALUES
+(7, 1),  -- Alice: Communication
+(7, 11), -- Alice: ProjectManagement
+(8, 2),  -- Bob: Teamwork
+(8, 6),  -- Bob: Adaptability
+(9, 12), -- Catarina: Research
+(9, 14), -- Catarina: CustomerService
+(10, 5), -- David: Creativity
+(10, 9), -- David: AttentionToDetail
+(11, 13), -- Eva: AnalyticalThinking
+(11, 1),  -- Eva: Communication
+(12, 7);  -- Frank: Leadership
 
--- R10: REPORT (Admin reporting on User U2) [9]
-
-INSERT INTO report (reason, type, reporter_id, reported_user_id) VALUES
-(
-    'Spamming job titles.',
-    'UserReport',
-    1, -- Reporter: Admin (U1)
-    2  -- Reported User: Employer (U2)
-);
+-- ---------------------------
+-- APPLICATIONS (some jobseekers apply to jobposts)
+-- (no duplicates; triggers will fire notify_employer_on_new_application)
+-- ---------------------------
+-- jobpost IDs are 1..12 in insertion order above
+INSERT INTO application (jobseeker_id, jobpost_id, motivation) VALUES
+(7, 1, 'I have 5 years building APIs and microservices.'),
+(8, 3, 'Strong UI skills and React experience.'),
+(9, 4, 'SEO background with measurable results.'),
+(10, 6, 'Experienced front-end designer for mobile.'),
+(11, 11, 'Research background in data-driven projects.'),
+(12, 9, 'Experience in finance projects and reporting.');

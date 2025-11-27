@@ -39,10 +39,10 @@
             </ul>
         @else
             @foreach ($employers as $employer)
-
                 <a href="{{ route('employer.show', $employer->id) }}">
 
-                <h2>{{$employer->name}} </h2>
+                <h2>{{$employer->name}} </h2> </a>
+                <p>Location: {{$employer->location}}</p>
                 <p>Email: {{$employer->email}}</p>
             @endforeach
         @endif

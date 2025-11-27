@@ -17,7 +17,7 @@ Route::redirect('/', '/login');
 
 // resultados da pesquisa
 Route::get('/jobposts/search', [JobPostController::class, 'search'])->name('jobpost.search');
-Route::get('/employers/search', [JobPostController::class, 'search'])->name('jobpost.search');
+Route::get('/employers/search', [JobPostController::class, 'search'])->name('employer.search');
 Route::get('/jobposts', [JobPostController::class, 'index'])->name('pages.jobposts.index');
 Route::get('/jobposts/create', [JobPostController::class, 'create'])->name('jobpost.create');
 Route::get('/jobposts/{jobpost}', [JobPostController::class, 'show'])->name('jobpost.show');

@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
-use App\Models\Card;
-
 class HomeController extends Controller
 {       
         // Pagina inicial com jobposts

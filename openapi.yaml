@@ -1,0 +1,697 @@
+openapi: 3.0.0
+
+info:
+  version: "1.0"
+  title: "LBAW Konnekt Web API"
+  description: "Web Resources Specification (A7) for Konnekt"
+
+servers:
+  - url: http://lbaw.fe.up.pt
+    description: Production server
+
+externalDocs:
+  description: Find more info here.
+  url: https://web.fe.up.pt/~ssn/wiki/teach/lbaw/medialib/a07
+
+tags:
+  - name: "M01: Authentication and Individual Profile"
+  - name: "M02: JobPosts and Employers"
+  - name: "M03: Applications"
+  - name: "M04: CVs"
+  - name: "M05: Static Pages & Misc"
+
+paths:
+  /:
+    get:
+      operationId: R001
+      summary: "R001: Redirect root to login"
+      description: "Redirects the root URL to the login page. Access: PUB"
+      tags:
+        - "M05: Static Pages & Misc"
+      responses:
+        "302":
+          description: "Redirect to /login"
+          headers:
+            Location:
+              schema:
+                type: string
+                example: "/login"
+
+  /login:
+    get:
+      operationId: R101
+      summary: "R101: Login Form"
+      description: "Provide login form. Access: PUB"
+      tags:
+        - "M01: Authentication and Individual Profile"
+      responses:
+        "200":
+          description: "Ok. Show Log-in UI"
+    post:
+      operationId: R102
+      summary: "R102: Login Action"
+      description: "Processes the login form submission. Access: PUB"
+      tags:
+        - "M01: Authentication and Individual Profile"
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        "302":
+          description: "Redirect after processing the login credentials."
+          headers:
+            Location:
+              schema:
+                type: string
+              examples:
+                302Success:
+                  description: "Successful authentication. Redirect to user profile."
+                  value: "/profile"
+                302Error:
+                  description: "Failed authentication. Redirect to login form."
+                  value: "/login"
+
+  /logout:
+    get:
+      operationId: R103
+      summary: "R103: Logout Action"
+      description: "Logout the current authenticated user. Access: USR, EMP"
+      tags:
+        - "M01: Authentication and Individual Profile"
+      responses:
+        "302":
+          description: "Redirect after processing logout."
+          headers:
+            Location:
+              schema:
+                type: string
+              examples:
+                302Success:
+                  description: "Successful logout. Redirect to login form."
+                  value: "/login"
+
+  /register:
+    get:
+      operationId: R104
+      summary: "R104: Register Form"
+      description: "Provide new user registration form. Access: PUB"
+      tags:
+        - "M01: Authentication and Individual Profile"
+      responses:
+        "200":
+          description: "Ok. Show Sign-Up UI"
+    post:
+      operationId: R105
+      summary: "R105: Register Action"
+      description: "Processes the new user registration form submission. Access: PUB"
+      tags:
+        - "M01: Authentication and Individual Profile"
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                password:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                picture:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        "302":
+          description: "Redirect after processing the new user information."
+          headers:
+            Location:
+              schema:
+                type: string
+              examples:
+                302Success:
+                  description: "Successful registration. Redirect to user profile."
+                  value: "/profile"
+                302Failure:
+                  description: "Failed registration. Redirect to login form."
+                  value: "/login"
+
+  /jobposts:
+    get:
+      operationId: R201
+      summary: "R201: List JobPosts"
+      description: "List job posts for all users. Access: PUB"
+      tags:
+        - "M02: JobPosts and Employers"
+      responses:
+        "200":
+          description: "HTML page with list of job posts"
+          content:
+            text/html:
+              schema:
+                type: string
+    post:
+      operationId: R202
+      summary: "R202: Create JobPost"
+      description: "Create a new job post. Access: EMP"
+      tags:
+        - "M02: JobPosts and Employers"
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                salary:
+                  type: string
+                work_model:
+                  type: string
+                category_id:
+                  type: integer
+                location_id:
+                  type: integer
+              required:
+                - title
+                - description
+      responses:
+        "302":
+          description: "Redirect to created job post"
+          headers:
+            Location:
+              schema:
+                type: string
+
+  /jobposts/create:
+    get:
+      operationId: R203
+      summary: "R203: Create JobPost form"
+      description: "Show form to create a new job post. Access: EMP"
+      tags:
+        - "M02: JobPosts and Employers"
+      responses:
+        "200":
+          description: "HTML form to create a job post"
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /jobposts/search:
+    get:
+      operationId: R204
+      summary: "R204: Search JobPosts"
+      description: "Search job posts using query filters. Access: PUB"
+      tags:
+        - "M02: JobPosts and Employers"
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+        - in: query
+          name: category_id
+          schema:
+            type: string
+        - in: query
+          name: type
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Search results (HTML)"
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /jobposts/{jobpost}:
+    get:
+      operationId: R205
+      summary: "R205: Show JobPost"
+      description: "Show a specific job post. Access: PUB"
+      tags:
+        - "M02: JobPosts and Employers"
+      parameters:
+        - in: path
+          name: jobpost
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: "Job post page (HTML)"
+          content:
+            text/html:
+              schema:
+                type: string
+    put:
+      operationId: R206
+      summary: "R206: Update JobPost"
+      description: "Update a job post. Access: EMP"
+      tags:
+        - "M02: JobPosts and Employers"
+      parameters:
+        - in: path
+          name: jobpost
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                salary:
+                  type: string
+                work_model:
+                  type: string
+                category_id:
+                  type: integer
+                location_id:
+                  type: integer
+              required:
+                - title
+                - description
+      responses:
+        "302":
+          description: "Redirect to updated job post"
+          headers:
+            Location:
+              schema:
+                type: string
+    delete:
+      operationId: R207
+      summary: "R207: Delete JobPost"
+      description: "Delete a job post. Access: EMP"
+      tags:
+        - "M02: JobPosts and Employers"
+      parameters:
+        - in: path
+          name: jobpost
+          schema:
+            type: integer
+          required: true
+      responses:
+        "302":
+          description: "Redirect to jobposts index after deletion"
+
+  /jobposts/{jobpost}/edit:
+    get:
+      operationId: R208
+      summary: "R208: Edit JobPost form"
+      description: "Show form to edit an existing job post. Access: EMP"
+      tags:
+        - "M02: JobPosts and Employers"
+      parameters:
+        - in: path
+          name: jobpost
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "Job post edit form (HTML)"
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /jobposts/{jobpost}/apply:
+    get:
+      operationId: R301
+      summary: "R301: Show application form for a jobpost"
+      description: "Show application form for a specific job post. Access: USR"
+      tags:
+        - "M03: Applications"
+      parameters:
+        - in: path
+          name: jobpost
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: "Application form (HTML)"
+
+  /jobposts/{jobpost}/application:
+    post:
+      operationId: R302
+      summary: "R302: Submit application for a jobpost"
+      description: "Submit an application for a specific job post. Access: USR"
+      tags:
+        - "M03: Applications"
+      parameters:
+        - in: path
+          name: jobpost
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                motivation:
+                  type: string
+      responses:
+        "302":
+          description: "Redirect back to job post with success message"
+    get:
+      operationId: R303
+      summary: "R303: Employer view: list applications for a jobpost"
+      description: "Show list of applications for a job post to the employer. Access: EMP"
+      tags:
+        - "M03: Applications"
+      parameters:
+        - in: path
+          name: jobpost
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: "HTML list of applications for the employer"
+
+  /applications/{application}/edit:
+    get:
+      operationId: R304
+      summary: "R304: Edit application form (jobseeker)"
+      description: "Show form to edit an application. Access: USR"
+      tags:
+        - "M03: Applications"
+      parameters:
+        - in: path
+          name: application
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: "Application edit form (HTML)"
+
+  /applications/{application}:
+    put:
+      operationId: R305
+      summary: "R305: Update application (jobseeker)"
+      description: "Update a job application. Access: USR"
+      tags:
+        - "M03: Applications"
+      parameters:
+        - in: path
+          name: application
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                motivation:
+                  type: string
+      responses:
+        "302":
+          description: "Redirect to profile with success message"
+    delete:
+      operationId: R306
+      summary: "R306: Withdraw an application (jobseeker)"
+      description: "Delete/withdraw a job application. Access: USR"
+      tags:
+        - "M03: Applications"
+      parameters:
+        - in: path
+          name: application
+          schema:
+            type: integer
+          required: true
+      responses:
+        "302":
+          description: "Redirect to profile after deletion"
+
+  /applications/{application}/status:
+    patch:
+      operationId: R307
+      summary: "R307: Employer updates application status"
+      description: "Update the status of an application (Accepted/Rejected). Access: EMP"
+      tags:
+        - "M03: Applications"
+      parameters:
+        - in: path
+          name: application
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - Accepted
+                    - Rejected
+      responses:
+        "302":
+          description: "Redirect back to previous page"
+
+  /profile:
+    get:
+      operationId: R106
+      summary: "R106: Authenticated user profile"
+      description: "Show authenticated user's profile page. Access: USR/EMP"
+      tags:
+        - "M01: Authentication and Individual Profile"
+      responses:
+        "200":
+          description: "Profile page (HTML)"
+    put:
+      operationId: R107
+      summary: "R107: Update authenticated user profile"
+      description: "Update authenticated user's profile data. Access: USR/EMP"
+      tags:
+        - "M01: Authentication and Individual Profile"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                phone_number:
+                  type: string
+                password:
+                  type: string
+                password_confirmation:
+                  type: string
+                photo:
+                  type: string
+                  format: binary
+                description:
+                  type: string
+                cv_file:
+                  type: string
+                  format: binary
+      responses:
+        "302":
+          description: "Redirect to profile with success message"
+
+  /profile/edit:
+    get:
+      operationId: R108
+      summary: "R108: Edit profile form"
+      description: "Show edit profile form. Access: USR/EMP"
+      tags:
+        - "M01: Authentication and Individual Profile"
+      responses:
+        "200":
+          description: "Profile edit form (HTML)"
+
+  /profile/cv/download:
+    get:
+      operationId: R401
+      summary: "R401: Download authenticated user CV"
+      description: "Download CV of the authenticated user. Access: USR/EMP"
+      tags:
+        - "M04: CVs"
+      responses:
+        "200":
+          description: "CV file download"
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
+  /users/{user}/cv/download:
+    get:
+      operationId: R402
+      summary: "R402: Download another user CV (if allowed)"
+      description: "Download CV of another user if permissions allow. Access: EMP"
+      tags:
+        - "M04: CVs"
+      parameters:
+        - in: path
+          name: user
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: "CV file download"
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
+  /profile/cv:
+    delete:
+      operationId: R403
+      summary: "R403: Delete authenticated user CV"
+      description: "Delete authenticated user's CV file. Access: USR/EMP"
+      tags:
+        - "M04: CVs"
+      responses:
+        "302":
+          description: "Redirect to profile.edit with status"
+
+  /profile/photo:
+    delete:
+      operationId: R109
+      summary: "R109: Delete authenticated user photo"
+      description: "Delete authenticated user's profile photo. Access: USR/EMP"
+      tags:
+        - "M01: Authentication and Individual Profile"
+      responses:
+        "302":
+          description: "Redirect to profile.edit with status"
+
+  /users/{id}:
+    get:
+      operationId: R209
+      summary: "R209: Public profile for another user"
+      description: "Show public profile of another user (jobseeker/employer). Access: PUB"
+      tags:
+        - "M02: JobPosts and Employers"
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: "Public user profile (HTML)"
+
+  /employers/search:
+    get:
+      operationId: R210
+      summary: "R210: Search Employers"
+      description: "Search employers using query filters. Access: PUB"
+      tags:
+        - "M02: JobPosts and Employers"
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Employer search results (HTML)"
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /employers/{pro}:
+    get:
+      operationId: R211
+      summary: "R211: Employer public profile"
+      description: "Show public profile of an employer. Access: PUB"
+      tags:
+        - "M02: JobPosts and Employers"
+      parameters:
+        - in: path
+          name: pro
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "Employer profile page (HTML)"
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /storage/{path}:
+    get:
+      operationId: R501
+      summary: "R501: Serve stored file"
+      description: "Serve a file from storage. Access: DEPENDS"
+      tags:
+        - "M05: Static Pages & Misc"
+      parameters:
+        - in: path
+          name: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "File download or display"
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
+  /up:
+    get:
+      operationId: R502
+      summary: "R502: Application health check"
+      description: "Check if the application is running. Access: PUB"
+      tags:
+        - "M05: Static Pages & Misc"
+      responses:
+        "200":
+          description: "Application is up"

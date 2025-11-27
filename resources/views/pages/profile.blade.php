@@ -44,7 +44,7 @@
             @if($user->skills && count($user->skills))
                 <ul>
                 @foreach($user->skills as $skill)
-                    <li>{{ $skill->name}}</li>
+                    <li><strong>{{ $skill->name}}</strong>: {{ $skill->description}}</li>
                 @endforeach
                 </ul>
             @else

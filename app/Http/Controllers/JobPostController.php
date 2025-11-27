@@ -110,11 +110,11 @@ class JobPostController extends Controller {
         $type = $request->input('type');
 
         $jobPosts = JobPost::query();
-        $employers = User::query();
+        $employers = User::where('role','Employer');
 
         if ($type === 'search_jobpost') {
 
-            // FILTRO DE TEXTO
+            // filtrar por jobpost apenas
             if ($pesquisa) {
                 $jobPosts->whereRaw(
                     "tsvectors @@ plainto_tsquery('english', ?)",
@@ -141,7 +141,7 @@ class JobPostController extends Controller {
             ]);
         }
 
-        // SEARCH EMPLOYERS
+        // procurar employers apenas
         if ($pesquisa) {
             $employers->whereRaw(
                 "tsvectors @@ plainto_tsquery('english', ?)",

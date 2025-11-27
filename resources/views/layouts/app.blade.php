@@ -15,18 +15,29 @@
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}" defer></script>
         <script src="{{ asset('js/register.js') }}" defer></script>
+        <script src="{{ asset('js/search_bar.js') }}"defer ></script>
         @stack('scripts')
     </head>
     <body>
         <main>
             <header>
                 <h1><a href="{{ route('pages.jobposts.index') }}">Konnekt!</a></h1>
-
                 @auth
                     <a class="button" href="{{ url('/logout') }}">Logout </a> <a class="button" href="{{ route('profile') }}">{{ Auth::user()->name }}</a>
                 @else
                     <a class="button button-outline" href="{{ route('register') }}">Register</a> <a class="button" href="{{ route('login') }}">Login</a>
                 @endauth
+                @if(Route::currentRouteName() !== 'login' and Route::currentRouteName() !=='register')
+                <div class="search">
+                    <input type="text" id="search" class="search" placeholder="Search jobposts...">
+                    <select class="search_type" id="search_type">
+                        <option value="search_jobpost">Job Posts</option>
+                        <option value="search_employer">Employers</option>
+                    </select>
+                        
+                    <button id="search_button" class="search_button">Search</button>
+                </div>
+                @endif
             </header>
 
             <section id="content">

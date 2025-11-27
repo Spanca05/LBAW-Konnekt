@@ -33,6 +33,7 @@
 
     @include('partials.jobpost', ['jobPost' => $jobPost])
     <p class="description">Description: {{ $jobPost->description }} </p>
+
     
     @auth
         @if(Auth::user()->role === 'JobSeeker')
@@ -49,8 +50,10 @@
         @endif
     @else
         <a href="{{ route('login') }}" class="apply-button"><button>Login to apply</button></a>
-    
     @endauth
+
+    @include('partials.applications_received', ['jobPost' => $jobPost])
+
     <a href="{{ route('pages.jobposts.index') }}"><button class="return">return</button></a>
 </section>
 

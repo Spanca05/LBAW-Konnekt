@@ -12,7 +12,6 @@ class CV extends Model
 
     protected $fillable = [
         'jobseeker_id',
-        'description',
         'file_path',
         'mime_type',
         'uploaded_at',

@@ -7,7 +7,6 @@ use App\Models\Application;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use PhpParser\Node\Scalar\String_;
 
 class ApplicationController extends Controller
 {
@@ -33,8 +32,6 @@ class ApplicationController extends Controller
     public function store(Request $request, JobPost $jobpost)
     {
         $user = Auth::user();
-        // optional: check role if you have roles
-        //this->authorize('apply', $jobpost); // optional Policy
 
         $data = $request->validate([
             'motivation' => ['nullable', 'string', 'max:2000'],
@@ -46,7 +43,7 @@ class ApplicationController extends Controller
         }
 
 
-        $application = Application::create([
+        Application::create([
             'jobseeker_id' => $user->id,
             'jobpost_id' => $jobpost->id,
             'motivation' => $data['motivation'] ?? " ",
@@ -59,15 +56,11 @@ class ApplicationController extends Controller
 
     public function index(JobPost $jobpost)
     {
-        // ensure the current user owns the job or is employer
-        $this->authorize('viewApplications', $jobpost);
         $applications = $jobpost->applications()->with('user')->orderByDesc('date')->get();
         return view('pages.jobpost_applications', compact('jobpost', 'applications'));
     }
 
-    /**
-     * Show the form to edit an application (jobseeker only).
-     */
+    
     public function edit(Application $application)
     {
         $user = Auth::user();
@@ -78,9 +71,7 @@ class ApplicationController extends Controller
         return view('pages.application_edit', ['application' => $application]);
     }
 
-    /**
-     * Update an application (jobseeker only).
-     */
+    
     public function update(Request $request, Application $application)
     {
         $user = Auth::user();
@@ -100,17 +91,14 @@ class ApplicationController extends Controller
         return redirect()->route('profile')->with('success', 'Application updated.');
     }
 
-    /**
-     * Delete an application (jobseeker only).
-     */
+    
     public function destroy(Application $application)
     {
         $user = Auth::user();
         if (!$user || $user->id !== $application->jobseeker_id) {
             abort(403);
         }
-        // Delete dependent notifications that reference this application to avoid
-        // foreign-key constraint violations (legacy schema references application.id).
+
         Notification::where('application_id', $application->id)->delete();
 
         $application->delete();
@@ -120,7 +108,7 @@ class ApplicationController extends Controller
     public function status_update(Request $request, Application $application) 
     {
         $user = Auth::user();
-        // Only employer who owns the job post can change status
+        
         $jobPost = $application->jobPost;
         if (!$user || !$jobPost || $user->id !== $jobPost->employer_id) {
             abort(403);

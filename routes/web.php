@@ -3,25 +3,22 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ProfileController;
-
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
-
 use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\CVController;
 use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\AdminController;
 
 // Home
 Route::redirect('/', '/login');
 
 
-//resultados da pesquisa por jobpost
+// resultados da pesquisa
 Route::get('/jobposts/search', [JobPostController::class, 'search'])->name('jobpost.search');
 Route::get('/employers/search', [JobPostController::class, 'search'])->name('jobpost.search');
-
 Route::get('/jobposts', [JobPostController::class, 'index'])->name('pages.jobposts.index');
-
 Route::get('/jobposts/create', [JobPostController::class, 'create'])->name('jobpost.create');
 Route::get('/jobposts/{jobpost}', [JobPostController::class, 'show'])->name('jobpost.show');
 Route::get('/employers/{pro}', [ProfileController::class, 'show'])->name('employer.show');
@@ -48,7 +45,7 @@ Route::controller(RegisterController::class)->group(function () {
     Route::post('/register', 'register');
 });
 
-// Profile (authenticated user)
+// Profile
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'showAuth'])->name('profile');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -61,7 +58,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile/cv', [CVController::class, 'destroy'])->name('profile.cv.destroy');
     Route::delete('/profile/photo', [ProfileController::class, 'destroyPhoto'])->name('profile.photo.destroy');
 
-    // other users profile (public)
+    // Other users profile
     Route::get('/users/{id}', [ProfileController::class, 'show'])->name('profile.other');
 });
 
@@ -69,11 +66,17 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/jobposts/{jobpost}/apply', [ApplicationController::class, 'create'])->name('jobpost.apply.form');
     Route::post('/jobposts/{jobpost}/application', [ApplicationController::class, 'store'])->name('jobpost.apply');
-    Route::get('/jobposts/{jobpost}/application', [ApplicationController::class, 'index'])->name('jobpost.application'); // employer view
+    Route::get('/jobposts/{jobpost}/application', [ApplicationController::class, 'index'])->name('jobpost.application');
     // Jobseeker application management
     Route::get('/applications/{application}/edit', [ApplicationController::class, 'edit'])->name('applications.edit');
     Route::put('/applications/{application}', [ApplicationController::class, 'update'])->name('applications.update');
     Route::delete('/applications/{application}', [ApplicationController::class, 'destroy'])->name('applications.destroy');
-    // Employer: update application status (Accept / Reject)
+    // Employer update application status
     Route::patch('/applications/{application}/status', [ApplicationController::class, 'status_update'])->name('applications.status.update');
+});
+
+// Admin dashboard
+Route::middleware('auth')->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+    Route::post('/admin/create-admin', [AdminController::class, 'createAdmin'])->name('admin.create');
 });

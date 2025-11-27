@@ -44,6 +44,7 @@ class RegisterController extends Controller
             'location' => 'nullable|string|max:255',
             'email' => 'required|email|max:250|unique:users',
             'password' => 'required|min:8|confirmed',
+            'description' => 'nullable|string|max:2000'
         ]);
 
         // Create the new user.
@@ -53,7 +54,8 @@ class RegisterController extends Controller
             'phone_number' => $request->phone_number,
             'location' => $request->location ?? null,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'description' => $request->description ?? null
         ]);
 
         // Se for JobSeeker, attach das skills (sem validação)

@@ -79,6 +79,12 @@
         @enderror
     </div>
 
+    @error('description')
+      <span id="description-error" class="error" role="alert">{{ $message }}</span>
+    @enderror
+      <label for="description">Description</label>
+      <input id="description" name="description" type="text" >
+
     <label for="password">Password</label>
     <input
         id="password"

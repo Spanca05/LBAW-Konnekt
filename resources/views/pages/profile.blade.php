@@ -39,7 +39,28 @@
             @endif
         </li>
 
-        @if($user->role === 'JobSeeker' && (optional($user->cv)->file_path))
+        @if(!empty($user->location))
+            <li><strong>Location:</strong> {{ $user->location }}</li>
+        @else
+            <li><strong>Location:</strong> Not specified</li>
+        @endif
+
+        @if($user->role === 'JobSeeker')
+            <li>
+                <strong>Skills:</strong>
+            @if($user->skills && count($user->skills))
+                <ul>
+                @foreach($user->skills as $skill)
+                    <li><strong>{{ $skill->name}}</strong>: {{ $skill->description}}</li>
+                @endforeach
+                </ul>
+            @else
+                <p>You have no Skills</p>
+            @endif
+            </li>
+        @endif
+
+        @if($user->role === 'JobSeeker' && (optional($user->cv)->file_path || optional($user->cv)->description))
         <li>
             <strong>CV:</strong>
             @if(optional($user->cv)->file_path)
@@ -47,11 +68,19 @@
             @endif
         </li>
         @endif
+        
     </ul>
 
     <p>
         @if(auth()->check() && auth()->id() === $user->id)
         <a class="button" href="{{ route('profile.edit') }}">Edit profile</a>
+        <form action="{{ route('profile.destroy') }}" method="POST">
+            @csrf
+            @method('DELETE')
+            <button class="button" onclick="return confirm('Are you sure you want to delete your account? This action is irreversible.')">
+                Delete profile
+            </button>
+        </form>
         @if(auth()->user()->role === 'Employer')
         <a class="button" href="{{ route('jobpost.create') }}">Create New JobPost</a>
         @endif

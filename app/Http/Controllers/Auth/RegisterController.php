@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 use App\Models\User;
+use App\Models\Skill;
 
 class RegisterController extends Controller
 {
@@ -18,9 +19,9 @@ class RegisterController extends Controller
      * Show the user registration form.
      */
     public function showRegistrationForm(): View
-    {
-        // Render the registration view.
-        return view('auth.register');
+    {   
+        $skills = Skill::all(); // Todas as skills disponíveis
+        return view('auth.register', compact('skills'));
     }
 
     /**
@@ -40,18 +41,25 @@ class RegisterController extends Controller
             'name' => 'required|string|max:250',
             'role' => 'required|in:JobSeeker,Employer',
             'phone_number' => 'required|string|max:20',
+            'location' => 'nullable|string|max:255',
             'email' => 'required|email|max:250|unique:users',
-            'password' => 'required|min:8|confirmed'
+            'password' => 'required|min:8|confirmed',
         ]);
 
         // Create the new user.
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'role' => $request->role,
             'phone_number' => $request->phone_number,
+            'location' => $request->location ?? null,
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);
+
+        // Se for JobSeeker, attach das skills (sem validação)
+        if ($user->role === 'JobSeeker' && $request->has('skills')) {
+            $user->skills()->attach($request->skills);
+        }
 
         // Attempt login for the newly registered user.
         $credentials = $request->only('email', 'password');

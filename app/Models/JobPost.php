@@ -29,17 +29,14 @@ class JobPost extends Model
         'work_model',
         'description',
         'category_id',
-        'location_id'
+        'location'
     ];
 
-
+    
     public function employer(): BelongsTo{
         return $this->belongsTo(User::class, 'employer_id');
     }
-
-    public function jobLocation(): BelongsTo{
-        return $this->belongsTo(Location::class, 'location_id', 'id');
-    }
+    
 
     public function jobCategory(): BelongsTo{
         return $this->belongsTo(Category::class, 'category_id', 'id');
@@ -55,5 +52,9 @@ class JobPost extends Model
 
     public function applications(): HasMany {
         return $this->hasMany(Application::class, 'jobpost_id', 'id');
+    }
+
+    public function isOwnerDeleted(): bool {
+        return $this->employer && $this->employer->isDeleted();
     }
 }

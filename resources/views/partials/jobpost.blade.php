@@ -12,6 +12,8 @@
         <span class="work_model">Work Model: {{ $jobPost->work_model }}</span>
         <br>
         <span class="category">Category: {{ $jobPost->jobCategory->name }}</span>
+        <br>
+        <span class="location">Location: {{ $jobPost->location ?? 'Not specified' }}</span>
     </div>
     <br>
 </article>

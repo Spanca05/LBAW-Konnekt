@@ -20,7 +20,9 @@
             </form>
         @endif
     @endauth
-    
+
+    {{--  MUDAR ISTO EM BAIXO PARA CONTROLLER E POLICIES  --}}
+
     @php
     $myApplication = null;
     if (Auth::check()) {
@@ -48,6 +50,20 @@
         @elseif(Auth::id() === $jobPost->employer_id)
             <a href="{{ route('jobpost.edit', ['jobpost' => $jobPost->id]) }}"><button class="edit-button">Edit</button></a>
         @endif
+
+        @if(auth()->check() && auth()->user()->role === 'JobSeeker')
+            <form action="{{ route('jobpost.favourite', $jobPost->id) }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-warning">
+                    @if(auth()->user()->favouriteJobs->contains($jobPost->id))
+                        ★ Remove Favourite
+                    @else
+                        ☆ Add to Favourite
+                    @endif
+                </button>
+            </form>
+        @endif
+
     @else
         <a href="{{ route('login') }}" class="apply-button"><button>Login to apply</button></a>
     @endauth

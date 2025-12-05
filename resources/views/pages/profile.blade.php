@@ -85,7 +85,7 @@
     </p>
 
     @if ($user->role === 'JobSeeker')
-    <section class="card">
+    <section class="applications">
         <h2>My Applications</h2>
         @if(isset($applications) && $applications->isNotEmpty())
         <ul>
@@ -119,6 +119,25 @@
         </ul>
         @else
         <p>You have not applied to any jobs yet.</p>
+        @endif
+    </section>
+
+   <section>
+        <h3>⭐ Favourite Job Posts</h3>
+
+        @if($favourites->isEmpty())
+            <p>No favourites yet.</p>
+        @else
+            <ul>
+            @foreach($favourites as $job)
+                <li>
+                    {{-- Mostra cada job usando o partial --}}
+                    @if ($job->employer)
+                        @include('partials.jobpost', ['jobPost' => $job])
+                    @endif
+                </li>
+            @endforeach
+            </ul>
         @endif
     </section>
 

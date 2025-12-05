@@ -96,6 +96,10 @@ class User extends Authenticatable {
         return $this->belongsToMany(Skill::class, 'skill_user', 'user_id', 'skill_id');
     }
 
+    public function favouriteJobs() {
+        return $this->belongsToMany(JobPost::class, 'favourite_job', 'jobpost_id', 'jobseeker_id');
+    }
+
     public function isDeleted() {
         return preg_match('/^deleted_\d+@delete\.app$/', $this->email) &&
         preg_match('/^Anonym\d+$/', $this->name) &&

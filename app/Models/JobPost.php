@@ -57,4 +57,9 @@ class JobPost extends Model
     public function isOwnerDeleted(): bool {
         return $this->employer && $this->employer->isDeleted();
     }
+
+    public function favouritedBy() {
+        return $this->belongsToMany(User::class, 'favourite_job', 'jobpost_id', 'jobseeker_id');
+    }
+
 }

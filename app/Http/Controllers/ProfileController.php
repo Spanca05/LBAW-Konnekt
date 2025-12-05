@@ -25,11 +25,13 @@ class ProfileController extends Controller {
 
         // If the user is a job seeker, load their applications (legacy schema uses jobseeker_id)
         $applications = collect();
+        $favourites = collect();
+
         if ($user && isset($user->role) && $user->role === 'JobSeeker') {
             $applications = $user->applications()->with('jobPost')->orderByDesc('date')->get();
+            $favourites = $user->favouriteJobs()->with('employer')->get();
         }
-
-
+        
         $jobPosts = [];
         if ($user->role === 'Employer') {
             $jobPosts = $user->jobposts()->orderBy('created_at', 'desc')->get();
@@ -38,6 +40,7 @@ class ProfileController extends Controller {
         return view('pages.profile', [
             'user' => $user,
             'applications' => $applications,
+            'favourites' => $favourites,
             'jobPosts' => $jobPosts
         ]);
     }

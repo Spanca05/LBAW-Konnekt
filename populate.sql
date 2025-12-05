@@ -134,3 +134,23 @@ INSERT INTO application (jobseeker_id, jobpost_id, motivation) VALUES
 (10, 6, 'Experienced front-end designer for mobile.'),
 (11, 11, 'Research background in data-driven projects.'),
 (12, 9, 'Experience in finance projects and reporting.');
+
+
+INSERT INTO favourite_job (jobseeker_id, jobpost_id) VALUES
+(7, 1),  -- Alice likes Senior Backend Engineer
+(7, 7),  -- Alice also likes DevOps (Remote)
+
+(8, 3),  -- Bob likes UX Designer (Hybrid)
+(8, 6),  -- Bob also likes Front-end Developer
+
+(9, 4),  -- Catarina likes SEO Specialist
+(9, 12), -- And Education Program Manager
+
+(10, 3), -- David likes UI/UX Designer
+(10, 5), -- And Senior Product Designer
+
+(11, 11), -- Eva likes Research Scientist
+(11, 9),  -- Eva also likes Financial Analyst
+
+(12, 8),  -- Frank likes Civil Engineer
+(12, 1);  -- And Senior Backend Engineer

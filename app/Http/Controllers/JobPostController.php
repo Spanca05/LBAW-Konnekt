@@ -213,5 +213,25 @@ class JobPostController extends Controller {
     }
 
 
-   
+    public function chengeFavourite($jobpostId)
+    {
+        $user = Auth::user();
+
+        // Only JobSeekers can favourite jobs
+        if ($user->role !== 'JobSeeker') {
+            abort(403);
+        }
+
+        $job = JobPost::findOrFail($jobpostId);
+
+        // check if it is already favourite
+        if ($user->favouriteJobs()->where('jobpost_id', $jobpostId)->exists()) {
+            $user->favouriteJobs()->detach($jobpostId);  //remove favourite
+            return back()->with('success', 'Removed from favourites.');
+        }
+
+        $user->favouriteJobs()->attach($jobpostId);
+        return back()->with('success', 'Added to favourites.');
+    }
+
 }

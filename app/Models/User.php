@@ -97,7 +97,7 @@ class User extends Authenticatable {
     }
 
     public function favouriteJobs() {
-        return $this->belongsToMany(JobPost::class, 'favourite_job', 'jobpost_id', 'jobseeker_id');
+        return $this->belongsToMany(JobPost::class, 'favourite_job', 'jobseeker_id', 'jobpost_id');
     }
 
     public function isDeleted() {

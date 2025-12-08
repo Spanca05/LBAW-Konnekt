@@ -213,7 +213,7 @@ class JobPostController extends Controller {
     }
 
 
-    public function chengeFavourite($jobpostId)
+    public function changeFavourite($jobpostId)
     {
         $user = Auth::user();
 

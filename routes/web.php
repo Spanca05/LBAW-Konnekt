@@ -14,7 +14,8 @@ use App\Http\Controllers\AdminController;
 // Home
 Route::redirect('/', '/login');
 
-
+// Rota para o AJAX das sugestões
+Route::get('/api/search/suggestions', [JobPostController::class, 'suggestions'])->name('search.suggestions');
 // resultados da pesquisa
 Route::get('/jobposts/search', [JobPostController::class, 'search'])->name('jobpost.search');
 Route::get('/employers/search', [JobPostController::class, 'search'])->name('employer.search');

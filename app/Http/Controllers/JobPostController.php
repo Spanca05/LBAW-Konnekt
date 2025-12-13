@@ -212,6 +212,58 @@ class JobPostController extends Controller {
         ]);
     }
 
+    public function suggestions(Request $request){
+        $pesquisa = $request->input('q');
+        $type = $request->input('type');
 
-   
+
+        if(!$pesquisa || strlen($pesquisa)<2 ){   // se n tiver nd ou tiver tamanho inf 2 n vai mostrar nd, o json vai ser vazio
+            return response()->json([]);
+        }
+        
+        if($type == 'search_jobpost'){       // procurar por jobposts
+            $jobPosts = JobPost::query()
+                ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$pesquisa])
+                ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$pesquisa])
+                ->with('employer') 
+                ->limit(5)
+                ->get(); //pego em 5 jobposts apenas
+        
+        
+        
+            $resultados= $jobPosts
+                ->filter(fn($jp) => !$jp->isOwnerDeleted()) 
+                ->map(function ($job) {
+                    return [
+                        'name' => $job->title,
+                        'url' => route('jobpost.show', $job->id)
+                    ];
+                })
+                ->values();
+
+
+            return response()->json($resultados);       // devolve resultados em formato json
+        }
+        else if($type == 'search_employer'){
+            $employers = User::query()
+                ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$pesquisa])
+                ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$pesquisa])
+                ->limit(5)
+                ->get();  // pego so em 5 no max
+
+
+            $resultados= $employers
+                ->filter(fn($emp) => !$emp->isDeleted()) 
+                ->map(function ($employer) {
+                    return [
+                        'name' => $employer->name,
+                        'url' => route('employer.show', $employer->id)
+                    ];
+                })
+                ->values();
+
+            return response()->json($resultados);       // devolve resultados em formato json
+        }
+    }
+
 }

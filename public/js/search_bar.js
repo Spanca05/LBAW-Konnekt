@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('search');
     const searchBtn = document.getElementById('search_button');
     const filterBtn = document.getElementById('filter_button');
+    const sugestions = document.getElementById('sugestions');
 
     function search() {
         const query = searchInput.value.trim();
@@ -18,8 +19,10 @@ document.addEventListener('DOMContentLoaded', function () {
     searchInput.addEventListener('keypress', function (e) { // ao pressionar enter tb pesquisa
         if (e.key === 'Enter') {
             search();
+            sugestions.style.display = 'none';
         }
     });
+
     searchBtn.addEventListener('click', search);
 
     if (filterBtn) {
@@ -31,5 +34,65 @@ document.addEventListener('DOMContentLoaded', function () {
             window.location.href =`/jobposts/search?q=${encodeURIComponent(query)}&type=${type}&category_id=${categoryId}`;
         });
     }
+
+    let timeout=null;
+
+    searchInput.addEventListener('input', function() {
+        pesquisa = this.value.trim();       // tirar espaços do nosso input
+        const type = document.getElementById("search_type").value;
+        
+        clearTimeout(timeout);
+
+        if(pesquisa.length < 2){    // n apresenta as sugestões
+            sugestions.style.display = 'none';
+            sugestions.innerHTML = '';
+            return;
+
+        }
+        timeout = setTimeout(() => {
+            fetchSuggestions(pesquisa, type);
+        }, 300);
+    });
+
+    function fetchSuggestions(pesquisa,type){
+        const url = `/api/search/suggestions?q=${encodeURIComponent(pesquisa)}&type=${type}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                mostrarSugestions(data);
+            })
+            .catch(error => console.error('Erro:', error));
+    }
+
+
+
+    function mostrarSugestions(data){
+        if(data.length == 0 || !data){
+            sugestions.style.display='none';
+            return;
+        }
+
+        let lista = '<ul>';
+        
+        data.forEach(element => {     // para cada elemento da nossa data, ele vai pegar e colocar nas nossas sugestões com o respectivo link
+            lista+=`<li> 
+                        <a href= "${element.url}">${element.name}</a>
+                    </li>`;
+        });
+
+        lista += '</ul>';
+
+
+        sugestions.innerHTML = lista;
+        sugestions.style.display='block';
+
+    }
+
+    document.addEventListener('click', function(event){     // desaparecem as sugestões ao clicar fora da barra
+        if(!searchInput.contains(event.target) && !sugestions.contains(event.target)){
+            sugestions.style.display='none';
+        }
+    });
 
 });

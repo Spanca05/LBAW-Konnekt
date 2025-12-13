@@ -92,8 +92,8 @@
                     <input type="text" id="search" class="search" placeholder="Search jobposts...">
                     <div class="sugestions" id="sugestions" style="display: none;"></div>
                     <select class="search_type" id="search_type">
-                        <option value="search_jobpost">Job Posts</option>
-                        <option value="search_employer">Employers</option>
+                        <option value="search_jobpost"{{ (isset($type) && $type == 'search_jobpost') ? 'selected' : '' }}>Job Posts</option>
+                        <option value="search_employer"{{ (isset($type) && $type == 'search_employer') ? 'selected' : '' }}>Employers</option>
                     </select>
                         
                     <button id="search_button" class="search_button">Search</button>

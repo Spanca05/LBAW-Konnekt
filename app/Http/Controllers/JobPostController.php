@@ -151,6 +151,7 @@ class JobPostController extends Controller {
         $categoryId = $request->input('category_id');
         $type = $request->input('type');
         $ordem = $request->input('ordem');
+        $location = $request->input('location');
 
         $jobPosts = JobPost::query();
         $employers = User::where('role','Employer');
@@ -174,6 +175,17 @@ class JobPostController extends Controller {
                 $jobPosts->where('category_id', $categoryId);
             }
 
+            if ($location && $location !== 'all') {
+                if ($location === 'no_location') {  // queremos procurar por locations null ou vazio
+                    $jobPosts->where(function($query) {
+                    $query->whereNull('location')
+                          ->orWhere('location', '');
+                });
+            } 
+            else $jobPosts->where('location', $location);
+            }
+
+            //ordenar por nome ou data
             switch($ordem){
                 case 'Name_A_Z':
                     $jobPosts->orderby('title', 'asc');
@@ -194,6 +206,13 @@ class JobPostController extends Controller {
                     }        
             }
 
+            $locations = JobPost::select('location')
+                    ->whereNotNull('location')
+                    ->where('location', '!=', '') // n queremos locations vazias nem null
+                    ->distinct()    // quer só diferentes
+                    ->orderBy('location', 'asc')
+                    ->pluck('location');
+
              // Aqui aplicas a filtragem de employers deletados
             $jobPosts = $jobPosts->with('employer')->get()
                                 ->filter(fn($jp) => ! $jp->isOwnerDeleted());
@@ -205,6 +224,8 @@ class JobPostController extends Controller {
                 'query' => $pesquisa,
                 'selectedCategory' => $categoryId,
                 'ordem'=>$ordem,
+                'selectedLocation' => $location, // a location selecionada no filter
+                'locations' => $locations,      //lista de tds as locations que existem na BD
                 'categories' => Category::all(),
             ]);
         }
@@ -214,12 +235,41 @@ class JobPostController extends Controller {
             $employers->whereRaw(
                 "tsvectors @@ plainto_tsquery('english', ?)",
                 [$pesquisa]
-            )
-            ->orderByRaw(
-                "ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC",
-                [$pesquisa]
             );
+            if (!$ordem || $ordem === 'relevance') {
+                    $employers->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$pesquisa]);
+                }
         }
+
+        if ($location && $location !== 'all') {
+            if ($location === 'no_location') {  // queremos procurar por locations null ou vazio
+                $employers->where(function($query) {
+                    $query->whereNull('location')
+                          ->orWhere('location', '');
+                });
+            } 
+            else $employers->where('location', $location);
+        }
+            //ordena por nome os employers
+            switch($ordem){
+                case 'Name_A_Z':
+                    $employers->orderby('name', 'asc');
+                    break;
+                case 'Name_Z_A':
+                    $employers->orderby('name','desc');
+                    break;
+                default:
+                    break;        
+            }
+
+        $locations = User::where('role', 'Employer')
+                ->whereNotNull('location')
+                ->where('location', '!=', '') // n queremos locations vazias nem null
+                ->select('location')
+                ->distinct()                    // só os diferentes
+                ->orderBy('location', 'asc')
+                ->pluck('location');
+
 
         $employers = $employers->get() // transforma em Collection
                        ->filter(fn($user) => ! $user->isDeleted());
@@ -230,7 +280,9 @@ class JobPostController extends Controller {
             'employers' => $employers,
             'query' => $pesquisa,
             'selectedCategory' => null,
-            'ordem' => null,
+            'ordem' => $ordem,
+            'selectedLocation' => $location, // location a filtrar
+            'locations' => $locations,          // lista de tds locations da BD
             'categories' => Category::all(),
         ]);
     }

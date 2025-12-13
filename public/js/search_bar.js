@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const sugestions = document.getElementById('sugestions');
     const filtrarCategoria =  document.getElementById('Categories'); 
     const ordem = document.getElementById('ordem');
+    const location = document.getElementById('location');
 
     function search() {
         const query = searchInput.value.trim();
@@ -35,13 +36,25 @@ document.addEventListener('DOMContentLoaded', function () {
         ordem.addEventListener('change', updateFiltro);
     }
 
+    if(location) location.addEventListener('change', updateFiltro);
+    
     function updateFiltro(){
+        //pegar no url atual na parte q e guardar na query ou ent n meter nd
         const query = new URLSearchParams(window.location.search).get('q') || '';
-            const type = 'search_jobpost';
+
+        const type = new URLSearchParams(window.location.search).get('type') || document.getElementById("search_type").value;;
+        
+        const sort = document.querySelector('select[name="ordem"]').value;
+
+        const local =  document.querySelector('select[name="location"]').value;
+        
+        if (type=="search_employer"){
+            window.location.href = `/employers/search?q=${encodeURIComponent(query)}&type=${type}&ordem=${sort}&location=${local}`;
+        }
+        else {
             const categoryId = document.querySelector('select[name="Categories"]').value;
-            const sort = document.querySelector('select[name="Categories"]').value;
-            const sort = document.querySelector('select[name="ordem"]').value;
-            window.location.href = `/jobposts/search?q=${encodeURIComponent(query)}&type=${type}&category_id=${categoryId}&sort=${sort}`;    
+            window.location.href = `/jobposts/search?q=${encodeURIComponent(query)}&type=${type}&category_id=${categoryId}&ordem=${sort}&location=${local}`;    
+            }
         }
 
     let timeout=null;

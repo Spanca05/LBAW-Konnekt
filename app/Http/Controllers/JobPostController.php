@@ -150,6 +150,7 @@ class JobPostController extends Controller {
         $pesquisa = $request->input('q');
         $categoryId = $request->input('category_id');
         $type = $request->input('type');
+        $ordem = $request->input('ordem');
 
         $jobPosts = JobPost::query();
         $employers = User::where('role','Employer');
@@ -161,16 +162,36 @@ class JobPostController extends Controller {
                 $jobPosts->whereRaw(
                     "tsvectors @@ plainto_tsquery('english', ?)",
                     [$pesquisa]
-                )
-                ->orderByRaw(
-                    "ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC",
-                    [$pesquisa]
                 );
+
+                if (!$ordem || $ordem === 'relevance') {
+                    $jobPosts->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$pesquisa]);
+                }
             }
 
             // FILTRO DE CATEGORIA
             if ($categoryId && $categoryId !== 'all') {
                 $jobPosts->where('category_id', $categoryId);
+            }
+
+            switch($ordem){
+                case 'Name_A_Z':
+                    $jobPosts->orderby('title', 'asc');
+                    break;
+                case 'Name_Z_A':
+                    $jobPosts->orderby('title','desc');
+                    break;
+                case 'Newest':
+                    $jobPosts->orderBy('created_at', 'desc');
+                    break;
+                case 'Oldest':
+                    $jobPosts->orderBy('created_at', 'asc');
+                    break;
+                default:
+                    if(!$pesquisa){
+                        $jobPosts->orderBy('created_at', 'desc');
+                        break;
+                    }        
             }
 
              // Aqui aplicas a filtragem de employers deletados
@@ -183,6 +204,7 @@ class JobPostController extends Controller {
                 'employers' => collect(),
                 'query' => $pesquisa,
                 'selectedCategory' => $categoryId,
+                'ordem'=>$ordem,
                 'categories' => Category::all(),
             ]);
         }
@@ -208,6 +230,7 @@ class JobPostController extends Controller {
             'employers' => $employers,
             'query' => $pesquisa,
             'selectedCategory' => null,
+            'ordem' => null,
             'categories' => Category::all(),
         ]);
     }

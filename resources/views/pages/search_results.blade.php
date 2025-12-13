@@ -18,6 +18,14 @@
                     <option value="{{ $category->id }}" {{ $selectedCategory == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                 @endforeach
             </select>
+            <h3>Sort by </h3>
+            <select name="ordem" id="ordem">
+                <option value="relevance" {{ $ordem == 'relevance' ? 'selected' : '' }}>Relevance</option>
+                <option value="name_a_z" {{ $ordem == 'Name_A_Z' ? 'selected' : '' }}>Name (A-Z)</option>
+                <option value="name_z_a" {{ $ordem == 'Name_Z_A' ? 'selected' : '' }}>Name (Z-A)</option>
+                <option value="date_newest" {{ $ordem == 'Newest' ? 'selected' : '' }}>Date (Newest)</option>
+                <option value="date_oldest" {{ $ordem == 'Oldest' ? 'selected' : '' }}>Date (Oldest)</option>
+            </select>
         @endif
         <p>No results.</p>
     @else
@@ -29,6 +37,14 @@
                 @foreach($categories as $category)  
                     <option value="{{ $category->id }}" {{ $selectedCategory == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                 @endforeach
+            </select>
+            <h3>Sort by </h3>
+            <select name="ordem" id="ordem">
+                <option value="relevance" {{ $ordem == 'relevance' ? 'selected' : '' }}>Relevance</option>
+                <option value="name_a_z" {{ $ordem == 'Name_A_Z' ? 'selected' : '' }}>Name (A-Z)</option>
+                <option value="name_z_a" {{ $ordem == 'Name_Z_A' ? 'selected' : '' }}>Name (Z-A)</option>
+                <option value="date_newest" {{ $ordem == 'Newest' ? 'selected' : '' }}>Date (Newest)</option>
+                <option value="date_oldest" {{ $ordem == 'Oldest' ? 'selected' : '' }}>Date (Oldest)</option>
             </select>
             
             <ul>

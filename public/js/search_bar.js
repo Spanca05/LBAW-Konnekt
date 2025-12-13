@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const filterBtn = document.getElementById('filter_button');
     const sugestions = document.getElementById('sugestions');
     const filtrarCategoria =  document.getElementById('Categories'); 
+    const ordem = document.getElementById('ordem');
 
     function search() {
         const query = searchInput.value.trim();
@@ -27,13 +28,21 @@ document.addEventListener('DOMContentLoaded', function () {
     searchBtn.addEventListener('click', search);
 
     if (filtrarCategoria) {
-        filtrarCategoria.addEventListener('change', function () {
-            const query = new URLSearchParams(window.location.search).get('q') || '';
+        filtrarCategoria.addEventListener('change', updateFiltro);
+    }
+
+    if (ordem) {
+        ordem.addEventListener('change', updateFiltro);
+    }
+
+    function updateFiltro(){
+        const query = new URLSearchParams(window.location.search).get('q') || '';
             const type = 'search_jobpost';
             const categoryId = document.querySelector('select[name="Categories"]').value;
-            window.location.href =`/jobposts/search?q=${encodeURIComponent(query)}&type=${type}&category_id=${categoryId}`;
-        });
-    }
+            const sort = document.querySelector('select[name="Categories"]').value;
+            const sort = document.querySelector('select[name="ordem"]').value;
+            window.location.href = `/jobposts/search?q=${encodeURIComponent(query)}&type=${type}&category_id=${categoryId}&sort=${sort}`;    
+        }
 
     let timeout=null;
 

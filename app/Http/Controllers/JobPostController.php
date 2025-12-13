@@ -10,6 +10,7 @@ use App\Models\Category;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class JobPostController extends Controller {
 
@@ -91,7 +92,12 @@ class JobPostController extends Controller {
         $jobPost->category_id = $validated['category_id'];
         $jobPost->employer_id = Auth::id();
         // Explicitly assign location
-        $jobPost->location = array_key_exists('location', $validated) ? $validated['location'] : $jobPost->location;
+
+        //limpar o input da location tirar espaços nas pontas, meter capslock e tirar simbolos estranhos
+
+        $location_ = preg_replace('/[^a-zA-ZÀ-ÿ0-9\s,-]/', '', $validated['location'] ?? '');
+        $jobPost->location = Str::title(trim($location_)) ?: null;
+        //$jobPost->location = array_key_exists('location', $validated) ? $validated['location'] : $jobPost->location;
 
 
         $jobPost->save();
@@ -125,7 +131,9 @@ class JobPostController extends Controller {
         $jobPost->salary = $validated['salary'];
         $jobPost->work_model = $validated['work_model'];
         $jobPost->category_id = $validated['category_id'];
-        $jobPost->location = $validated['location'] ?? null;
+        $location_ = preg_replace('/[^a-zA-ZÀ-ÿ0-9\s,-]/', '', $validated['location'] ?? '');
+        $jobPost->location = Str::title(trim($location_)) ?: null;
+        //$jobPost->location = $validated['location'] ?? null;
 
 
         $jobPost->save();

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class JobPostPolicy
 {
 
-    public function view(JobPost $jobPost): bool
+    public function view(?User $user, JobPost $jobPost): bool
     {
          return !$jobPost->isOwnerDeleted();
     }

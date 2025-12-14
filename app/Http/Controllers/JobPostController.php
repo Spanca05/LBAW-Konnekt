@@ -38,9 +38,7 @@ class JobPostController extends Controller {
 
        // $name = $jobPost->jobUser->name;
 
-        if ($jobPost->isOwnerDeleted()) {
-            abort(404);
-        }
+        Gate::authorize('view', $jobPost);
 
         return view('pages.jobpost', [
             'jobPost' => $jobPost
@@ -144,7 +142,7 @@ class JobPostController extends Controller {
     public function delete($id) {
 
         $jobPost = JobPost::findOrFail($id);
-        Gate::authorize('delete', $jobPost);
+        Gate::authorize('update', $jobPost);
         $jobPost->notifications()->delete();
         DB::table('jobpost_category')->where('jobpost_id', $jobPost->id)->delete(); // remove dependency
         $nome = $jobPost->title;

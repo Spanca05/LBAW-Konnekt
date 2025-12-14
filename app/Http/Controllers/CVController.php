@@ -15,9 +15,8 @@ class CVController extends Controller {
         $user = $request->user();
 
         // Only JobSeekers are allowed to upload a CV
-        if (($user->role ?? null) !== 'JobSeeker') {
-            abort(403);
-        }
+        Gate::authorize('create', $user);
+        //if (($user->role ?? null) !== 'JobSeeker') { abort(403);}
 
         $validated = $request->validate([
             'cv_file' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
@@ -109,9 +108,8 @@ class CVController extends Controller {
         }
 
         if ($requester->id !==$user->id) {
-            if (($user->role ?? null) !== 'JobSeeker') {
-                abort(403);
-            }
+            Gate::authorize('create', $user);
+            //if (($user->role ?? null) !== 'JobSeeker') { abort(403);}
         }
 
         $disk = Storage::disk('public');
@@ -146,9 +144,8 @@ class CVController extends Controller {
      */
     public function destroy(Request $request) {
         $user = $request->user();
-        if (($user->role ?? null) !== 'JobSeeker') {
-            abort(403);
-        }
+        Gate::authorize('create', $user);
+        //if (($user->role ?? null) !== 'JobSeeker') {abort(403);}
 
         $cv = $user->cv;
         if (! $cv) {

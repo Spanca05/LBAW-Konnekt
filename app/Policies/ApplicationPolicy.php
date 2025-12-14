@@ -13,9 +13,8 @@ class ApplicationPolicy
     
     public function view(User $user, Application $application): bool
     {
-        return $user->id === $application->jobseeker_id;
+        return ($user->id === $application->jobseeker_id) || ($user->role === 'Admin');
     }
-
     
     public function create(User $user): bool
     {
@@ -34,7 +33,7 @@ class ApplicationPolicy
 
     public function delete(User $user, Application $application): bool
     {
-        return $user->id === $application->jobseeker_id;
+        return ($user->id === $application->jobseeker_id) || ($user->role === 'Admin');
     }
 
     public function status_update(User $user, Application $application): bool

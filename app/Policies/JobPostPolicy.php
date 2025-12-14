@@ -33,4 +33,10 @@ class JobPostPolicy
       return $user->role === 'JobSeeker';
     }
 
+    public function canFavourite(User $user, JobPost $jobPost): bool
+    {
+        return $user->role === 'JobSeeker' && !$jobPost->isOwnerDeleted();
+    }
+
+
 }

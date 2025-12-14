@@ -30,6 +30,8 @@ Route::post('/jobposts', [JobPostController::class, 'store'])->name('jobpost.sto
 Route::get('/jobposts/{jobpost}/edit', [JobPostController::class, 'edit'])->name('jobpost.edit');
 Route::put('/jobposts/{jobpost}', [JobPostController::class, 'update'])->name('jobpost.update');
 Route::delete('/jobposts/{jobpost}', [JobPostController::class, 'delete'])->name('jobpost.delete');
+Route::post('/jobposts/{jobpost}/favourite', [JobPostController::class, 'changeFavourite'])->name('jobpost.favourite');
+
 
 // Authentication
 Route::controller(LoginController::class)->group(function () {

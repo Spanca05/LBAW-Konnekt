@@ -347,4 +347,21 @@ class JobPostController extends Controller {
         }
     }
 
+    public function changeFavourite($jobpostId)
+    {
+        $user = Auth::user();
+        $job = JobPost::findOrFail($jobpostId);
+
+        Gate::authorize('canFavourite', $job);
+
+        // check if it is already favourite
+        if ($user->favouriteJobs()->where('jobpost_id', $jobpostId)->exists()) {
+            $user->favouriteJobs()->detach($jobpostId);  //remove favourite
+            return back()->with('success', 'Removed from favourites.');
+        }
+
+        $user->favouriteJobs()->attach($jobpostId);
+        return back()->with('success', 'Added to favourites.');
+    }
+
 }

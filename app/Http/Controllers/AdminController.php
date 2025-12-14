@@ -33,6 +33,14 @@ class AdminController extends Controller
         ]);
     }
 
+    public function showCreateAdminForm()
+    {
+        Gate::policy(Admin::class, AdminPolicy::class);
+        Gate::authorize('showCreateAdminForm', Admin::class);
+
+        return view('pages.admin.create_admin');
+    }
+
     public function createAdmin(Request $request)
     {
         Gate::policy(Admin::class, AdminPolicy::class);
@@ -63,7 +71,7 @@ class AdminController extends Controller
 
         $users = User::paginate(10);
         $userCount = User::count();
-        return view('pages.admin_users', ['users' => $users, 'userCount' => $userCount,]);
+        return view('pages.admin.admin_users', ['users' => $users, 'userCount' => $userCount,]);
     }
 
     public function deleteUser($userId)
@@ -84,7 +92,7 @@ class AdminController extends Controller
 
         $jobposts = JobPost::paginate(10);
         $jobpostCount = JobPost::count();
-        return view('pages.admin_jobposts', ['jobposts' => $jobposts, 'jobpostCount' => $jobpostCount,]);
+        return view('pages.admin.admin_jobposts', ['jobposts' => $jobposts, 'jobpostCount' => $jobpostCount,]);
     }
 
     public function deleteJobPost($jobpostId)
@@ -105,7 +113,7 @@ class AdminController extends Controller
 
         $applications = Application::with(['user', 'jobPost'])->paginate(10);
         $applicationCount = Application::count();
-        return view('pages.admin_applications', ['applications' => $applications, 'applicationCount' => $applicationCount,]);
+        return view('pages.admin.admin_applications', ['applications' => $applications, 'applicationCount' => $applicationCount,]);
     }
 
     public function listJobpostApplications($jobpostId)
@@ -116,8 +124,8 @@ class AdminController extends Controller
         $jobpost = JobPost::findOrFail($jobpostId);
         $applications = Application::where('jobpost_id', $jobpostId)->with(['user', 'jobPost'])->paginate(10);
         $applicationCount = Application::where('jobpost_id', $jobpostId)->count();
-        return view('pages.admin_jobpost_applications', [
-            'applications' => $applications, 
+        return view('pages.admin.admin_applications', [
+            'applications' => $applications,
             'applicationCount' => $applicationCount,
             'jobpost' => $jobpost,
         ]);
@@ -141,7 +149,7 @@ class AdminController extends Controller
 
         $application = Application::with(['user', 'jobPost'])->findOrFail($applicationId);
 
-        return view('pages.admin_application_show', [
+        return view('pages.admin.admin_application_show', [
             'application' => $application,
         ]);
     }

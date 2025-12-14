@@ -82,6 +82,7 @@ Route::middleware('auth')->group(function () {
 // Admin dashboard
 Route::middleware('auth')->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/admin/create-admin', [AdminController::class, 'showCreateAdminForm'])->name('admin.create.form');
     Route::post('/admin/create-admin', [AdminController::class, 'createAdmin'])->name('admin.create');
 
     Route::get('/admin/users', [AdminController::class, 'listUsers'])->name('admin.users');

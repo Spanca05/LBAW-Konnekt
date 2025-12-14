@@ -18,6 +18,11 @@ class AdminPolicy
         return ($user->role ?? null) === 'Admin';
     }
 
+    public function showCreateAdminForm(User $user) : bool
+    {
+        return ($user->role ?? null) === 'Admin';
+    }
+
     public function listUsers(User $user) : bool
     {
         return ($user->role ?? null) === 'Admin';

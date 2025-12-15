@@ -25,12 +25,14 @@ class AdminController extends Controller
         $userCount = User::count();
         $jobpostCount = JobPost::count();
         $applicationCount = Application::count();
+        $blockedCount = BlockedUser::count();
 
         return view('pages.admin', [
             'admin' => $user,
             'userCount' => $userCount,
             'jobpostCount' => $jobpostCount,
             'applicationCount' => $applicationCount,
+            'blockedCount' => $blockedCount,
         ]);
     }
 
@@ -72,6 +74,16 @@ class AdminController extends Controller
 
         $users = User::paginate(10);
         $userCount = User::count();
+        return view('pages.admin.admin_users', ['users' => $users, 'userCount' => $userCount,]);
+    }
+
+    public function listBlockedUsers()
+    {
+        Gate::policy(Admin::class, AdminPolicy::class);
+        Gate::authorize('listUsers', Admin::class);
+
+        $users = User::whereNotNull('blocked_id')->paginate(10);
+        $userCount = BlockedUser::count();
         return view('pages.admin.admin_users', ['users' => $users, 'userCount' => $userCount,]);
     }
 

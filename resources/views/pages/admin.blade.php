@@ -26,6 +26,8 @@
     <h4>User management</h4>
     <p><strong>Total Users:</strong> {{ $userCount }}</p>
     <a href="{{ route('admin.users') }}" class="button">View All Users</a>
+    <p><strong>Total Blocked Users:</strong> {{ $blockedCount }}</p>
+    <a href="{{ route('admin.users.blocked') }}" class="button">View Blocked Users</a>
     <h4>JobPosts Management</h4>
     <p><strong>Total JobPosts:</strong> {{ $jobpostCount }}</p>
     <a href="{{ route('admin.jobposts') }}" class="button">View All JobPosts</a>

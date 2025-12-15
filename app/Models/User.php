@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 // Import Eloquent relationship classes.
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\JobPost;
@@ -18,8 +19,7 @@ class User extends Authenticatable {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    // Disable default created_at and updated_at timestamps for this model.
-    public $timestamps  = false;
+    public $timestamps  = true;
 
     /**
      * The attributes that are mass assignable.
@@ -108,6 +108,14 @@ class User extends Authenticatable {
         $this->location === null &&
         $this->photo_path === null;
     }
-    
+
+    public function notifications(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Notification::class,
+            'user_notification'
+        )->withPivot('seen');
+    }
+
 }
 

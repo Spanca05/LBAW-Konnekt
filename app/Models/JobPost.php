@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class JobPost extends Model
 {
-    // Disable default created_at and updated_at timestamps for this model.
     public $timestamps = true;
 
     /**

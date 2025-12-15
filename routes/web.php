@@ -10,6 +10,7 @@ use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\CVController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\NotificationController;
 
 // Home
 Route::redirect('/', '/login');
@@ -83,3 +84,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
     Route::post('/admin/create-admin', [AdminController::class, 'createAdmin'])->name('admin.create');
 });
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+});
+

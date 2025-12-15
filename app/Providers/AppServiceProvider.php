@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        View::composer('*', function ($view) {
+            $unreadNotifications = 0;
+            if (Auth::check()) {
+                $unreadNotifications = Auth::user()->notifications()
+                    ->wherePivot('seen', false)
+                    ->count();
+            }
+            $view->with('unreadNotifications', $unreadNotifications);
+        });
     }
 }

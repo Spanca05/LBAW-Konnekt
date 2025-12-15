@@ -54,7 +54,7 @@
         @if(auth()->check() && auth()->user()->role === 'JobSeeker')
             <form action="{{ route('jobpost.favourite', $jobPost->id) }}" method="POST">
                 @csrf
-                <button type="submit" class="btn btn-warning">
+                <button type="submit" class="favourite-button">
                     @if(auth()->user()->favouriteJobs->contains($jobPost->id))
                         ★ Remove Favourite
                     @else

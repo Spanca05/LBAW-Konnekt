@@ -12,6 +12,7 @@ use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\CVController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PageController;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
@@ -22,6 +23,9 @@ use Illuminate\Support\Facades\Password;
 // Home
 Route::redirect('/', '/login');
 
+Route::get('/about', [PageController::class, 'about'])->name('pages.about');
+Route::get('/mainFeatures', [PageController::class, 'mainFeatures'])->name('pages.mainFeatures');
+Route::get('/contacts', [PageController::class, 'contacts'])->name('pages.contacts');
 // Rota para o AJAX das sugestões
 Route::get('/api/search/suggestions', [JobPostController::class, 'suggestions'])->name('search.suggestions');
 //resultados da pesquisa por jobpost

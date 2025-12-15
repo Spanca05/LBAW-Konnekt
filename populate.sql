@@ -154,3 +154,69 @@ INSERT INTO favourite_job (jobseeker_id, jobpost_id) VALUES
 
 (12, 8),  -- Frank likes Civil Engineer
 (12, 1);  -- And Senior Backend Engineer
+
+
+INSERT INTO skill_category (skill_id, category_id) VALUES
+-- Coding
+(3, 1),  -- ProblemSolving
+(4, 1),  -- CriticalThinking
+(13, 1), -- AnalyticalThinking
+(9, 1),  -- AttentionToDetail
+
+-- Design
+(5, 2),  -- Creativity
+(4, 2),  -- CriticalThinking
+(1, 2),  -- Communication
+
+-- Marketing
+(1, 3),  -- Communication
+(5, 3),  -- Creativity
+(10, 3), -- Negotiation
+(14, 3), -- CustomerService
+
+-- Finance
+(4, 4),  -- CriticalThinking
+(13, 4), -- AnalyticalThinking
+(9, 4),  -- AttentionToDetail
+
+-- Education
+(1, 5),  -- Communication
+(12, 5), -- Research
+(2, 5),  -- Teamwork
+
+-- Healthcare
+(1, 6),  -- Communication
+(9, 6),  -- AttentionToDetail
+(6, 6),  -- Adaptability
+
+-- Engineering
+(3, 7),  -- ProblemSolving
+(13, 7), -- AnalyticalThinking
+(2, 7),  -- Teamwork
+
+-- Human Resources
+(1, 8),  -- Communication
+(10, 8), -- Negotiation
+(7, 8),  -- Leadership
+
+-- Law
+(4, 9),  -- CriticalThinking
+(1, 9),  -- Communication
+(9, 9),  -- AttentionToDetail
+
+-- Management
+(7, 10), -- Leadership
+(11,10), -- ProjectManagement
+(8, 10), -- TimeManagement
+
+-- Construction
+(2, 11), -- Teamwork
+(9, 11), -- AttentionToDetail
+
+-- Science
+(12,12), -- Research
+(13,12), -- AnalyticalThinking
+(4, 12), -- CriticalThinking
+
+-- Other
+(15,13); -- Other

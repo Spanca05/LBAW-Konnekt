@@ -189,13 +189,12 @@ CREATE TABLE skill_category (
 
 -- Index 1
 CREATE INDEX idx_jobpost_category ON jobpost USING BTREE (category_id);
-CLUSTER jobpost USING idx_jobpost_category;
 
 -- Index 2
 CREATE INDEX idx_application_jobseeker ON Application USING HASH(jobseeker_id);
 
 -- Index 3
-CREATE INDEX idx_notification_user ON user_notification USING BTREE (user_id);
+CREATE INDEX idx_notification_user ON user_notification USING HASH (user_id);
 
 
 ----------------------------------------
@@ -207,7 +206,7 @@ CREATE INDEX idx_notification_user ON user_notification USING BTREE (user_id);
 
 -- Add column to store tsvector
 ALTER TABLE jobpost
-ADD COLUMN tsvectors TSVECTOR;
+ADD COLUMN IF NOT EXISTS tsvectors TSVECTOR;
 
 -- Create trigger function
 CREATE FUNCTION jobpost_search_update() RETURNS TRIGGER AS $$
@@ -250,7 +249,7 @@ CREATE INDEX idx_jobpost_search ON jobpost USING GIN (tsvectors);
 
 -- Add column to store tsvector
 ALTER TABLE users
-ADD COLUMN tsvectors TSVECTOR;
+ADD COLUMN IF NOT EXISTS tsvectors TSVECTOR;
 
 -- Create trigger function
 CREATE FUNCTION user_search_update() RETURNS TRIGGER AS $$
@@ -484,26 +483,6 @@ FOR EACH ROW
 EXECUTE FUNCTION notify_new_job_posting();
 
 
-
--- Trigger 10
-
-CREATE OR REPLACE FUNCTION notification_mark_seen()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF TG_OP = 'UPDATE' AND NEW.seen = TRUE AND OLD.seen = FALSE THEN
-        NEW.date := NOW();
-    END IF;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-
-CREATE TRIGGER trg_notification_mark_seen
-BEFORE UPDATE ON notification
-FOR EACH ROW
-EXECUTE FUNCTION notification_mark_seen();
-
-
 CREATE OR REPLACE FUNCTION notify_matching_job_seekers()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -550,10 +529,6 @@ AFTER INSERT ON jobpost
 FOR EACH ROW
 EXECUTE FUNCTION notify_matching_job_seekers();
 
-/*
-
--- Trigger 7
-
 
 CREATE OR REPLACE FUNCTION notify_employer_on_new_application()
 RETURNS TRIGGER AS $$
@@ -576,10 +551,9 @@ BEGIN
 
     v_notification_title := 'New application submitted for your job post "'|| jobpost_title_var || '"';
 
-    INSERT INTO notification (title, seen, date, type, jobpost_id, application_id)
+    INSERT INTO notification (title, date, type, jobpost_id, application_id)
     VALUES (
         v_notification_title,
-        FALSE,
         now(),
         'ApplicationNotification',
         NEW.jobpost_id,
@@ -597,9 +571,54 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
 CREATE TRIGGER employer_new_application_notification
 AFTER INSERT ON application
 FOR EACH ROW
 EXECUTE FUNCTION notify_employer_on_new_application();
 
-*/
+CREATE OR REPLACE FUNCTION notify_jobseeker_on_status_update()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_notification_title TEXT;
+    v_notification_id INTEGER;
+    jobpost_title TEXT;
+BEGIN
+    -- Só interessa se o status mudou
+    IF NEW.status IS DISTINCT FROM OLD.status THEN
+        SELECT title
+        INTO jobpost_title
+        FROM jobpost
+        WHERE id = NEW.jobpost_id;
+        
+        v_notification_title :=
+            'Your application to "' || jobpost_title ||
+            '" changed from ' || OLD.status ||
+            ' to ' || NEW.status;
+
+        INSERT INTO notification (title, date, type, jobpost_id, application_id)
+        VALUES (
+            v_notification_title,
+            now(),
+            'ApplicationNotification',
+            NEW.jobpost_id,
+            NEW.id
+        )
+        RETURNING id INTO v_notification_id;
+
+        INSERT INTO user_notification (notification_id, user_id)
+        VALUES (
+            v_notification_id,
+            NEW.jobseeker_id
+        );
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER trg_notify_jobseeker_on_status_update
+AFTER UPDATE ON application
+FOR EACH ROW
+EXECUTE FUNCTION notify_jobseeker_on_status_update();

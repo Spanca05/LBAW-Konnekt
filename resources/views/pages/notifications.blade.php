@@ -23,7 +23,14 @@
                     
                     <div style="display:flex; justify-content: space-between; align-items: center;">
                         <span>
-                            {{ $notification->title }}
+                            <strong>{{ $notification->type }}</strong>
+                            @if($notification->jobPost)
+                                <a href="{{ route('jobpost.show', ['jobpost' => $notification->jobPost->id]) }}">
+                                    {{ $notification->title }}
+                                </a>
+                            @else
+                                {{ $notification->title }}
+                            @endif
                             <small style="color: #999;">({{ $notification->date->format('d M Y H:i') }})</small>
                         </span>
 

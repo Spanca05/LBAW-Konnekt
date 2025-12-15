@@ -57,4 +57,14 @@ class AdminPolicy
     {
         return ($user->role ?? null) === 'Admin';
     }
+
+    public function blockUser(User $user) : bool
+    {
+        return ($user->role ?? null) === 'Admin';
+    }
+
+    public function unblockUser(User $user) : bool
+    {
+        return ($user->role ?? null) === 'Admin';
+    }
 }

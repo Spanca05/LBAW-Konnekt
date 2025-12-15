@@ -102,6 +102,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/jobposts/{jobpostId}/applications', [AdminController::class, 'listJobpostApplications'])->name('admin.jobpost.applications');
     Route::get('/admin/applications/{applicationId}', [AdminController::class, 'showApplication'])->name('admin.application.show');
     Route::delete('/admin/applications/{applicationId}', [AdminController::class, 'deleteApplication'])->name('admin.deleteApplication');
+
+    // Block User Part
+    Route::post('/admin/users/{userId}/block', [AdminController::class, 'blockUser'])->name('admin.blockUser');
+    Route::post('/admin/users/{userId}/unblock', [AdminController::class, 'unblockUser'])->name('admin.unblockUser');
 });
 
 // Recover Password

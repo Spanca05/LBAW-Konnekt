@@ -3,9 +3,11 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ProfileController;
+
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
+
 use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\CVController;
 use App\Http\Controllers\ApplicationController;
@@ -16,10 +18,12 @@ Route::redirect('/', '/login');
 
 // Rota para o AJAX das sugestões
 Route::get('/api/search/suggestions', [JobPostController::class, 'suggestions'])->name('search.suggestions');
-// resultados da pesquisa
+//resultados da pesquisa por jobpost
 Route::get('/jobposts/search', [JobPostController::class, 'search'])->name('jobpost.search');
-Route::get('/employers/search', [JobPostController::class, 'search'])->name('employer.search');
+Route::get('/employers/search', [JobPostController::class, 'search'])->name('jobpost.search');
+
 Route::get('/jobposts', [JobPostController::class, 'index'])->name('pages.jobposts.index');
+
 Route::get('/jobposts/create', [JobPostController::class, 'create'])->name('jobpost.create');
 Route::get('/jobposts/{jobpost}', [JobPostController::class, 'show'])->name('jobpost.show');
 Route::get('/employers/{pro}', [ProfileController::class, 'show'])->name('employer.show');
@@ -46,7 +50,7 @@ Route::controller(RegisterController::class)->group(function () {
     Route::post('/register', 'register');
 });
 
-// Profile
+// Profile (authenticated user)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'showAuth'])->name('profile');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -59,7 +63,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile/cv', [CVController::class, 'destroy'])->name('profile.cv.destroy');
     Route::delete('/profile/photo', [ProfileController::class, 'destroyPhoto'])->name('profile.photo.destroy');
 
-    // Other users profile
+    // other users profile (public)
     Route::get('/users/{id}', [ProfileController::class, 'show'])->name('profile.other');
 });
 
@@ -67,17 +71,29 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/jobposts/{jobpost}/apply', [ApplicationController::class, 'create'])->name('jobpost.apply.form');
     Route::post('/jobposts/{jobpost}/application', [ApplicationController::class, 'store'])->name('jobpost.apply');
-    Route::get('/jobposts/{jobpost}/application', [ApplicationController::class, 'index'])->name('jobpost.application');
+    Route::get('/jobposts/{jobpost}/application', [ApplicationController::class, 'index'])->name('jobpost.application'); // employer view
     // Jobseeker application management
     Route::get('/applications/{application}/edit', [ApplicationController::class, 'edit'])->name('applications.edit');
     Route::put('/applications/{application}', [ApplicationController::class, 'update'])->name('applications.update');
     Route::delete('/applications/{application}', [ApplicationController::class, 'destroy'])->name('applications.destroy');
-    // Employer update application status
+    // Employer: update application status (Accept / Reject)
     Route::patch('/applications/{application}/status', [ApplicationController::class, 'status_update'])->name('applications.status.update');
 });
 
 // Admin dashboard
 Route::middleware('auth')->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/admin/create-admin', [AdminController::class, 'showCreateAdminForm'])->name('admin.create.form');
     Route::post('/admin/create-admin', [AdminController::class, 'createAdmin'])->name('admin.create');
+
+    Route::get('/admin/users', [AdminController::class, 'listUsers'])->name('admin.users');
+    Route::delete('/admin/users/{userId}', [AdminController::class, 'deleteUser'])->name('admin.deleteUser');
+
+    Route::get('/admin/jobposts', [AdminController::class, 'listJobPosts'])->name('admin.jobposts');
+    Route::delete('/admin/jobposts/{jobpostId}', [AdminController::class, 'deleteJobPost'])->name('admin.deleteJobPost');
+
+    Route::get('/admin/applications', [AdminController::class, 'listApplications'])->name('admin.applications');
+    Route::get('/admin/jobposts/{jobpostId}/applications', [AdminController::class, 'listJobpostApplications'])->name('admin.jobpost.applications');
+    Route::get('/admin/applications/{applicationId}', [AdminController::class, 'showApplication'])->name('admin.application.show');
+    Route::delete('/admin/applications/{applicationId}', [AdminController::class, 'deleteApplication'])->name('admin.deleteApplication');
 });

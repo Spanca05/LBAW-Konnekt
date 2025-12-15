@@ -174,7 +174,8 @@ class ProfileController extends Controller {
             } 
         }
 
-        return redirect()->route('profile')->with('success', 'Profile updated successfully.');
+            $redirectRoute = $user->role === 'Admin' ? 'admin.index' : 'profile';
+        return redirect()->route($redirectRoute)->with('success', 'Profile updated successfully.');
     }
 
     //delete profile

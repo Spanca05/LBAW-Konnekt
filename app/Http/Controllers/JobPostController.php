@@ -10,6 +10,7 @@ use App\Models\Category;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class JobPostController extends Controller {
 
@@ -91,7 +92,12 @@ class JobPostController extends Controller {
         $jobPost->category_id = $validated['category_id'];
         $jobPost->employer_id = Auth::id();
         // Explicitly assign location
-        $jobPost->location = array_key_exists('location', $validated) ? $validated['location'] : $jobPost->location;
+
+        //limpar o input da location tirar espaços nas pontas, meter capslock e tirar simbolos estranhos
+
+        $location_ = preg_replace('/[^a-zA-ZÀ-ÿ0-9\s,-]/', '', $validated['location'] ?? '');
+        $jobPost->location = Str::title(trim($location_)) ?: null;
+        //$jobPost->location = array_key_exists('location', $validated) ? $validated['location'] : $jobPost->location;
 
 
         $jobPost->save();
@@ -125,7 +131,9 @@ class JobPostController extends Controller {
         $jobPost->salary = $validated['salary'];
         $jobPost->work_model = $validated['work_model'];
         $jobPost->category_id = $validated['category_id'];
-        $jobPost->location = $validated['location'] ?? null;
+        $location_ = preg_replace('/[^a-zA-ZÀ-ÿ0-9\s,-]/', '', $validated['location'] ?? '');
+        $jobPost->location = Str::title(trim($location_)) ?: null;
+        //$jobPost->location = $validated['location'] ?? null;
 
 
         $jobPost->save();
@@ -150,6 +158,8 @@ class JobPostController extends Controller {
         $pesquisa = $request->input('q');
         $categoryId = $request->input('category_id');
         $type = $request->input('type');
+        $ordem = $request->input('ordem');
+        $location = $request->input('location');
 
         $jobPosts = JobPost::query();
         $employers = User::where('role','Employer');
@@ -161,17 +171,55 @@ class JobPostController extends Controller {
                 $jobPosts->whereRaw(
                     "tsvectors @@ plainto_tsquery('english', ?)",
                     [$pesquisa]
-                )
-                ->orderByRaw(
-                    "ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC",
-                    [$pesquisa]
                 );
+
+                if (!$ordem || $ordem === 'relevance') {
+                    $jobPosts->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$pesquisa]);
+                }
             }
 
             // FILTRO DE CATEGORIA
             if ($categoryId && $categoryId !== 'all') {
                 $jobPosts->where('category_id', $categoryId);
             }
+
+            if ($location && $location !== 'all') {
+                if ($location === 'no_location') {  // queremos procurar por locations null ou vazio
+                    $jobPosts->where(function($query) {
+                    $query->whereNull('location')
+                          ->orWhere('location', '');
+                });
+            } 
+            else $jobPosts->where('location', $location);
+            }
+
+            //ordenar por nome ou data
+            switch($ordem){
+                case 'Name_A_Z':
+                    $jobPosts->orderby('title', 'asc');
+                    break;
+                case 'Name_Z_A':
+                    $jobPosts->orderby('title','desc');
+                    break;
+                case 'Newest':
+                    $jobPosts->orderBy('created_at', 'desc');
+                    break;
+                case 'Oldest':
+                    $jobPosts->orderBy('created_at', 'asc');
+                    break;
+                default:
+                    if(!$pesquisa){
+                        $jobPosts->orderBy('created_at', 'desc');
+                        break;
+                    }        
+            }
+
+            $locations = JobPost::select('location')
+                    ->whereNotNull('location')
+                    ->where('location', '!=', '') // n queremos locations vazias nem null
+                    ->distinct()    // quer só diferentes
+                    ->orderBy('location', 'asc')
+                    ->pluck('location');
 
              // Aqui aplicas a filtragem de employers deletados
             $jobPosts = $jobPosts->with('employer')->get()
@@ -183,6 +231,9 @@ class JobPostController extends Controller {
                 'employers' => collect(),
                 'query' => $pesquisa,
                 'selectedCategory' => $categoryId,
+                'ordem'=>$ordem,
+                'selectedLocation' => $location, // a location selecionada no filter
+                'locations' => $locations,      //lista de tds as locations que existem na BD
                 'categories' => Category::all(),
             ]);
         }
@@ -192,12 +243,41 @@ class JobPostController extends Controller {
             $employers->whereRaw(
                 "tsvectors @@ plainto_tsquery('english', ?)",
                 [$pesquisa]
-            )
-            ->orderByRaw(
-                "ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC",
-                [$pesquisa]
             );
+            if (!$ordem || $ordem === 'relevance') {
+                    $employers->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$pesquisa]);
+                }
         }
+
+        if ($location && $location !== 'all') {
+            if ($location === 'no_location') {  // queremos procurar por locations null ou vazio
+                $employers->where(function($query) {
+                    $query->whereNull('location')
+                          ->orWhere('location', '');
+                });
+            } 
+            else $employers->where('location', $location);
+        }
+            //ordena por nome os employers
+            switch($ordem){
+                case 'Name_A_Z':
+                    $employers->orderby('name', 'asc');
+                    break;
+                case 'Name_Z_A':
+                    $employers->orderby('name','desc');
+                    break;
+                default:
+                    break;        
+            }
+
+        $locations = User::where('role', 'Employer')
+                ->whereNotNull('location')
+                ->where('location', '!=', '') // n queremos locations vazias nem null
+                ->select('location')
+                ->distinct()                    // só os diferentes
+                ->orderBy('location', 'asc')
+                ->pluck('location');
+
 
         $employers = $employers->get() // transforma em Collection
                        ->filter(fn($user) => ! $user->isDeleted());
@@ -208,10 +288,65 @@ class JobPostController extends Controller {
             'employers' => $employers,
             'query' => $pesquisa,
             'selectedCategory' => null,
+            'ordem' => $ordem,
+            'selectedLocation' => $location, // location a filtrar
+            'locations' => $locations,          // lista de tds locations da BD
             'categories' => Category::all(),
         ]);
     }
 
+    public function suggestions(Request $request){
+        $pesquisa = $request->input('q');
+        $type = $request->input('type');
 
-   
+
+        if(!$pesquisa || strlen($pesquisa)<2 ){   // se n tiver nd ou tiver tamanho inf 2 n vai mostrar nd, o json vai ser vazio
+            return response()->json([]);
+        }
+        
+        if($type == 'search_jobpost'){       // procurar por jobposts
+            $jobPosts = JobPost::query()
+                ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$pesquisa])
+                ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$pesquisa])
+                ->with('employer') 
+                ->limit(5)
+                ->get(); //pego em 5 jobposts apenas
+        
+        
+        
+            $resultados= $jobPosts
+                ->filter(fn($jp) => !$jp->isOwnerDeleted()) 
+                ->map(function ($job) {
+                    return [
+                        'name' => $job->title,
+                        'url' => route('jobpost.show', $job->id)
+                    ];
+                })
+                ->values();
+
+
+            return response()->json($resultados);       // devolve resultados em formato json
+        }
+        else if($type == 'search_employer'){
+            $employers = User::query()
+                ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$pesquisa])
+                ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$pesquisa])
+                ->limit(5)
+                ->get();  // pego so em 5 no max
+
+
+            $resultados= $employers
+                ->filter(fn($emp) => !$emp->isDeleted()) 
+                ->map(function ($employer) {
+                    return [
+                        'name' => $employer->name,
+                        'url' => route('employer.show', $employer->id)
+                    ];
+                })
+                ->values();
+
+            return response()->json($resultados);       // devolve resultados em formato json
+        }
+    }
+
 }

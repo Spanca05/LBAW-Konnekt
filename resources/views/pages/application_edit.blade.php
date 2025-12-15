@@ -16,7 +16,7 @@
         </div>
     @endif
 
-    <div class="meta">
+    <div>
         <span class="salary">Salary:{{ $application->jobPost->salary }}€</span>
         <br>
         <span class="employer">Employer ID: {{ $application->jobPost->employer_id }}</span>

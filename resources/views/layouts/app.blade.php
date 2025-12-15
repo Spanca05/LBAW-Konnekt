@@ -32,7 +32,7 @@
                 @else
                     <a class="button button-outline" href="{{ route('register') }}">Register</a> <a class="button" href="{{ route('login') }}">Login</a>
                 @endauth
-                @if(Route::currentRouteName() !== 'login' and Route::currentRouteName() !=='register')
+                @if(Route::currentRouteName() !== 'login' and Route::currentRouteName() !=='register' and Route::currentRouteName() !== 'password.request' and Route::currentRouteName() !== 'password.reset')
                 <div class="search">
                     <input type="text" id="search" class="search" placeholder="Search jobposts...">
                     <select class="search_type" id="search_type">

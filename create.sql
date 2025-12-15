@@ -75,6 +75,7 @@ CREATE TABLE users (
     photo_path TEXT,
     location TEXT,
     description TEXT,
+    remember_token TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
 );
@@ -182,6 +183,11 @@ CREATE TABLE skill_category (
     category_id INTEGER NOT NULL REFERENCES category(id)
 );
 
+CREATE TABLE password_reset_tokens (
+    email TEXT NOT NULL PRIMARY KEY,
+    token TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
+);
 -----------------------------------------
 -- Indexes
 -----------------------------------------

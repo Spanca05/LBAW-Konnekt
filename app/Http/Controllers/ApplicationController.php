@@ -7,23 +7,25 @@ use App\Models\Application;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ApplicationController extends Controller
 {
+    use AuthorizesRequests;
     public function create(JobPost $jobpost)
     {
         $user = Auth::user();
+        $this->authorize('create', Application::class);
 
         // If the current user already applied, don't allow entering the apply form.
-        if ($user && $user->role === 'JobSeeker') {
-            $already = Application::where('jobpost_id', $jobpost->id)
-                ->where('jobseeker_id', $user->id)
-                ->exists();
+        $already = Application::where('jobpost_id', $jobpost->id)
+            ->where('jobseeker_id', $user->id)
+            ->exists();
 
-            if ($already) {
-                return redirect()->route('jobpost.show', ['jobpost' => $jobpost->id])
-                    ->with('error', 'You have already applied to this job.');
-            }
+        if ($already) {
+            return redirect()->route('jobpost.show', ['jobpost' => $jobpost->id])
+                ->with('error', 'You have already applied to this job.');
         }
 
         return view('pages.jobpost_apply', ['jobPost' => $jobpost]);
@@ -43,7 +45,7 @@ class ApplicationController extends Controller
         }
 
 
-        Application::create([
+        $application = Application::create([
             'jobseeker_id' => $user->id,
             'jobpost_id' => $jobpost->id,
             'motivation' => $data['motivation'] ?? " ",
@@ -56,6 +58,8 @@ class ApplicationController extends Controller
 
     public function index(JobPost $jobpost)
     {
+        // ensure the current user owns the job or is employer
+        $this->authorize('viewApplications', $jobpost);
         $applications = $jobpost->applications()->with('user')->orderByDesc('date')->get();
         return view('pages.jobpost_applications', compact('jobpost', 'applications'));
     }
@@ -63,21 +67,14 @@ class ApplicationController extends Controller
     
     public function edit(Application $application)
     {
-        $user = Auth::user();
-        if (!$user || $user->id !== $application->jobseeker_id) {
-            abort(403);
-        }
-
+        $this->authorize('edit', $application);
         return view('pages.application_edit', ['application' => $application]);
     }
 
     
     public function update(Request $request, Application $application)
     {
-        $user = Auth::user();
-        if (!$user || $user->id !== $application->jobseeker_id) {
-            abort(403);
-        }
+        $this->authorize('update', $application);
 
         $data = $request->validate([
             'motivation' => ['nullable', 'string', 'max:2000'],
@@ -94,10 +91,7 @@ class ApplicationController extends Controller
     
     public function destroy(Application $application)
     {
-        $user = Auth::user();
-        if (!$user || $user->id !== $application->jobseeker_id) {
-            abort(403);
-        }
+        $this->authorize('destroy', $application);
 
         Notification::where('application_id', $application->id)->delete();
 
@@ -106,13 +100,8 @@ class ApplicationController extends Controller
     }
 
     public function status_update(Request $request, Application $application) 
-    {
-        $user = Auth::user();
-        
-        $jobPost = $application->jobPost;
-        if (!$user || !$jobPost || $user->id !== $jobPost->employer_id) {
-            abort(403);
-        }
+    {   
+        $this->authorize('status_update',$application);
 
         $data = $request->validate([
             'status' => ['required', 'in:Accepted,Rejected']

@@ -160,3 +160,66 @@ body {
     border-color: #9b4dca;
   }
   
+
+
+
+
+.help-icon {
+    display: inline-flex;       
+    align-items: center;
+    justify-content: center;
+    background-color: #d2afe7;  
+    color: #9b4dca;             
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;         
+    font-size: 12px;
+    font-weight: bold;
+    cursor: help;               
+    margin-left: 5px;           
+    position: relative;         
+}
+
+
+.help-icon .tooltip-text {
+    visibility: hidden;         
+    opacity: 0;                 
+    
+    width: 220px;               
+    background-color: #333;     
+    color: #fff;                
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px;
+    font-weight: normal;
+    font-size: 1rem;
+    line-height: 1.2;
+    
+   
+    position: absolute;
+    z-index: 100;
+    bottom: 135%;               
+    left: 50%;
+    transform: translateX(-50%); 
+    
+    
+    transition: opacity 0.3s;
+}
+
+
+.help-icon .tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;                  
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+
+.help-icon:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}

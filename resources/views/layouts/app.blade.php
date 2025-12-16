@@ -8,17 +8,17 @@
 
     <title>@yield('title', config('app.name', 'Laravel'))</title>
 
-        <!-- Styles -->
-        <link rel="stylesheet" href="{{ asset('css/milligram.css') }}">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-        <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-        @stack('styles')
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ asset('css/milligram.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    @stack('styles')
 
-        <!-- Scripts -->
-        <script src="{{ asset('js/app.js') }}" defer></script>
-        <script src="{{ asset('js/register.js') }}" defer></script>
-        <script src="{{ asset('js/search_bar.js') }}" defer></script>
-        @stack('scripts')
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/register.js') }}" defer></script>
+    <script src="{{ asset('js/search_bar.js') }}" defer></script>
+    @stack('scripts')
 </head>
 
 <body>
@@ -36,15 +36,14 @@
             <a class="button button-outline" href="{{ route('register') }}">Register</a> <a class="button" href="{{ route('login') }}">Login</a>
             @endauth
             @if(Route::currentRouteName() !== 'login' and Route::currentRouteName() !=='register' and Route::currentRouteName() !== 'password.request' and Route::currentRouteName() !== 'password.reset')
-            <div class="search d-flex align-items-center gap-2 flex-wrap">
-                <input type="text" id="search" class="search" placeholder="Search">
+            <div class="search d-flex align-items-center gap-2 flex-nowrap">
+                <input type="text" id="search" placeholder="Search">
                 <div class="sugestions" id="sugestions" style="display: none;"></div>
-                <select class="search_type" id="search_type">
+                <select id="search_type">
                     <option value="search_jobpost" {{ (isset($type) && $type == 'search_jobpost') ? 'selected' : '' }}>Job Posts</option>
                     <option value="search_employer" {{ (isset($type) && $type == 'search_employer') ? 'selected' : '' }}>Employers</option>
                 </select>
-
-                <button id="search_button" class="button" type="button">Search</button>
+                <a id="search_button" class="button">Search</a>
             </div>
             @endif
         </header>
@@ -54,4 +53,5 @@
         </section>
     </main>
 </body>
+
 </html>

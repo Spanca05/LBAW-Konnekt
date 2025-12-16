@@ -157,9 +157,12 @@ class JobPostController extends Controller {
     {
         $pesquisa = $request->input('q');
         $categoryId = $request->input('category_id');
+        $work_model =$request->input('work_model');
         $type = $request->input('type');
         $ordem = $request->input('ordem');
         $location = $request->input('location');
+        $min_salary = $request->input('min_salary');
+        $max_salary = $request->input('max_salary');
 
         $jobPosts = JobPost::query();
         $employers = User::where('role','Employer');
@@ -183,6 +186,19 @@ class JobPostController extends Controller {
                 $jobPosts->where('category_id', $categoryId);
             }
 
+            //filtrar work model
+            if ($work_model && $work_model !== 'all_') {
+                $jobPosts->where('work_model', $work_model);
+            }
+                        //filtrar por salario
+            if ($max_salary) {
+                $jobPosts->where('salary', '<=', $max_salary);
+            }
+            
+            if ($min_salary) {
+                $jobPosts->where('salary', '>=', $min_salary);
+            }
+
             if ($location && $location !== 'all') {
                 if ($location === 'no_location') {  // queremos procurar por locations null ou vazio
                     $jobPosts->where(function($query) {
@@ -201,17 +217,14 @@ class JobPostController extends Controller {
                 case 'Name_Z_A':
                     $jobPosts->orderby('title','desc');
                     break;
-                case 'Newest':
-                    $jobPosts->orderBy('created_at', 'desc');
+                case 'high':
+                    $jobPosts->orderBy('salary', 'desc');
                     break;
-                case 'Oldest':
-                    $jobPosts->orderBy('created_at', 'asc');
+                case 'low':
+                    $jobPosts->orderBy('salary', 'asc');
                     break;
                 default:
-                    if(!$pesquisa){
-                        $jobPosts->orderBy('created_at', 'desc');
-                        break;
-                    }        
+                    break;       
             }
 
             $locations = JobPost::select('location')
@@ -221,9 +234,15 @@ class JobPostController extends Controller {
                     ->orderBy('location', 'asc')
                     ->pluck('location');
 
+            $work_models =JobPost::select('work_model')->orderBy('work_model', 'asc')
+                ->distinct() 
+                ->pluck('work_model');  // buscar tds works da bd
+
              // Aqui aplicas a filtragem de employers deletados
             $jobPosts = $jobPosts->with('employer')->get()
                                 ->filter(fn($jp) => ! $jp->isOwnerDeleted());
+            
+
 
             return view('pages.search_results', [
                 'type' => $type,
@@ -232,7 +251,11 @@ class JobPostController extends Controller {
                 'query' => $pesquisa,
                 'selectedCategory' => $categoryId,
                 'ordem'=>$ordem,
+                'minSalary' => $min_salary,     // salario minimo que o user decidiu
+                'maxSalary' => $max_salary,     // salario maximo que o user decidiu
                 'selectedLocation' => $location, // a location selecionada no filter
+                'selectedWork' => $work_model, // a location selecionada no filter
+                'work_models'=> $work_models,
                 'locations' => $locations,      //lista de tds as locations que existem na BD
                 'categories' => Category::all(),
             ]);

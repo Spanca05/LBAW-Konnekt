@@ -30,14 +30,31 @@
                     <option value="{{ $location }}" {{ $selectedLocation == $location ? 'selected' : '' }}>{{ $location }}</option>
                 @endforeach
             </select>
+            <h3>Work Model</h3>
+            <select name="work_model" id="work_model">
+                <option value='all_'>All</option>
+                @foreach($work_models as $model)  
+                    <option value="{{ $model }}" {{ $selectedWork == $model ? 'selected' : '' }}>{{ $model }}</option>
+                @endforeach
+            </select>
             <h3>Sort by </h3>
             <select name="ordem" id="ordem">
                 <option value="relevance" {{ $ordem == 'relevance' ? 'selected' : '' }}>Relevance</option>
                 <option value="name_a_z" {{ $ordem == 'Name_A_Z' ? 'selected' : '' }}>Name (A-Z)</option>
                 <option value="name_z_a" {{ $ordem == 'Name_Z_A' ? 'selected' : '' }}>Name (Z-A)</option>
-                <option value="date_newest" {{ $ordem == 'Newest' ? 'selected' : '' }}>Date (Newest)</option>
-                <option value="date_oldest" {{ $ordem == 'Oldest' ? 'selected' : '' }}>Date (Oldest)</option>
             </select>
+            <div class="salary-range">
+                <h3>Salary Range</h3>
+                <div class="min-salary">
+                    <label for="min-salary">Mininum Salary:</label>
+                    <input id = "min-salary" type="number" name="min_salary" placeholder="0" min="0" value="{{ $minSalary }}">
+                </div>
+                
+                <div class="max-salary">
+                    <label for="max-salary">Maximum Salary:</label>
+                    <input id = "max-salary" type="number" name="max_salary" placeholder="10000000000" min="0" value="{{ $maxSalary }}">
+                </div>
+            </div>
         @endif
         <p>No results.</p>
     @else
@@ -62,14 +79,33 @@
                     <option value="{{ $location }}" {{ $selectedLocation == $location ? 'selected' : '' }}>{{ $location }}</option>
                 @endforeach
             </select>
+            <h3>Work Model</h3>
+            <select name="work_model" id="work_model">
+                <option value='all_'>All</option>
+                @foreach($work_models as $model)  
+                    <option value="{{ $model }}" {{ $selectedWork == $model ? 'selected' : '' }}>{{ $model }}</option>
+                @endforeach
+            </select>
             <h3>Sort by:</h3>
             <select name="ordem" id="ordem">
                 <option value="relevance" {{ $ordem == 'relevance' ? 'selected' : '' }}>Relevance</option>
                 <option value="Name_A_Z" {{ $ordem == 'Name_A_Z' ? 'selected' : '' }}>Name (A-Z)</option>
                 <option value="Name_Z_A" {{ $ordem == 'Name_Z_A' ? 'selected' : '' }}>Name (Z-A)</option>
-                <option value="Newest" {{ $ordem == 'Newest' ? 'selected' : '' }}>Date (Newest)</option>
-                <option value="Oldest" {{ $ordem == 'Oldest' ? 'selected' : '' }}>Date (Oldest)</option>
+                <option value="high" {{ $ordem == 'high' ? 'selected' : '' }}>Salary (high)</option>
+                <option value="low" {{ $ordem == 'low' ? 'selected' : '' }}>Salary (low)</option>
             </select>
+            <div class="salary-range">
+                <h3>Salary Range</h3>
+                <div class="min-salary">
+                    <label for="min-salary">Mininum Salary:</label>
+                    <input id = "min-salary" type="number" name="min_salary" placeholder="0" min="0" value="{{ $minSalary }}">
+                </div>
+                
+                <div class="max-salary">
+                    <label for="max-salary">Maximum Salary:</label>
+                    <input id = "max-salary" type="number" name="max_salary" placeholder="10000000000" min="0" value="{{ $maxSalary }}">
+                </div>
+            </div>
             
             <ul>
             @foreach ($jobPosts as $jobpost)

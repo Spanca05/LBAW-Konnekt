@@ -55,6 +55,17 @@
                 <option value= "Hybrid">Hybrid</option>
             </select>
 
+            <label for="deadline">Deadline:</label>
+            <input
+                type="datetime-local"
+                id="deadline"
+                name="deadline"
+            >
+
+            @error('deadline')
+                <span class="error">{{ $message }}</span>
+            @enderror
+
             <button type="submit">Create</button>
         </form>
     </section>

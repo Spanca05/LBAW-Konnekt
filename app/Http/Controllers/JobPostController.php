@@ -75,7 +75,9 @@ class JobPostController extends Controller {
         'salary' => 'required|integer|min:0', // evita salários negativos
         'category_id' => 'required|integer',
         'work_model' => 'required|in:Remote,On-site,Hybrid',
-        'location' => 'nullable|string|required_unless:work_model,Remote'
+        'location' => 'nullable|string|required_unless:work_model,Remote',
+        'deadline' => 'nullable|date|after:now'
+
     ], [
         'salary.min' => 'Salary cannot be negative.',
         'location.required_unless' => 'Location is required unless the job is Remote.'
@@ -88,6 +90,7 @@ class JobPostController extends Controller {
         $jobPost->salary = $validated['salary'];
         $jobPost->work_model = $validated['work_model'];
         $jobPost->category_id = $validated['category_id'];
+        $jobPost->deadline = $validated['deadline'];
         $jobPost->employer_id = Auth::id();
         // Explicitly assign location
 
@@ -117,7 +120,9 @@ class JobPostController extends Controller {
             'salary' => 'required|numeric|min:0', // evita salários negativos
             'category_id' => 'required|integer|exists:category,id',
             'work_model' => 'required|in:Remote,On-site,Hybrid',
-            'location' => 'nullable|string|required_unless:work_model,Remote'
+            'location' => 'nullable|string|required_unless:work_model,Remote',
+            'deadline' => 'nullable|date|after:now'
+
         ], [
             'salary.min' => 'Salary cannot be negative.',
             'location.required_unless' => 'Location is required unless the job is Remote.'
@@ -129,6 +134,7 @@ class JobPostController extends Controller {
         $jobPost->salary = $validated['salary'];
         $jobPost->work_model = $validated['work_model'];
         $jobPost->category_id = $validated['category_id'];
+        $jobPost->deadline = $validated['deadline'];
         $location_ = preg_replace('/[^a-zA-ZÀ-ÿ0-9\s,-]/', '', $validated['location'] ?? '');
         $jobPost->location = Str::title(trim($location_)) ?: null;
         //$jobPost->location = $validated['location'] ?? null;

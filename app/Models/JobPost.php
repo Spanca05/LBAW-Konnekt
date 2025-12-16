@@ -28,10 +28,14 @@ class JobPost extends Model
         'work_model',
         'description',
         'category_id',
-        'location'
+        'location',
+        'deadline'
     ];
 
-    
+    protected $casts = [
+        'deadline' => 'datetime',
+    ];
+
     public function employer(): BelongsTo{
         return $this->belongsTo(User::class, 'employer_id');
     }

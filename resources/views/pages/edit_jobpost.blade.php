@@ -52,6 +52,18 @@
             @endforeach
         </select>
 
+        <label for="deadline">Deadline:</label>
+        <input
+            type="datetime-local"
+            id="deadline"
+            name="deadline"
+            value="{{ old('deadline', $jobPost->deadline) }}"
+        >
+
+        @error('deadline')
+            <span class="error">{{ $message }}</span>
+        @enderror
+
         <button type="submit">Update</button>
     </form>
 </section>

@@ -94,7 +94,8 @@ CREATE TABLE jobpost (
     work_model work_model NOT NULL,
     description TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
+    deadline TIMESTAMP WITH TIME ZONE
 );
 
 CREATE TABLE favourite_job (
@@ -446,7 +447,23 @@ FOR EACH ROW
 EXECUTE FUNCTION check_jobpost_location_requirement();
 
 
--- Trigger 8
+CREATE OR REPLACE FUNCTION check_jobpost_deadline()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.deadline <= NOW() OR NEW.deadline <= NEW.created_at THEN
+        RAISE EXCEPTION 'Job post deadline must be in the future.';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER enforce_jobpost_deadline
+BEFORE INSERT OR UPDATE ON jobpost
+FOR EACH ROW
+EXECUTE FUNCTION check_jobpost_deadline();
+
+
+--- Notification triggers
 
 CREATE OR REPLACE FUNCTION notify_new_job_posting()
 RETURNS TRIGGER AS $$
@@ -511,7 +528,6 @@ BEGIN
     WHERE u.role = 'JobSeeker'
       AND (
           sc.skill_id IS NOT NULL        -- skill corresponde
-          OR NEW.work_model = 'Remote'   -- ou trabalho remoto
           OR u.location = NEW.location   -- ou localização corresponde
       )
     LOOP

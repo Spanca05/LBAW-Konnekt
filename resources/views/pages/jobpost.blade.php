@@ -36,6 +36,15 @@
     @include('partials.jobpost', ['jobPost' => $jobPost])
     <p class="description">Description: {{ $jobPost->description }} </p>
 
+    <p>
+        <strong>Deadline:</strong>
+        @if($jobPost->deadline)
+            {{ $jobPost->deadline->format('d M Y, H:i') }}
+        @else
+            None
+        @endif
+    </p>
+
     
     @auth
         @if(Auth::user()->role === 'JobSeeker')

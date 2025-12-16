@@ -171,16 +171,15 @@ class JobPostController extends Controller {
 
             // filtrar por jobpost apenas
             if ($pesquisa) {
-                $jobPosts->whereRaw(
-                    "tsvectors @@ plainto_tsquery('english', ?)",
-                    [$pesquisa]
-                );
+                $jobPosts->where(function($query) use ($pesquisa) {
+                    $query->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$pesquisa])
+                    ->orWhere('title', 'ILIKE', '%' . $pesquisa . '%');
+            });
 
                 if (!$ordem || $ordem === 'relevance') {
                     $jobPosts->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$pesquisa]);
                 }
             }
-
             // FILTRO DE CATEGORIA
             if ($categoryId && $categoryId !== 'all') {
                 $jobPosts->where('category_id', $categoryId);
@@ -263,10 +262,11 @@ class JobPostController extends Controller {
 
         // procurar employers apenas
         if ($pesquisa) {
-            $employers->whereRaw(
-                "tsvectors @@ plainto_tsquery('english', ?)",
-                [$pesquisa]
-            );
+            $employers->where(function($query) use ($pesquisa) {
+                $query->whereRaw("tsvectors @@ plainto_tsquery('english', ?)")
+                ->orWhere('name', 'ILIKE', '%' . $pesquisa . '%');
+        });
+
             if (!$ordem || $ordem === 'relevance') {
                     $employers->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$pesquisa]);
                 }
@@ -330,6 +330,7 @@ class JobPostController extends Controller {
         if($type == 'search_jobpost'){       // procurar por jobposts
             $jobPosts = JobPost::query()
                 ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$pesquisa])
+                ->orWhere('title', 'ILIKE', '%' . $pesquisa . '%')
                 ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$pesquisa])
                 ->with('employer') 
                 ->limit(5)
@@ -353,6 +354,7 @@ class JobPostController extends Controller {
         else if($type == 'search_employer'){
             $employers = User::query()
                 ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$pesquisa])
+                ->orWhere('name', 'ILIKE', '%' . $pesquisa . '%')   //direct match
                 ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$pesquisa])
                 ->limit(5)
                 ->get();  // pego so em 5 no max

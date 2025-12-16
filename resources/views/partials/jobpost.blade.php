@@ -33,10 +33,19 @@
             </span>
         </div>
 
+        @if($detailed ?? false)
+        <div class="mt-3">
+            <h6>Description</h6>
+            <p class="small">{{ $description ?? $jobPost->description }}</p>
+        </div>
+        @endif
+
         <div class="mt-auto pt-3">
+            @if(!($detailed ?? false))
             <a href="{{ route('jobpost.show', ['jobpost' => $jobPost->id]) }}" class="button w-100">
                 View details
             </a>
+            @endif
         </div>
 
     </div>

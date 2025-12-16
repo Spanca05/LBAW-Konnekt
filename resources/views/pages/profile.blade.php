@@ -142,23 +142,34 @@
     </section>
 
     @elseif($user->role === 'Employer')
-    <section id="jobposts">
+        <section id="jobposts">
+            @if(auth()->check() && auth()->id() === $user->id)
+            <h2>My Active JobPosts</h2>
+            @else
+            <h2>{{ $user->name }}'s JobPosts</h2>
+            @endif
+
+            @if (isset($jobPosts) && $jobPosts->isNotEmpty())
+            @foreach ($jobPosts as $jobPost)
+            @include('partials.jobpost', ['jobPost' => $jobPost])
+            @endforeach
+            @else
+            <p>You have not created any job posts.</p>
+            @endif
+        </section>
         @if(auth()->check() && auth()->id() === $user->id)
-        <h2>My JobPosts</h2>
-        @else
-        <h2>{{ $user->name }}'s JobPosts</h2>
+            <section id="expired_jobposts">
+                <h2>My Expired JobPosts</h2>
+                @if (isset($expiredjobPosts) && $expiredjobPosts->isNotEmpty())
+                    @foreach ($expiredjobPosts as $expiredjobPost)
+                        @include('partials.jobpost', ['jobPost' => $expiredjobPost])
+                    @endforeach
+                @else
+                <p>You have no expired jobPosts</p>
+                @endif
+            </section>
         @endif
-
-        @if (isset($jobPosts) && $jobPosts->isNotEmpty())
-        @foreach ($jobPosts as $jobPost)
-        @include('partials.jobpost', ['jobPost' => $jobPost])
-        @endforeach
-        @else
-        <p>You have not created any job posts.</p>
-        @endif
-    </section>
     @endif
-
 </section>
 
 @endsection

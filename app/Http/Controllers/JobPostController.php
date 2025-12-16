@@ -14,22 +14,32 @@ use Illuminate\Support\Str;
 
 class JobPostController extends Controller {
 
-    /**
-     * Display a listing of the user's cards.
-     */
     public function index(Request $request)
     {
         // vai buscar todos os jobposts ordenados do mais recente para o mais antigo
         //$jobPosts = JobPost::orderBy('created_at', 'desc')->get();
 
         $jobPosts = JobPost::with('employer')
+            ->where(function ($q) {
+                $q->whereNull('deadline')
+                ->orWhere('deadline', '>', now());
+            })
             ->get()
-            ->filter(fn($jobPost) => ! $jobPost->isOwnerDeleted()) // só mantém os válidos
+            ->filter(fn($jobPost) => ! $jobPost->isOwnerDeleted())
             ->sortByDesc('created_at');
+        
+        $expiredJobPosts=JobPost::with('employer')
+            ->where('deadline', '<', now())
+            ->get()
+            ->filter(fn($jobPost) => ! $jobPost->isOwnerDeleted())
+            ->sortByDesc('created_at');
+        
+
 
         // Render the 'pages.cards' view with the user's cards.
         return view('pages.jobposts', [
-            'jobPosts' => $jobPosts
+            'jobPosts' => $jobPosts,
+            'expiredPosts' => $expiredJobPosts
         ]);
     }
 

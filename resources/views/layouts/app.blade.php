@@ -36,15 +36,15 @@
             <a class="button button-outline" href="{{ route('register') }}">Register</a> <a class="button" href="{{ route('login') }}">Login</a>
             @endauth
             @if(Route::currentRouteName() !== 'login' and Route::currentRouteName() !=='register' and Route::currentRouteName() !== 'password.request' and Route::currentRouteName() !== 'password.reset')
-            <div class="search">
-                <input type="text" id="search" class="search" placeholder="Search jobposts...">
+            <div class="search d-flex align-items-center gap-2 flex-wrap">
+                <input type="text" id="search" class="search" placeholder="Search">
                 <div class="sugestions" id="sugestions" style="display: none;"></div>
                 <select class="search_type" id="search_type">
                     <option value="search_jobpost" {{ (isset($type) && $type == 'search_jobpost') ? 'selected' : '' }}>Job Posts</option>
                     <option value="search_employer" {{ (isset($type) && $type == 'search_employer') ? 'selected' : '' }}>Employers</option>
                 </select>
 
-                <button id="search_button" class="search_button">Search</button>
+                <button id="search_button" class="button" type="button">Search</button>
             </div>
             @endif
         </header>

@@ -42,15 +42,16 @@
                         </div>
 
                         <div class="mb-4">
+                            <a href="{{ route('password.request') }}" class="text-decoration-none fs-5 fw-medium">Forgot your password?</a>
+                        </div>
+
+                        <div class="mb-4">
                             <label>
                                 <input type="checkbox" name="remember" value="1" @checked(old('remember'))>
                                 Remember me
                             </label>
                         </div>
 
-                        <div class="mb-4">
-                            <a href="{{ route('password.request') }}">Forgot your password?</a>
-                        </div>
 
                         <div class="actions">
                             <button type="submit">Login</button>

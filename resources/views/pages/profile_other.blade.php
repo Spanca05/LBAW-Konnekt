@@ -86,6 +86,6 @@
             @endif
         @endif
     @endif
-    <p><a class="button" href="{{ route('pages.jobposts.index') }}">return</a></p>
+    <p><a class="button" href="{{ url()->previous() }}">return</a></p>
 </section>
 @endsection

@@ -19,6 +19,6 @@
         </ul>
     @endif
 
-    <p><a class="button" href="{{ route('jobpost.show', ['jobpost' => $jobpost->id]) }}">Back to job</a></p>
+    <p><a class="button" href="{{ url()->previous() }}">Back to job</a></p>
 </section>
 @endsection

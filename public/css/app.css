@@ -25,7 +25,7 @@ main>header h1 a {
     color: #547792;
 }
 
-main>header a.button {
+main>header .button {
     margin: 1em;
     justify-self: center;
 }
@@ -184,7 +184,8 @@ main>header span {
    * Some styles might be missing
    **/
 button,
-a.button {
+a.button,
+.button {
     background-color: #547792;
     border-color: #587a92;
 }
@@ -193,6 +194,12 @@ a.button.button-outline {
     color: #547792;
     background-color: transparent;
     border-color: #547792;
+}
+
+button.button:disabled:hover {
+    background-color: #547792;
+    border-color: #587a92;
+    cursor: not-allowed;
 }
 
 a {

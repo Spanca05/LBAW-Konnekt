@@ -258,9 +258,7 @@ class JobPostController extends Controller {
             $contract_type =JobPost::select('contract_type')
                 ->distinct() 
                 ->pluck('contract_type');  // buscar tds contratos da bd são 3    
-
-             // Aqui aplicas a filtragem de employers deletados
-            $jobPosts = $jobPosts->with('employer')->get()
+                
              // Aqui aplicas a filtragem de employers deletados e jobposts bloqueados
             $jobPosts = $jobPosts->where('blocked', false)
                                 ->with('employer')->get()

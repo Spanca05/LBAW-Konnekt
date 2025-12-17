@@ -12,6 +12,7 @@ CREATE TYPE user_role AS ENUM ('Employer', 'JobSeeker', 'Admin');
 CREATE TYPE type_notification AS ENUM ('UserNotification', 'ApplicationNotification', 'JobPostNotification');
 CREATE TYPE type_report AS ENUM ('UserReport', 'JobPostReport');
 CREATE TYPE work_model AS ENUM ('Remote', 'On-site', 'Hybrid');
+CREATE TYPE contract_type AS ENUM ('Full-time', 'Part-time', 'Internship','Fixed-term');
 CREATE TYPE application_status AS ENUM ('Pending', 'Accepted', 'Rejected');
 CREATE TYPE category_name AS ENUM (
   'Coding',
@@ -100,6 +101,7 @@ CREATE TABLE jobpost (
     title TEXT NOT NULL,
     salary NUMERIC NOT NULL,
     work_model work_model NOT NULL,
+    contract_type contract_type NOT NULL,
     description TEXT NOT NULL,
     blocked BOOLEAN DEFAULT FALSE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,

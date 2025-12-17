@@ -18,7 +18,12 @@
       <span id="name-error" class="error" role="alert">{{ $message }}</span>
     @enderror
 
-    <label for="role">Role</label>
+    <label for="role">Role
+        <span class="help-icon">
+            ?
+          <span class="tooltip-text">JobSeeker can apply to jobs, Employer is the one who posts job offers</span>
+        </span>
+    </label>
     <select id="role" name="role" required>
         <option value="" disabled {{ old('role') ? '' : 'selected' }}>Select role</option>
         <option value="JobSeeker" {{ old('role') === 'JobSeeker' ? 'selected' : '' }}>JobSeeker</option>
@@ -67,7 +72,7 @@
     @enderror
 
    <div id="skills-wrapper">
-      <label>Select your skills (only for JobSeekers)</label>
+      <label>Select your skills</label>
         @foreach($skills as $skill)
             <label>
                 <input type="checkbox" name="skills[]" value="{{ $skill->id }}">
@@ -85,7 +90,12 @@
       <label for="description">Description</label>
       <input id="description" name="description" type="text" >
 
-    <label for="password">Password</label>
+    <label for="password">Password
+        <span class="help-icon">
+            ?
+          <span class="tooltip-text">Password must be at least 8 characters</span>
+        </span>
+      </label>
     <input
         id="password"
         type="password"

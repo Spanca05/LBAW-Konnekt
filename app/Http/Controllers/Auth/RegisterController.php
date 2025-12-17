@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 use Illuminate\View\View;
 
@@ -46,13 +47,13 @@ class RegisterController extends Controller
             'password' => 'required|min:8|confirmed',
             'description' => 'nullable|string|max:2000'
         ]);
-
+        $location_ = preg_replace('/[^a-zA-ZÀ-ÿ0-9\s,-]/', '', $request['location'] ?? '');
         // Create the new user.
         $user = User::create([
             'name' => $request->name,
             'role' => $request->role,
             'phone_number' => $request->phone_number,
-            'location' => $request->location ?? null,
+            'location' => Str::title(trim($location_)) ?: null,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'description' => $request->description ?? null

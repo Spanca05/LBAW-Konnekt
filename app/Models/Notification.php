@@ -23,7 +23,7 @@ class Notification extends Model
         'application_id'
     ];
 
-    
+    /*
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -37,7 +37,7 @@ class Notification extends Model
         return $this->belongsTo(JobPost::class, 'jobpost_id');
     }
 
-    /*
+    
     public function application(): BelongsTo {
         return $this->belongsTo(Application::class);
     }

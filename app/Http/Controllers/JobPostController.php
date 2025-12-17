@@ -23,6 +23,7 @@ class JobPostController extends Controller {
         //$jobPosts = JobPost::orderBy('created_at', 'desc')->get();
 
         $jobPosts = JobPost::with('employer')
+            ->where('blocked', false)
             ->get()
             ->filter(fn($jobPost) => ! $jobPost->isOwnerDeleted()) // só mantém os válidos
             ->sortByDesc('created_at');
@@ -227,8 +228,9 @@ class JobPostController extends Controller {
                     ->orderBy('location', 'asc')
                     ->pluck('location');
 
-             // Aqui aplicas a filtragem de employers deletados
-            $jobPosts = $jobPosts->with('employer')->get()
+             // Aqui aplicas a filtragem de employers deletados e jobposts bloqueados
+            $jobPosts = $jobPosts->where('blocked', false)
+                                ->with('employer')->get()
                                 ->filter(fn($jp) => ! $jp->isOwnerDeleted());
 
             return view('pages.search_results', [
@@ -286,7 +288,8 @@ class JobPostController extends Controller {
 
 
         $employers = $employers->get() // transforma em Collection
-                       ->filter(fn($user) => ! $user->isDeleted());
+                       ->filter(fn($user) => ! $user->isDeleted())
+                       ->filter(fn($user) => ! $user->isBlocked());
 
         return view('pages.search_results', [
             'type' => $type,
@@ -321,7 +324,7 @@ class JobPostController extends Controller {
         
         
             $resultados= $jobPosts
-                ->filter(fn($jp) => !$jp->isOwnerDeleted()) 
+                ->filter(fn($jp) => !$jp->isOwnerDeleted() && !$jp->blocked)
                 ->map(function ($job) {
                     return [
                         'name' => $job->title,
@@ -342,7 +345,7 @@ class JobPostController extends Controller {
 
 
             $resultados= $employers
-                ->filter(fn($emp) => !$emp->isDeleted()) 
+                ->filter(fn($emp) => !$emp->isDeleted() && !$emp->isBlocked())
                 ->map(function ($employer) {
                     return [
                         'name' => $employer->name,

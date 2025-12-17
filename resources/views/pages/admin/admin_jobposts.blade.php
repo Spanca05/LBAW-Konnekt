@@ -15,6 +15,7 @@
                     <th>Title</th>
                     <th>Employer</th>
                     <th>Created Date</th>
+                    <th>Blocked</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -23,8 +24,13 @@
                     <tr>
                         <td>{{ $jobpost->id }}</td>
                         <td>{{ $jobpost->title }}</td>
-                        <td>{{ $jobpost->employer->name ?? 'N/A' }}</td>
+                        <td>{{ $jobpost->employer->name }}</td>
                         <td>{{ $jobpost->created_at->format('Y-m-d') }}</td>
+                        <td>
+                            @if($jobpost->isBlocked()) Yes
+                            @else No
+                            @endif
+                        </td>
                         <td>
                             <a href="{{ route('jobpost.show', $jobpost->id) }}" class="button button-outline" style="font-size: 0.8rem;">View JobPost</a>
                             <a href="{{ route('admin.jobpost.applications', $jobpost->id) }}" class="button button-outline" style="font-size: 0.8rem;">View Applications</a>

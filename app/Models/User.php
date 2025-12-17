@@ -14,7 +14,8 @@ use App\Models\JobPost;
 use App\Models\CV;
 use App\Models\Skill;
 
-class User extends Authenticatable {
+class User extends Authenticatable
+{
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
@@ -56,7 +57,8 @@ class User extends Authenticatable {
      *
      * @return array<string, string>
      */
-    protected function casts(): array {
+    protected function casts(): array
+    {
         return [
             'email_verified_at' => 'datetime',
             // Ensures password is always hashed automatically when set.
@@ -70,15 +72,18 @@ class User extends Authenticatable {
      * Defines a one-to-many relationship:
      * a user can have multiple jobposts.
      */
-    public function jobposts(): HasMany {
+    public function jobposts(): HasMany
+    {
         return $this->hasMany(JobPost::class, 'employer_id');
     }
 
-    public function getPhotoUrlAttribute() {
+    public function getPhotoUrlAttribute()
+    {
         return $this->photo_path ? Storage::url($this->photo_path) : null;
     }
 
-    public function cv(): HasOne {
+    public function cv(): HasOne
+    {
         return $this->hasOne(CV::class, 'jobseeker_id');
     }
     /**
@@ -87,23 +92,49 @@ class User extends Authenticatable {
      * Defines a one-to-many relationship:
      * a user can have multiple applications.
      */
-    public function applications(): HasMany {
+    public function applications(): HasMany
+    {
         return $this->hasMany(Application::class, 'jobseeker_id', 'id');
     }
 
 
-    public function skills() {
+    public function skills()
+    {
         return $this->belongsToMany(Skill::class, 'skill_user', 'user_id', 'skill_id');
     }
 
-    public function isDeleted() {
+    public function isDeleted()
+    {
         return preg_match('/^deleted_\d+@delete\.app$/', $this->email) &&
-        preg_match('/^Anonym\d+$/', $this->name) &&
-        preg_match('/^DELETED_USER_\d+$/', $this->password) &&
-        $this->phone_number === '000000000' && 
-        $this->location === null &&
-        $this->photo_path === null;
+            preg_match('/^Anonym\d+$/', $this->name) &&
+            preg_match('/^DELETED_USER_\d+$/', $this->password) &&
+            $this->phone_number === '000000000' &&
+            $this->location === null &&
+            $this->photo_path === null;
     }
-    
-}
 
+    public function blockedRecord(): HasOne
+    {
+        return $this->hasOne(BlockedUser::class, 'id', 'blocked_id');
+    }
+
+    public function isBlocked(): bool
+    {
+        return !is_null($this->blocked_id);
+    }
+
+    public function blockReason(): ?string
+    {
+        return $this->blockedRecord?->reason;
+    }
+
+    public function blockedBy(): ?int
+    {
+        return $this->blockedRecord?->admin_id;
+    }
+
+    public function blockedAt(): ?string
+    {
+        return $this->blockedRecord?->blocked_at;
+    }
+}

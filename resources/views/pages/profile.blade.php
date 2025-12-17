@@ -3,146 +3,49 @@
 @section('title', 'Profile')
 
 @section('content')
-<section class="profile_info">
-    @if(auth()->check() && auth()->id() === $user->id)
-    <h2>My Profile</h2>
-    @else
-    <h2>{{ $user->name }}'s Profile</h2>
-    @endif
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-9">
 
-    @if(!empty($user->photo_url))
-    <div style="margin-bottom: 1rem">
-        <img
-            src="{{ $user->photo_url }}"
-            alt="Profile Picture of {{ $user->name }}"
-            style="max-width: 150px; max-height:150px; object-fit:cover; border-radius:6px;">
-    </div>
-    @else
-    <div style="margin-bottom:1rem">
-        <img
-            src="{{ asset('images/avatar-placeholder.png') }}"
-            alt="No photo"
-            style="max-width:150px; max-height:150px; object-fit:cover; border-radius:6px;">
-    </div>
-    @endif
+            <h3 class="mb-3">
+                @if(auth()->check() && auth()->id() === $user->id)
+                My Profile
+                @else
+                {{ $user->name }}'s Profile
+                @endif
+            </h3>
 
-    <ul>
-        <li><strong>Name:</strong> {{ $user->name}}</li>
-        <li><strong>Email:</strong> {{ $user->email}}</li>
-        <li><strong>Phone:</strong> {{ $user->phone_number}}</li>
-        <li><strong>Role:</strong> {{ $user->role}}</li>
-        <li><strong>Description:</strong>
-            @if($user->description !== null) {{ $user->description }}
-            @else No description.
-            @endif
-        </li>
+            <!-- Profile Header -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <!-- Photo -->
+                        <div>
+                            <img
+                                src="{{ !empty($user->photo_url) ? $user->photo_url : asset('images/profile-placeholder.png') }}"
+                                alt="Profile Picture of {{ $user->name }}"
+                                class="rounded"
+                                style="width: 64px; height: 64px; object-fit: cover;"
+                                onerror="this.onerror=null; this.src='{{ asset('images/profile-placeholder.png') }}';">
+                        </div>
 
-        @if(!empty($user->location))
-        <li><strong>Location:</strong> {{ $user->location }}</li>
-        @else
-        <li><strong>Location:</strong> Not specified</li>
-        @endif
-
-        @if($user->role === 'JobSeeker')
-        <li><strong>Skills:</strong>
-            @if($user->skills && count($user->skills))
-            <ul>
-                @foreach($user->skills as $skill)
-                <li><strong>{{ $skill->name}}</strong>: {{ $skill->description}}</li>
-                @endforeach
-            </ul>
-            @else
-            <p>You have no Skills</p>
-            @endif
-        </li>
-        @endif
-
-        @if($user->role === 'JobSeeker' && (optional($user->cv)->file_path || optional($user->cv)->description))
-        <li>
-            <strong>CV:</strong>
-            @if(optional($user->cv)->file_path)
-            <a class="button" href="{{ route('profile.cv.download') }}">Download CV</a>
-            @endif
-        </li>
-        @endif
-
-    </ul>
-
-    <p>
-        @if(auth()->check() && auth()->id() === $user->id)
-        <a class="button" href="{{ route('profile.edit') }}">Edit profile</a>
-    <form action="{{ route('profile.destroy') }}" method="POST">
-        @csrf
-        @method('DELETE')
-        <button class="button" onclick="return confirm('Are you sure you want to delete your account? This action is irreversible.')">
-            Delete profile
-        </button>
-    </form>
-    @if(auth()->user()->role === 'Employer')
-    <a class="button" href="{{ route('jobpost.create') }}">Create New JobPost</a>
-    @endif
-    @endif
-    </p>
-
-    @if ($user->role === 'JobSeeker')
-    <section class="card">
-        <h2>My Applications</h2>
-        @if(isset($applications) && $applications->isNotEmpty())
-        <ul>
-            @foreach($applications as $app)
-            <li>
-                <div>
-                    <div>
-                        <a href="{{ route('jobpost.show', ['jobpost' => $app->jobPost->id ?? $app->jobpost_id]) }}">
-                            {{ $app->jobPost->title ?? ('Job #' . ($app->jobpost_id ?? '')) }}
-                        </a>
-                        <div class="muted">Submitted: {{ $app->date ?? '' }} — Status: {{ $app->status ?? '' }}</div>
-                        @if(!empty($app->motivation))
-                        <p>{{$app->motivation}}</p>
-                        @endif
-                    </div>
-                    <div>
-                        @if($app->status === 'Rejected')
-                        <a class="button" href="{{ route('applications.edit', ['application' => $app->id]) }}">Resend</a>
-                        @elseif ($app->status === 'Pending')
-                        <a class="button" href="{{ route('applications.edit', ['application' => $app->id]) }}">Edit</a>
-                        @endif
-                        <form method="POST" action="{{ route('applications.destroy', ['application' => $app->id]) }}" onsubmit="return confirm('Withdraw this application?');">
-                            @csrf
-                            @method('DELETE')
-
-                            <input type="hidden" name="redirect_to" value="{{ route('profile') }}">
-
-                            <button class="button" type="submit">Withdraw</button>
-                        </form>
+                        <!-- Name and Role -->
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <h5 class="mb-0">{{ $user->name }}</h5>
+                            <span class="badge jobpost-badge">{{ $user->role }}</span>
+                        </div>
                     </div>
                 </div>
-            </li>
-            @endforeach
-        </ul>
-        @else
-        <p>You have not applied to any jobs yet.</p>
-        @endif
-    </section>
+            </div>
 
-    @elseif($user->role === 'Employer')
-    <section id="jobposts">
-        @if(auth()->check() && auth()->id() === $user->id)
-        <h2>My JobPosts</h2>
-        @else
-        <h2>{{ $user->name }}'s JobPosts</h2>
-        @endif
+            <!-- Role-specific Tabs -->
+            @if($user->role === 'JobSeeker')
+            @include('partials.profile_tabs_jobseeker', ['user' => $user, 'applications' => $applications ?? collect()])
+            @elseif($user->role === 'Employer')
+            @include('partials.profile_tabs_employer', ['user' => $user, 'jobPosts' => $jobPosts ?? collect()])
+            @endif
 
-        @if (isset($jobPosts) && $jobPosts->isNotEmpty())
-        @foreach ($jobPosts as $jobPost)
-        @include('partials.jobpost', ['jobPost' => $jobPost])
-        @endforeach
-        @else
-        <p>You have not created any job posts.</p>
-        @endif
-    </section>
-    @endif
-
-</section>
-
+        </div>
+    </div>
+</div>
 @endsection

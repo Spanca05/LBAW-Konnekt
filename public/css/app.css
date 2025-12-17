@@ -346,3 +346,7 @@ select:focus {
     background-color: #f4eef9;
     /* Roxo muito clarinho ao passar o rato */
 }
+
+.nav-tabs {
+    border-bottom: 0;
+}

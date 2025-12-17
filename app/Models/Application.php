@@ -18,6 +18,7 @@ class Application extends Model
         'motivation',
         'date',
         'status',
+        'blocked',
     ];
 
     public function user(): BelongsTo
@@ -28,5 +29,10 @@ class Application extends Model
     public function jobPost(): BelongsTo
     {
         return $this->belongsTo(JobPost::class, 'jobpost_id');
+    }
+
+    public function isBlocked(): bool
+    {
+        return $this->blocked === true;
     }
 }

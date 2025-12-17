@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class LoginController extends Controller
 {
@@ -41,6 +42,16 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
  
+        // Check if user exists and is blocked before attempting login
+        $user = User::where('email', $credentials['email'])->first();
+        
+        if ($user && $user->isBlocked()) {
+            $reason = $user->blockReason();
+            return back()->withErrors([
+                'email' => 'Your account has been blocked. Reason: ' . $reason,
+            ])->onlyInput('email');
+        }
+        
         // Attempt to authenticate and log in the user.
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             // Regenerate the session ID to prevent session fixation attacks.

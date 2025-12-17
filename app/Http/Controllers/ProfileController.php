@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Skill;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -29,11 +30,19 @@ class ProfileController extends Controller {
         $favourites = collect();
 
         if ($user && isset($user->role) && $user->role === 'JobSeeker') {
-            $applications = $user->applications()->with('jobPost')->orderByDesc('date')->get();
+
             $favourites = $user->favouriteJobs()->with('employer')->get();
+            $applications = $user->applications()
+                ->with('jobPost')
+                ->whereHas('jobPost', function ($f) {
+                    $f->where('blocked', false);
+                })
+                ->orderByDesc('date')
+                ->get();
         }
         
         $jobPosts = [];
+        $expiredjobPosts = [];
         if ($user->role === 'Employer') {
             $jobPosts = $user
                 ->jobposts()
@@ -61,8 +70,6 @@ class ProfileController extends Controller {
 
     public function show($id)
     {
-        //$other = User::findOrFail($id);
-
         $other = User::findOrFail($id);
 
         Gate::authorize('viewPublic', $other);
@@ -110,7 +117,11 @@ class ProfileController extends Controller {
         $user->email = $data['email'];
         $user->phone_number = $data['phone_number'] ?? $user->phone_number;
         // update location -> use array_key_exists to allow setting to null
-        $user->location = array_key_exists('location', $data) ? $data['location'] : $user->location;
+                //limpar o input da location tirar espaços nas pontas, meter capslock e tirar simbolos estranhos
+
+        $location_ = preg_replace('/[^a-zA-ZÀ-ÿ0-9\s,-]/', '', $data['location'] ?? '');
+        $user->location = Str::title(trim($location_)) ?: null;
+        //$user->location = array_key_exists('location', $data) ? $data['location'] : $user->location;
 
 
         // Se for JobSeeker, attach das skills (sem validação)
@@ -184,7 +195,8 @@ class ProfileController extends Controller {
             } 
         }
 
-        return redirect()->route('profile')->with('success', 'Profile updated successfully.');
+            $redirectRoute = $user->role === 'Admin' ? 'admin.index' : 'profile';
+        return redirect()->route($redirectRoute)->with('success', 'Profile updated successfully.');
     }
 
     //delete profile

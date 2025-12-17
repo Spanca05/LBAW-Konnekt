@@ -29,7 +29,7 @@
                                     {{ $notification->title }}
                                 </a>
                             @else
-                                {{ $notification->title }}
+                                1111{{ $notification->title }}
                             @endif
                             <small style="color: #999;">({{ $notification->date->format('d M Y H:i') }})</small>
                         </span>

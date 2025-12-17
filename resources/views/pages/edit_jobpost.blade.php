@@ -42,6 +42,13 @@
             <option value="Hybrid" {{ old('work_model', $jobPost->work_model) == 'Hybrid' ? 'selected' : '' }}>Hybrid</option>
         </select>
 
+        <label for="contract_type">Contract Type:</label>
+        <select name="contract_type" id="contract_type" required>
+            <option value="Internship" {{ old('contract_type', $jobPost->contract_type) == 'Internship' ? 'selected' : '' }}>Internship</option>
+            <option value="Full-time" {{ old('contract_type', $jobPost->contract_type) == 'Full-time' ? 'selected' : '' }}>Full-time</option>
+            <option value="Part-time" {{ old('contract_type', $jobPost->contract_type) == 'Part-time' ? 'selected' : '' }}>Part-time</option>
+        </select>
+
         <label for="category_id">Category:</label>
         <select name="category_id" id="category_id" required>
             @foreach ($categories as $category)

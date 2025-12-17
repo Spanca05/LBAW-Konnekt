@@ -26,14 +26,16 @@ class JobPost extends Model
         'employer_id',
         'salary',
         'work_model',
+        'contract_type',
         'description',
         'category_id',
         'location',
-        'deadline'
+        'deadline',
+        'blocked'
     ];
 
     protected $casts = [
-        'deadline' => 'datetime',
+        'deadline' => 'datetime'
     ];
 
     public function employer(): BelongsTo{
@@ -65,4 +67,8 @@ class JobPost extends Model
         return $this->belongsToMany(User::class, 'favourite_job', 'jobpost_id', 'jobseeker_id');
     }
 
+    public function isBlocked(): bool
+    {
+        return $this->blocked === true;
+    }
 }

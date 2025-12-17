@@ -77,9 +77,9 @@
         <a href="{{ route('login') }}" class="apply-button"><button>Login to apply</button></a>
     @endauth
 
-    @include('partials.applications_received', ['jobPost' => $jobPost])
+    @include('partials.applications_received', ['jobPost' => $jobPost, 'applications' => $applications])
 
-    <a href="{{ route('pages.jobposts.index') }}"><button class="return">return</button></a>
+    <a href="{{ url()->previous() }}"><button class="return">return</button></a>
 </section>
 
 @endsection

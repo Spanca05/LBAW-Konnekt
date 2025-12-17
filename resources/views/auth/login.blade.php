@@ -40,8 +40,12 @@
         Remember me
     </label>
 
-    <button type="submit">Login</button>
-    <a class="button button-outline" href="{{ route('register') }}">Register</a>
+    <a href="{{ route('password.request') }}">Forgot your password?</a>
+
+    <div class="login-actions">
+        <button type="submit">Login</button>
+        <a class="button button-outline" href="{{ route('register') }}">Register</a>
+    </div>
 
     @if (session('status'))
         <p class="success" role="status">{{ session('status') }}</p>

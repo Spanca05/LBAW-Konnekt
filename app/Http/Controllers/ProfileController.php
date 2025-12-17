@@ -35,14 +35,27 @@ class ProfileController extends Controller {
         
         $jobPosts = [];
         if ($user->role === 'Employer') {
-            $jobPosts = $user->jobposts()->orderBy('created_at', 'desc')->get();
+            $jobPosts = $user
+                ->jobposts()
+                ->where(function ($q) {
+                    $q->whereNull('deadline')
+                    ->orWhere('deadline', '>', now());
+                })
+                ->orderBy('created_at', 'desc')
+                ->get();
+            $expiredjobPosts = $user
+                ->jobposts() 
+                ->where('deadline', '<', now())
+                ->get()
+                ->sortByDesc('created_at');
         }
 
         return view('pages.profile', [
             'user' => $user,
             'applications' => $applications,
             'favourites' => $favourites,
-            'jobPosts' => $jobPosts
+            'jobPosts' => $jobPosts,
+            'expiredjobPosts' => $expiredjobPosts
         ]);
     }
 

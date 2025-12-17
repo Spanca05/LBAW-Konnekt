@@ -28,18 +28,8 @@ class JobPostController extends Controller {
             ->filter(fn($jobPost) => ! $jobPost->isOwnerDeleted())
             ->sortByDesc('created_at');
         
-        $expiredJobPosts=JobPost::with('employer')
-            ->where('deadline', '<', now())
-            ->get()
-            ->filter(fn($jobPost) => ! $jobPost->isOwnerDeleted())
-            ->sortByDesc('created_at');
-        
-
-
-        // Render the 'pages.cards' view with the user's cards.
         return view('pages.jobposts', [
             'jobPosts' => $jobPosts,
-            'expiredPosts' => $expiredJobPosts
         ]);
     }
 

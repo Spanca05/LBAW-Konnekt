@@ -27,6 +27,7 @@ class JobPost extends Model
         'employer_id',
         'salary',
         'work_model',
+        'contract_type',
         'description',
         'category_id',
         'location'

@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const minSalary = document.getElementById('min-salary');
     const maxSalary = document.getElementById('max-salary');
     const workModel = document.getElementById('work_model');
+    const contract = document.getElementById('contract_type');
 
 
     function search() {
@@ -46,6 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if(maxSalary) maxSalary.addEventListener('input', adiarUpdate);
 
     if(workModel) workModel.addEventListener('change',updateFiltro);
+    if(contract) contract.addEventListener('change',updateFiltro);
 
     let timeout = null;
 
@@ -75,10 +77,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         else {
             const model = document.querySelector('select[name="work_model"]').value;
+            const contract_type = document.querySelector('select[name="contract_type"]').value;
             const valorMax = maxSalary.value;
             const valorMin = minSalary.value;
             const categoryId = document.querySelector('select[name="Categories"]').value;
-            window.location.href = `/jobposts/search?q=${encodeURIComponent(query)}&type=${type}&category_id=${categoryId}&ordem=${sort}&location=${local}&min_salary=${valorMin}&max_salary=${valorMax}&work_model=${model}`;    
+            window.location.href = `/jobposts/search?q=${encodeURIComponent(query)}&type=${type}&category_id=${categoryId}&ordem=${sort}&location=${local}&min_salary=${valorMin}&max_salary=${valorMax}&work_model=${model}&contract_type=${contract_type}`;    
             }
         }
 

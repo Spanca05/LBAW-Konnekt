@@ -37,6 +37,13 @@
                     <option value="{{ $model }}" {{ $selectedWork == $model ? 'selected' : '' }}>{{ $model }}</option>
                 @endforeach
             </select>
+            <h3>Contract Type</h3>
+            <select name="contract_type" id="contract_type">
+                <option value='all'>All</option>
+                @foreach($contract_type as $contract)  
+                    <option value="{{ $contract }}" {{ $selectedContract == $contract ? 'selected' : '' }}>{{ $contract }}</option>
+                @endforeach
+            </select>
             <h3>Sort by </h3>
             <select name="ordem" id="ordem">
                 <option value="relevance" {{ $ordem == 'relevance' ? 'selected' : '' }}>Relevance</option>
@@ -59,7 +66,7 @@
         <p>No results.</p>
     @else
         @if($type=='search_jobpost')
-            <h2>Filter by:</h2>
+            <b><h2>Filter by:</h2></b>
             <h3>Category</h3>
             <select name="Categories" id="Categories">
                 <option value='all'>All</option>
@@ -86,7 +93,14 @@
                     <option value="{{ $model }}" {{ $selectedWork == $model ? 'selected' : '' }}>{{ $model }}</option>
                 @endforeach
             </select>
-            <h3>Sort by:</h3>
+            <h3>Contract Type</h3>
+            <select name="contract_type" id="contract_type">
+                <option value='all'>All</option>
+                @foreach($contract_type as $contract)  
+                    <option value="{{ $contract }}" {{ $selectedContract == $contract ? 'selected' : '' }}>{{ $contract }}</option>
+                @endforeach
+            </select>
+            <b><h2>Sort by:</h2></b>
             <select name="ordem" id="ordem">
                 <option value="relevance" {{ $ordem == 'relevance' ? 'selected' : '' }}>Relevance</option>
                 <option value="Name_A_Z" {{ $ordem == 'Name_A_Z' ? 'selected' : '' }}>Name (A-Z)</option>

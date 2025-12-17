@@ -74,19 +74,19 @@ VALUES
 -- JOBPOSTS (12 total) -- ensure location logic respected
 -- ---------------------------
 -- Employer IDs (based on insertion order): 2..6 are employers above
-INSERT INTO jobpost (employer_id, category_id, location, title, salary, work_model, description) VALUES
-(2, 1, 'Lisboa', 'Senior Backend Engineer', 90000.00, 'On-site', 'Work on scalable APIs and microservices.'),
-(2, 2, NULL, 'Remote Content Marketer', 45000.00, 'Remote', 'Create content strategies for SaaS products.'),
-(3, 3, 'Porto', 'UI/UX Designer (Hybrid)', 48000.00, 'Hybrid', 'Design interfaces for web and mobile.'),
-(3, 2, NULL, 'SEO Specialist (Remote)', 42000.00, 'Remote', 'Optimize organic traffic and search rankings.'),
-(4, 3, 'Faro', 'Senior Product Designer', 70000.00, 'On-site', 'Design product experiences and lead design sprints.'),
-(4, 1, 'Faro', 'Front-end Developer (On-site)', 52000.00, 'On-site', 'React/TypeScript development for client projects.'),
-(5, 1, NULL, 'DevOps Engineer (Remote)', 75000.00, 'Remote', 'Infrastructure as code and CI/CD pipelines.'),
-(5, 7, 'Lisboa', 'Civil Engineer (On-site)', 65000.00, 'On-site', 'Site engineering and project management.'),
-(6, 4, 'Braga', 'Financial Analyst (Hybrid)', 58000.00, 'Hybrid', 'Financial modelling and reporting.'),
-(6, 1, 'Braga', 'Junior Backend Developer', 30000.00, 'On-site', 'Assist in backend services and APIs.'),
-(2, 12, NULL, 'Research Scientist (Remote)', 68000.00, 'Remote', 'Research projects with data-driven focus.'),
-(3, 5, 'Porto', 'Education Program Manager', 47000.00, 'On-site', 'Manage educational programs and partnerships.');
+INSERT INTO jobpost (employer_id, category_id, location, title, salary, work_model, contract_type, description) VALUES
+(2, 1, 'Lisboa', 'Senior Backend Engineer', 90000.00, 'On-site','Internship', 'Work on scalable APIs and microservices.'),
+(2, 2, NULL, 'Remote Content Marketer', 45000.00, 'Remote','Internship', 'Create content strategies for SaaS products.'),
+(3, 3, 'Porto', 'UI/UX Designer (Hybrid)', 48000.00, 'Hybrid', 'Internship','Design interfaces for web and mobile.'),
+(3, 2, NULL, 'SEO Specialist (Remote)', 42000.00, 'Remote', 'Internship','Optimize organic traffic and search rankings.'),
+(4, 3, 'Faro', 'Senior Product Designer', 70000.00, 'On-site', 'Full-time','Design product experiences and lead design sprints.'),
+(4, 1, 'Faro', 'Front-end Developer (On-site)', 52000.00, 'On-site','Full-time', 'React/TypeScript development for client projects.'),
+(5, 1, NULL, 'DevOps Engineer (Remote)', 75000.00, 'Remote', 'Full-time','Infrastructure as code and CI/CD pipelines.'),
+(5, 7, 'Lisboa', 'Civil Engineer (On-site)', 65000.00, 'On-site', 'Full-time','Site engineering and project management.'),
+(6, 4, 'Braga', 'Financial Analyst (Hybrid)', 58000.00, 'Hybrid', 'Full-time','Financial modelling and reporting.'),
+(6, 1, 'Braga', 'Junior Backend Developer', 30000.00, 'On-site', 'Full-time','Assist in backend services and APIs.'),
+(2, 12, NULL, 'Research Scientist (Remote)', 68000.00, 'Remote','Part-time', 'Research projects with data-driven focus.'),
+(3, 5, 'Porto', 'Education Program Manager', 47000.00, 'On-site', 'Part-time','Manage educational programs and partnerships.');
 
 -- ---------------------------
 -- JOBPOST_CATEGORY links (secondary categories)

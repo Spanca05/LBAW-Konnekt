@@ -77,6 +77,7 @@ class JobPostController extends Controller {
         'salary' => 'required|integer|min:0', // evita salários negativos
         'category_id' => 'required|integer',
         'work_model' => 'required|in:Remote,On-site,Hybrid',
+        'contract_type' => 'required|in:Internship,Full-time,Part-time',
         'location' => 'nullable|string|required_unless:work_model,Remote'
     ], [
         'salary.min' => 'Salary cannot be negative.',
@@ -89,6 +90,7 @@ class JobPostController extends Controller {
         $jobPost->description = $validated['description'];
         $jobPost->salary = $validated['salary'];
         $jobPost->work_model = $validated['work_model'];
+        $jobPost->contract_type = $validated['contract_type'];
         $jobPost->category_id = $validated['category_id'];
         $jobPost->employer_id = Auth::id();
         // Explicitly assign location
@@ -119,6 +121,7 @@ class JobPostController extends Controller {
             'salary' => 'required|numeric|min:0', // evita salários negativos
             'category_id' => 'required|integer|exists:category,id',
             'work_model' => 'required|in:Remote,On-site,Hybrid',
+            'contract_type' => 'required|in:Internship,Full-time,Part-time',
             'location' => 'nullable|string|required_unless:work_model,Remote'
         ], [
             'salary.min' => 'Salary cannot be negative.',
@@ -130,6 +133,7 @@ class JobPostController extends Controller {
         $jobPost->description = $validated['description'];
         $jobPost->salary = $validated['salary'];
         $jobPost->work_model = $validated['work_model'];
+        $jobPost->contract_type = $validated['contract_type'];
         $jobPost->category_id = $validated['category_id'];
         $location_ = preg_replace('/[^a-zA-ZÀ-ÿ0-9\s,-]/', '', $validated['location'] ?? '');
         $jobPost->location = Str::title(trim($location_)) ?: null;
@@ -158,6 +162,7 @@ class JobPostController extends Controller {
         $pesquisa = $request->input('q');
         $categoryId = $request->input('category_id');
         $work_model =$request->input('work_model');
+        $contract =$request->input('contract_type');
         $type = $request->input('type');
         $ordem = $request->input('ordem');
         $location = $request->input('location');
@@ -189,7 +194,13 @@ class JobPostController extends Controller {
             if ($work_model && $work_model !== 'all_') {
                 $jobPosts->where('work_model', $work_model);
             }
-                        //filtrar por salario
+
+            //filtrar contrato
+            if ($contract && $contract !== 'all') {
+                $jobPosts->where('contract_type', $contract);
+            }
+
+            //filtrar por salario
             if ($max_salary) {
                 $jobPosts->where('salary', '<=', $max_salary);
             }
@@ -236,6 +247,10 @@ class JobPostController extends Controller {
             $work_models =JobPost::select('work_model')->orderBy('work_model', 'asc')
                 ->distinct() 
                 ->pluck('work_model');  // buscar tds works da bd
+            
+            $contract_type =JobPost::select('contract_type')
+                ->distinct() 
+                ->pluck('contract_type');  // buscar tds contratos da bd são 3    
 
              // Aqui aplicas a filtragem de employers deletados
             $jobPosts = $jobPosts->with('employer')->get()
@@ -255,6 +270,8 @@ class JobPostController extends Controller {
                 'selectedLocation' => $location, // a location selecionada no filter
                 'selectedWork' => $work_model, // a location selecionada no filter
                 'work_models'=> $work_models,
+                'contract_type'=> $contract_type,
+                'selectedContract'=> $contract,
                 'locations' => $locations,      //lista de tds as locations que existem na BD
                 'categories' => Category::all(),
             ]);

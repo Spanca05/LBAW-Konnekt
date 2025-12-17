@@ -17,6 +17,7 @@
                     <th>JobPost</th>
                     <th>Status</th>
                     <th>Date</th>
+                    <th>Blocked</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -28,6 +29,11 @@
                         <td>{{ $application->jobPost->title }}</td>
                         <td>{{ $application->status }}</td>
                         <td>{{ $application->date }}</td>
+                        <td>
+                            @if($application->isBlocked()) Yes
+                            @else No
+                            @endif
+                        </td>
                         <td>
                             <a href="{{ route('admin.application.show', $application->id) }}" class="button button-outline" style="font-size: 0.8rem;">View Application</a>
                             <a href="{{ route('profile.other', $application->jobseeker_id) }}" class="button button-outline" style="font-size: 0.8rem;">View Jobseeker</a>

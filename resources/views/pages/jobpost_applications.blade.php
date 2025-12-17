@@ -12,8 +12,8 @@
         <ul>
             @foreach($applications as $app)
                 <li>
-                    <strong>{{ $app->user->name ?? 'Unknown' }}</strong>
-                    <p>{{ \Illuminate\Support\Str::limit($app->motivation, 300) }}</p>
+                    <strong>{{ $app->user->name }}</strong>
+                    <p>{{ $app->motivation }}</p>
                 </li>
             @endforeach
         </ul>

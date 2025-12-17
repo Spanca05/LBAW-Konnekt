@@ -13,6 +13,11 @@
         <p><strong>Status:</strong> {{ $application->status }}</p>
         <p><strong>Date:</strong> {{ $application->date }}</p>
         <p><strong>Motivation:</strong> {{ $application->motivation }}</p>
+        <p><strong>Blocked:</strong> 
+            @if($application->isBlocked()) Yes
+            @else No
+            @endif
+        </p>
     </div>
 </div>
 @endsection

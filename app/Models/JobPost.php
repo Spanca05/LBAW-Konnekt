@@ -29,7 +29,8 @@ class JobPost extends Model
         'work_model',
         'description',
         'category_id',
-        'location'
+        'location',
+        'blocked',
     ];
 
     
@@ -56,5 +57,10 @@ class JobPost extends Model
 
     public function isOwnerDeleted(): bool {
         return $this->employer && $this->employer->isDeleted();
+    }
+
+    public function isBlocked(): bool
+    {
+        return $this->blocked === true;
     }
 }

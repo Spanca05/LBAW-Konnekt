@@ -101,6 +101,7 @@ CREATE TABLE jobpost (
     salary NUMERIC NOT NULL,
     work_model work_model NOT NULL,
     description TEXT NOT NULL,
+    blocked BOOLEAN DEFAULT FALSE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL
 );
@@ -118,6 +119,7 @@ CREATE TABLE application (
     motivation TEXT NOT NULL,
     date TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
     status application_status DEFAULT 'Pending' NOT NULL,
+    blocked BOOLEAN DEFAULT FALSE NOT NULL,
     CONSTRAINT uq_application_jobseeker_jobpost UNIQUE (jobseeker_id, jobpost_id)
 );
 

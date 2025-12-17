@@ -26,7 +26,13 @@ class ProfileController extends Controller {
         // If the user is a job seeker, load their applications (legacy schema uses jobseeker_id)
         $applications = collect();
         if ($user && isset($user->role) && $user->role === 'JobSeeker') {
-            $applications = $user->applications()->with('jobPost')->orderByDesc('date')->get();
+            $applications = $user->applications()
+                ->with('jobPost')
+                ->whereHas('jobPost', function ($f) {
+                    $f->where('blocked', false);
+                })
+                ->orderByDesc('date')
+                ->get();
         }
 
 
@@ -44,8 +50,6 @@ class ProfileController extends Controller {
 
     public function show($id)
     {
-        //$other = User::findOrFail($id);
-
         $other = User::findOrFail($id);
 
         if ($other->isDeleted()) {

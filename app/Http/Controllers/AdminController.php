@@ -186,6 +186,9 @@ class AdminController extends Controller
             return redirect()->route('admin.users')->with('error', 'User is already blocked.');
         }
 
+        if ($user->role === 'Employer') JobPost::where('employer_id', $userId)->update(['blocked' => true]);
+        if ($user->role === 'JobSeeker') Application::where('jobseeker_id', $userId)->update(['blocked' => true]);
+
         // Create blocked user record
         $blockedUser = BlockedUser::create([
             'user_id' => $userId,
@@ -212,6 +215,9 @@ class AdminController extends Controller
         if (!$user->isBlocked()) {
             return redirect()->route('admin.users')->with('error', 'User is not blocked.');
         }
+
+        if ($user->role === 'Employer') JobPost::where('employer_id', $userId)->update(['blocked' => false]);
+        if ($user->role === 'JobSeeker') Application::where('jobseeker_id', $userId)->update(['blocked' => false]);
 
         // Delete the blocked user record
         $blockedUserId = $user->blocked_id;

@@ -36,6 +36,12 @@ class JobPostController extends Controller {
     public function show($id){
         $jobPost = JobPost::with('jobUser')->findOrFail($id);
 
+        // Preload applications for this job post for the employer view, excluding blocked ones
+        $applications = $jobPost->applications()
+            ->where('blocked', false)
+            ->orderByDesc('date')
+            ->get();
+
        // $name = $jobPost->jobUser->name;
 
         if ($jobPost->isOwnerDeleted()) {
@@ -43,8 +49,8 @@ class JobPostController extends Controller {
         }
 
         return view('pages.jobpost', [
-            'jobPost' => $jobPost
-            //'name' =>$name
+            'jobPost' => $jobPost,
+            'applications' => $applications,
         ]);
     }
 

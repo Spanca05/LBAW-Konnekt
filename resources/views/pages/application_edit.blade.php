@@ -63,6 +63,9 @@
                         <form method="POST" action="{{ route('applications.destroy', ['application' => $application->id]) }}" onsubmit="return confirm('Withdraw this application?');">
                             @csrf
                             @method('DELETE')
+
+                            <input type="hidden" name="redirect_to" value="{{ route('jobpost.show', $application->jobpost_id) }}">
+
                             <button class="button" type="submit">Withdraw Application</button>
                         </form>
                     </div>

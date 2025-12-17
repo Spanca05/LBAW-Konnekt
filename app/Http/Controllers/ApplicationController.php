@@ -91,12 +91,15 @@ class ApplicationController extends Controller
     
     public function destroy(Application $application)
     {
-        $this->authorize('destroy', $application);
+        $this->authorize('delete', $application);
 
         Notification::where('application_id', $application->id)->delete();
 
         $application->delete();
-        return redirect()->route('profile')->with('success', 'Application withdrawn.');
+
+        $redirectTo = request('redirect_to', route('jobpost.show', $application->jobPost->id));
+
+        return redirect($redirectTo)->with('success', 'Application withdrawn.');
     }
 
     public function status_update(Request $request, Application $application) 

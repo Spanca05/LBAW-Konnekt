@@ -38,23 +38,23 @@
         </li>
 
         @if(!empty($user->location))
-            <li><strong>Location:</strong> {{ $user->location }}</li>
+        <li><strong>Location:</strong> {{ $user->location }}</li>
         @else
-            <li><strong>Location:</strong> Not specified</li>
+        <li><strong>Location:</strong> Not specified</li>
         @endif
 
         @if($user->role === 'JobSeeker')
-            <li><strong>Skills:</strong>
+        <li><strong>Skills:</strong>
             @if($user->skills && count($user->skills))
-                <ul>
+            <ul>
                 @foreach($user->skills as $skill)
-                    <li><strong>{{ $skill->name}}</strong>: {{ $skill->description}}</li>
+                <li><strong>{{ $skill->name}}</strong>: {{ $skill->description}}</li>
                 @endforeach
-                </ul>
+            </ul>
             @else
-                <p>You have no Skills</p>
+            <p>You have no Skills</p>
             @endif
-            </li>
+        </li>
         @endif
 
         @if($user->role === 'JobSeeker' && (optional($user->cv)->file_path || optional($user->cv)->description))
@@ -65,23 +65,23 @@
             @endif
         </li>
         @endif
-        
+
     </ul>
 
     <p>
         @if(auth()->check() && auth()->id() === $user->id)
         <a class="button" href="{{ route('profile.edit') }}">Edit profile</a>
-        <form action="{{ route('profile.destroy') }}" method="POST">
-            @csrf
-            @method('DELETE')
-            <button class="button" onclick="return confirm('Are you sure you want to delete your account? This action is irreversible.')">
-                Delete profile
-            </button>
-        </form>
-            @if(auth()->user()->role === 'Employer')
-            <a class="button" href="{{ route('jobpost.create') }}">Create New JobPost</a>
-            @endif
-        @endif
+    <form action="{{ route('profile.destroy') }}" method="POST">
+        @csrf
+        @method('DELETE')
+        <button class="button" onclick="return confirm('Are you sure you want to delete your account? This action is irreversible.')">
+            Delete profile
+        </button>
+    </form>
+    @if(auth()->user()->role === 'Employer')
+    <a class="button" href="{{ route('jobpost.create') }}">Create New JobPost</a>
+    @endif
+    @endif
     </p>
 
     @if ($user->role === 'JobSeeker')
@@ -110,6 +110,9 @@
                         <form method="POST" action="{{ route('applications.destroy', ['application' => $app->id]) }}" onsubmit="return confirm('Withdraw this application?');">
                             @csrf
                             @method('DELETE')
+
+                            <input type="hidden" name="redirect_to" value="{{ route('profile') }}">
+
                             <button class="button" type="submit">Withdraw</button>
                         </form>
                     </div>

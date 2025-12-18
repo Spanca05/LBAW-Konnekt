@@ -137,7 +137,7 @@ class AdminController extends Controller
         $jobpost = JobPost::findOrFail($jobpostId);
         $applications = Application::where('jobpost_id', $jobpostId)->with(['user', 'jobPost'])->paginate(10);
         $applicationCount = Application::where('jobpost_id', $jobpostId)->count();
-        return view('pages.admin.admin_applications', [
+        return view('pages.admin.admin_jobpost_applications', [
             'applications' => $applications,
             'applicationCount' => $applicationCount,
             'jobpost' => $jobpost,

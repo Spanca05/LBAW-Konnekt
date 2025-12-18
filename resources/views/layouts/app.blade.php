@@ -54,10 +54,10 @@
         <section id="content">
             @yield('content')
         </section>
+        @if(Route::currentRouteName() !== 'login' and Route::currentRouteName() !=='register' and Route::currentRouteName() !== 'password.request' and Route::currentRouteName() !== 'password.reset')
+        @include('partials.footer')
+        @endif
     </main>
 </body>
-@if(Route::currentRouteName() !== 'login' and Route::currentRouteName() !=='register' and Route::currentRouteName() !== 'password.request' and Route::currentRouteName() !== 'password.reset')
-@include('partials.footer')
-@endif
 
 </html>

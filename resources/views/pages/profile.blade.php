@@ -25,8 +25,7 @@
                                 src="{{ !empty($user->photo_url) ? $user->photo_url : asset('images/profile-placeholder.png') }}"
                                 alt="Profile Picture of {{ $user->name }}"
                                 class="rounded"
-                                style="width: 64px; height: 64px; object-fit: cover;"
-                                onerror="this.onerror=null; this.src='{{ asset('images/profile-placeholder.png') }}';">
+                                style="width: 64px; height: 64px; object-fit: cover;">
                         </div>
 
                         <!-- Name and Role -->

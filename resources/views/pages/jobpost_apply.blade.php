@@ -31,7 +31,7 @@
         @csrf
 
         <label for="motivation">Cover Letter (optional)</label>
-        <textarea id="motivation" name="motivation" rows="6">{{ old('motivation') }}</textarea>
+        <textarea id="motivation" name="motivation" rows="6" placeholder="Write here your Cover Letter">{{ old('motivation') }}</textarea>
 
         <p>
             <button type="submit" class="button">Submit Application</button>

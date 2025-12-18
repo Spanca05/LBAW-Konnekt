@@ -18,7 +18,7 @@
         @if($user->role !== 'Admin')
             <label for="photo">Profile Picture</label>
             <input id="photo" name="photo" type="file" accept="image/*">
-            @error('photo') <small class="error" role="alert">{{ $message }}</small> @enderror
+            @error('photo') <small class="error" id="photo-error" role="alert">{{ $message }}</small> @enderror
             
             @if($user->photo_path)
             <p>
@@ -28,21 +28,21 @@
         @endif
             
         <label for="name">Name</label>
-        <input id="name" name="name" type="text" value="{{ old('name', $user->name) }}">
-        @error('name') <small class="error" role="alert">{{ $message }}</small> @enderror
+        <input id="name" name="name" type="text" value="{{ old('name', $user->name) }}" placeholder="Your Name">
+        @error('name') <small class="error" id="name-error" role="alert">{{ $message }}</small> @enderror
 
         <label for="email">Email</label>
-        <input id="email" name="email" type="email" value="{{ old('email', $user->email) }}">
-        @error('email') <small class="error" role="alert">{{ $message }}</small> @enderror
+        <input id="email" name="email" type="email" value="{{ old('email', $user->email) }}" placeholder="email@example.com">
+        @error('email') <small class="error" id="email-error" ole="alert">{{ $message }}</small> @enderror
 
         <label for="phone_number">Phone</label>
-        <input id="phone_number" name="phone_number" type="text" value="{{ old('phone_number', $user->phone_number) }}">
-        @error('phone_number') <small class="error" role="alert">{{ $message }}</small> @enderror
+        <input id="phone_number" name="phone_number" type="number" value="{{ old('phone_number', $user->phone_number) }}" placeholder="ex:123456789">
+        @error('phone_number') <small class="error" id="phone_number-error" role="alert">{{ $message }}</small> @enderror
 
         @if($user->role !== 'Admin')
             <label for="location">Location</label>
-            <input id="location" name="location" type="text" value="{{ old('location', $user->location) }}">
-            @error('location') <small class="error" role="alert">{{ $message }}</small> @enderror
+            <input id="location" name="location" type="text" value="{{ old('location', $user->location) }}" placeholder="ex:Famalicão">
+            @error('location') <small class="error" id="location-error" role="alert">{{ $message }}</small> @enderror
         @endif
 
         @if ($user->role ==='JobSeeker')
@@ -55,30 +55,31 @@
                 </label>
             @endforeach
             @error('skills')
-                <small class="error" role="alert">{{ $message }}</small>
+                <small class="error" id="skills-error" role="alert">{{ $message }}</small>
             @enderror
         @endif
 
         @if($user->role !== 'Admin')
             <label for="description">Description</label>
-            <input id="description" name="description" type="text" value="{{ old('description', $user->description) }}">
-            @error('description') <small class="error" role="alert">{{ $message }}</small> @enderror
+            <input id="description" name="description" type="text" value="{{ old('description', $user->description) }}" placeholder="Small description about you">
+            @error('description') <small class="error" id="description-error" role="alert">{{ $message }}</small> @enderror
         @endif
 
         <label for="password">New password (leave blank to keep current)</label>
-        <input id="password" name="password" type="password">
-        @error('password') <small class="error" role="alert">{{ $message }}</small> @enderror
+        <input id="password" name="password" type="password" placeholder="Type a new password">
+        @error('password') <small class="error" id="password-error" role="alert">{{ $message }}</small> @enderror
 
         <label for="password_confirmation">Confirm new password</label>
-        <input id="password_confirmation" name="password_confirmation" type="password">
-
+        <input id="password_confirmation" name="password_confirmation" type="password" placeholder="Type new password again">
+        @error('password_confirmation') <small class="error" id="password_conf-error" role="alert">{{ $message }}</small> @enderror
+        
         @if($user->role === 'JobSeeker')
         <section style="margin-top:1rem">
             <h3>Curriculum Vitae</h3>
 
             <label for="cv_file">Upload CV (PDF, DOC, DOCX)</label>
             <input id="cv_file" name="cv_file" type="file" accept=".pdf,.doc,.docx">
-            @error('cv_file') <small class="error" role="alert">{{ $message }}</small> @enderror
+            @error('cv_file') <small class="error" id="cv-error" role="alert">{{ $message }}</small> @enderror
         </section>
         @endif
 

@@ -13,6 +13,7 @@
         required
         autofocus
         autocomplete="name"
+        placeholder="Your Name"
     >
     @error('name')
       <span id="name-error" class="error" role="alert">{{ $message }}</span>
@@ -36,10 +37,11 @@
     <label for="phone_number">Phone Number</label>
     <input
         id="phone_number"
-        type="text"
+        type="number"
         name="phone_number"
         value="{{ old('phone_number') }}"
         autocomplete="tel"
+        placeholder="ex:123456789"
     >
     @error('phone_number')
       <span id="phone_number-error" class="error" role="alert">{{ $message }}</span>
@@ -52,6 +54,7 @@
         name="location"
         value="{{ old('location') }}"
         autocomplete="street-address"
+        placeholder="ex:Lisboa"
     >
     @error('location')
       <span id="location-error" class="error" role="alert">{{ $message }}</span>
@@ -66,6 +69,7 @@
         required
         autocomplete="email"
         inputmode="email"
+        placeholder="email@example.com"
     >
     @error('email')
       <span id="email-error" class="error" role="alert">{{ $message }}</span>
@@ -80,7 +84,7 @@
             </label>
         @endforeach
         @error('skills')
-            <small class="error" role="alert">{{ $message }}</small>
+            <small class="error" id="skills-error" role="alert">{{ $message }}</small>
         @enderror
     </div>
 
@@ -88,7 +92,7 @@
       <span id="description-error" class="error" role="alert">{{ $message }}</span>
     @enderror
       <label for="description">Description</label>
-      <input id="description" name="description" type="text" >
+      <input id="description" name="description" type="text" placeholder="Small description about you">
 
     <label for="password">Password
         <span class="help-icon">
@@ -102,6 +106,7 @@
         name="password"
         required
         autocomplete="new-password"
+        placeholder="Type your password"
     >
     @error('password')
       <span id="password-error" class="error" role="alert">{{ $message }}</span>
@@ -114,6 +119,7 @@
         name="password_confirmation"
         required
         autocomplete="new-password"
+        placeholder="Repeat password"
     >
 
     <button type="submit">Register</button>

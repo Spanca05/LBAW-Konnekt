@@ -14,6 +14,7 @@
         autofocus
         inputmode="email"
         autocomplete="email"
+        placeholder = "email@example.com"
     >
     @error('email')
         <span id="email-error" class="error" role="alert">
@@ -28,6 +29,7 @@
         type="password"
         required
         autocomplete="current-password"
+        placeholder="password"
     >
     @error('password')
         <span id="password-error" class="error" role="alert">

@@ -20,7 +20,7 @@
     >
 
     @error('email')
-        <div class="error">{{ $message }}</div>
+        <div class="error" role="alert" id="email-error">{{ $message }}</div>
     @enderror
 
     <button type="submit">Send password reset link</button>

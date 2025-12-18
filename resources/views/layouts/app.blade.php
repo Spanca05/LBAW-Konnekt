@@ -40,7 +40,7 @@
                 @endauth
                 @if(Route::currentRouteName() !== 'login' and Route::currentRouteName() !=='register' and Route::currentRouteName() !== 'password.request' and Route::currentRouteName() !== 'password.reset')
                 <div class="search">
-                    <input type="text" id="search" class="search" placeholder="Search jobposts...">
+                    <input type="text" id="search" class="search" placeholder="Search...">
                     <div class="sugestions" id="sugestions" style="display: none;"></div>
                     <select class="search_type" id="search_type">
                         <option value="search_jobpost"{{ (isset($type) && $type == 'search_jobpost') ? 'selected' : '' }}>Job Posts</option>

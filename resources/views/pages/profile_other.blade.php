@@ -3,89 +3,57 @@
 @section('title', 'Profile | ' . ($other->name))
 
 @section('content')
-<section class="container">
-    @if($other->isBlocked())
-        <h2><strong>This user has been blocked<br>Continue searching for other stuff</strong></h2>
-    @else
-        <h2>Profile: {{ $other->name }}</h2>
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-9">
 
-        @if(!empty($other->photo_url))
-        <div style="margin-bottom: 1rem">
-            <img
-                src="{{ $other->photo_url }}"
-                alt="Profile Picture of {{ $other->name }}"
-                style="max-width: 150px; max-height:150px; object-fit:cover; border-radius:6px;">
-        </div>
-        @else
-        <div style="margin-bottom:1rem">
-            <img
-                src="{{ asset('images/avatar-placeholder.png') }}"
-                alt="No photo"
-                style="max-width:150px; max-height:150px; object-fit:cover; border-radius:6px;">
-        </div>
-        @endif
-
-        <ul>
-            <li><strong>Name:</strong> {{ $other->name}}</li>
-            <li><strong>Email:</strong> {{ $other->email}}</li>
-            <li><strong>Phone:</strong> {{ $other->phone_number}}</li>
-            @if(!empty($other->location))
-                <li><strong>Location:</strong> {{ $other->location }}</li>
+            @if($other->isBlocked())
+            <div class="card shadow-sm">
+                <div class="card-body p-5 text-center">
+                    <h2 class="h4 mb-3">This user has been blocked</h2>
+                    <p class="text-muted mb-0">Continue searching for other opportunities.</p>
+                </div>
+            </div>
             @else
-                <li><strong>Location:</strong>Not specified</li>
-            @endif
-            <li><strong>Role:</strong> {{ $other->role}}</li>
-            @if($other->role === 'JobSeeker')
-                <li>
-                    <strong>Skills:</strong>
-                @if($other->skills && count($other->skills))
-                    <ul>
-                    @foreach($other->skills as $skill)
-                        <li>{{ $skill->name}}</li>
-                    @endforeach
-                    </ul>
-                @else
-                    <p>{{ $other->name }} has no Skills</p>
-                @endif
-                </li>
-            @endif
-        </ul>
 
-        @if($other->role==='Employer' && isset($jobPosts) && $jobPosts->isNotEmpty())
-            <li><strong>Description:</strong>
-                @if($other->description !== null)
-                <div style="margin-top:0.5rem">{{ $other->description }}</div>
-                @else
-                No description.
-                @endif
-            </li>
-        @endif
-        </ul>
-        @if ($other->role === 'Employer')
-            @if(isset($jobPosts) && $jobPosts->isNotEmpty())
-            <section class="card">
-                <h3>Job Posts by {{ $other->name }}</h3>
-                <ul>
-                    @foreach($jobPosts as $job)
-                    <li>
-                        <a href="{{ route('jobpost.show', ['jobpost' => $job->id]) }}"><strong>{{ $job->title }}</strong></a>
-                        <p>
-                            Salary:{{ $job->salary }} <br>
-                            Work Model: {{ $job->work_model }} <br>
-                            Category: {{ $job->jobCategory->name  }}  
-                        </p>
-                    </li>
-                    @endforeach
-                </ul>
-            </section>
+            <h3 class="mb-3">{{ $other->name }}'s Profile</h3>
+
+            <!-- Profile Header -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <!-- Photo -->
+                        <div>
+                            <img
+                                src="{{ !empty($other->photo_url) ? $other->photo_url : asset('images/profile-placeholder.png') }}"
+                                alt="Profile Picture of {{ $other->name }}"
+                                class="rounded"
+                                style="width: 64px; height: 64px; object-fit: cover;">
+                        </div>
+
+                        <!-- Name and Role -->
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <h5 class="mb-0">{{ $other->name }}</h5>
+                            <span class="badge jobpost-badge">{{ $other->role }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role-specific Tabs -->
+            @if($other->role === 'JobSeeker')
+            @include('partials.profile_tabs_jobseeker_other', ['user' => $other])
+            @elseif($other->role === 'Employer')
+            @include('partials.profile_tabs_employer_other', ['user' => $other, 'jobPosts' => $jobPosts ?? collect()])
             @endif
-        @elseif ($other->role === 'JobSeeker')
-            @if(optional($other->cv)->file_path)
-            <strong>CV:</strong>
-            <a class="button" href="{{ route('profile.cv.download_other', ['user' => $other->id]) }}">Download CV</a>
+
+            <!-- Return Button -->
+            <div class="mt-4">
+                <a class="button button-outline" href="{{ url()->previous() }}">Go Back</a>
+            </div>
+
             @endif
-        @endif
-    @endif
-    <p><a class="button" href="{{ url()->previous() }}">return</a></p>
-</section>
+        </div>
+    </div>
+</div>
 @endsection

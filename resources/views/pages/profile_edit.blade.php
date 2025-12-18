@@ -10,7 +10,7 @@
             <div class="card rounded-3 shadow">
                 <div class="card-body p-5 p-md-6">
 
-                    <h1 class="h4 mb-4">Edit Profile</h1>
+                    <h1 class="mb-4">Edit Profile</h1>
 
                     @if(session('success'))
                     <p class="success" role="alert">{{ session('success') }}</p>

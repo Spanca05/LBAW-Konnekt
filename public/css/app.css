@@ -201,7 +201,8 @@ a.button,
     border-color: #587a92;
 }
 
-a.button.button-outline {
+/* Outline variant for both <a> and <button> using .button */
+.button.button-outline {
     color: #547792;
     background-color: transparent;
     border-color: #547792;
@@ -220,6 +221,7 @@ a {
 input[type=text]:focus,
 input[type=email]:focus,
 input[type=password]:focus,
+input[type=number]:focus,
 textarea:focus {
     border-color: #547792;
     outline: 0;

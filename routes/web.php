@@ -12,6 +12,7 @@ use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\CVController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PageController;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
@@ -44,6 +45,8 @@ Route::post('/jobposts', [JobPostController::class, 'store'])->name('jobpost.sto
 Route::get('/jobposts/{jobpost}/edit', [JobPostController::class, 'edit'])->name('jobpost.edit');
 Route::put('/jobposts/{jobpost}', [JobPostController::class, 'update'])->name('jobpost.update');
 Route::delete('/jobposts/{jobpost}', [JobPostController::class, 'delete'])->name('jobpost.delete');
+Route::post('/jobposts/{jobpost}/favourite', [JobPostController::class, 'changeFavourite'])->name('jobpost.favourite');
+
 
 // Authentication
 Route::controller(LoginController::class)->group(function () {
@@ -111,6 +114,14 @@ Route::middleware('auth')->group(function () {
     // Block User Part
     Route::post('/admin/users/{userId}/block', [AdminController::class, 'blockUser'])->name('admin.blockUser');
     Route::post('/admin/users/{userId}/unblock', [AdminController::class, 'unblockUser'])->name('admin.unblockUser');
+});
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
 });
 
 // Recover Password

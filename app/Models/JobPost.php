@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class JobPost extends Model
 {
-    // Disable default created_at and updated_at timestamps for this model.
     public $timestamps = true;
 
     /**
@@ -31,10 +30,14 @@ class JobPost extends Model
         'description',
         'category_id',
         'location',
-        'blocked',
+        'deadline',
+        'blocked'
     ];
 
-    
+    protected $casts = [
+        'deadline' => 'datetime'
+    ];
+
     public function employer(): BelongsTo{
         return $this->belongsTo(User::class, 'employer_id');
     }
@@ -58,6 +61,10 @@ class JobPost extends Model
 
     public function isOwnerDeleted(): bool {
         return $this->employer && $this->employer->isDeleted();
+    }
+
+    public function favouritedBy() {
+        return $this->belongsToMany(User::class, 'favourite_job', 'jobpost_id', 'jobseeker_id');
     }
 
     public function isBlocked(): bool

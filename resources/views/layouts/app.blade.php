@@ -23,6 +23,12 @@
             <header>
                 <h1><a href="{{ route('pages.jobposts.index') }}">Konnekt!</a></h1>
                 @auth
+                    <a class="button button-outline" href="{{ route('notifications.index') }}">
+                        🔔 Notifications
+                        @if($unreadNotifications > 0)
+                            <span class="badge">{{ $unreadNotifications }}</span>
+                        @endif
+                    </a>
                     <a class="button" href="{{ url('/logout') }}">Logout </a>
                     @if((Auth::user()->role ?? null) === 'Admin')
                         <a class="button" href="{{ route('admin.index') }}">{{Auth::user()->name}}</a>

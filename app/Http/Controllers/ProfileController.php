@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -11,22 +12,26 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
+
 class ProfileController extends Controller {
     /**
      * Display the authenticated user's profile.
      */
     public function showAuth(Request $request = null) {
         $user = Auth::user();
-        if (! $user instanceof User || $user->isDeleted()) {
-            abort(403);
-        }
+        Gate::authorize('viewProfile', $user);
+
 
         // Eager-load skills so the view can access them without extra queries.
         //$user->load('skills');
 
         // If the user is a job seeker, load their applications (legacy schema uses jobseeker_id)
         $applications = collect();
+        $favourites = collect();
+
         if ($user && isset($user->role) && $user->role === 'JobSeeker') {
+
+            $favourites = $user->favouriteJobs()->with('employer')->get();
             $applications = $user->applications()
                 ->with('jobPost')
                 ->whereHas('jobPost', function ($f) {
@@ -35,17 +40,31 @@ class ProfileController extends Controller {
                 ->orderByDesc('date')
                 ->get();
         }
-
-
+        
         $jobPosts = [];
+        $expiredjobPosts = [];
         if ($user->role === 'Employer') {
-            $jobPosts = $user->jobposts()->orderBy('created_at', 'desc')->get();
+            $jobPosts = $user
+                ->jobposts()
+                ->where(function ($q) {
+                    $q->whereNull('deadline')
+                    ->orWhere('deadline', '>', now());
+                })
+                ->orderBy('created_at', 'desc')
+                ->get();
+            $expiredjobPosts = $user
+                ->jobposts() 
+                ->where('deadline', '<', now())
+                ->get()
+                ->sortByDesc('created_at');
         }
 
         return view('pages.profile', [
             'user' => $user,
             'applications' => $applications,
-            'jobPosts' => $jobPosts
+            'favourites' => $favourites,
+            'jobPosts' => $jobPosts,
+            'expiredjobPosts' => $expiredjobPosts
         ]);
     }
 
@@ -53,10 +72,7 @@ class ProfileController extends Controller {
     {
         $other = User::findOrFail($id);
 
-        if ($other->isDeleted()) {
-            abort(404);
-        }
-   
+        Gate::authorize('viewPublic', $other);
 
         $jobPosts = [];
 
@@ -75,9 +91,7 @@ class ProfileController extends Controller {
     /** Show the edit form for the authenticated user's profile. */
     public function edit(Request $request) {
         $user = Auth::user();
-        if (! $user instanceof User || $user->isDeleted()) {
-            abort(403);
-        }
+        Gate::authorize('update', $user);
 
         $skills = Skill::all(); // Todas as skills disponíveis
 
@@ -87,9 +101,7 @@ class ProfileController extends Controller {
     /** Update the authenticated user's profile. */
     public function update(Request $request) {
         $user = Auth::user();
-        if (! $user instanceof \App\Models\User || $user->isDeleted()) {
-            abort(403);
-        }
+        Gate::authorize('update', $user);
 
         $data = $request->validate([
             'name' => ['required', 'string', 'max:250'],
@@ -192,9 +204,7 @@ class ProfileController extends Controller {
     {
         $user = Auth::user();
 
-        if (! $user instanceof User || $user->isDeleted()) {
-            abort(403);
-        }
+        Gate::authorize('update', $user);
 
         Auth::logout(); // Termina a sessão antes de apagar profile
 
@@ -214,9 +224,7 @@ class ProfileController extends Controller {
      */
     public function destroyPhoto(Request $request) {
         $user = Auth::user();
-        if (! $user instanceof User || $user->isDeleted()) {
-            abort(403);
-        }
+        Gate::authorize('update', $user);
         if ($user && $user->photo_path) {
             Storage::disk('public')->delete($user->photo_path);
             $user->photo_path = null;

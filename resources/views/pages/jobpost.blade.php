@@ -20,7 +20,9 @@
             </form>
         @endif
     @endauth
-    
+
+    {{--  MUDAR ISTO EM BAIXO PARA CONTROLLER E POLICIES  --}}
+
     @php
     $myApplication = null;
     if (Auth::check()) {
@@ -32,9 +34,27 @@
     @endphp
 
     @include('partials.jobpost', ['jobPost' => $jobPost])
-    <p class="description">Description: {{ $jobPost->description }} </p>
 
-    
+    @if($jobPost->jobCategory && $jobPost->jobCategory->skills->isNotEmpty())
+        <span class="skills"><b>Skills required:</b>
+        <ul>
+            @foreach($jobPost->jobCategory->skills as $skill)
+                <li><span class="skill_name">{{ $skill->name }}</span></li>
+            @endforeach
+        </ul>
+        </span>
+    @endif
+
+    <p class="description"><b>Description:</b> {{ $jobPost->description }} </p>
+    <p>
+        <strong>Deadline:</strong>
+        @if($jobPost->deadline)
+            {{ $jobPost->deadline->format('d M Y, H:i') }}
+        @else
+            None
+        @endif
+    </p>
+
     @auth
         @if(Auth::user()->role === 'JobSeeker')
             @if(!$hasApplied)
@@ -48,6 +68,20 @@
         @elseif(Auth::id() === $jobPost->employer_id)
             <a href="{{ route('jobpost.edit', ['jobpost' => $jobPost->id]) }}"><button class="edit-button">Edit</button></a>
         @endif
+
+        @if(auth()->check() && auth()->user()->role === 'JobSeeker')
+            <form action="{{ route('jobpost.favourite', $jobPost->id) }}" method="POST">
+                @csrf
+                <button type="submit" class="favourite-button">
+                    @if(auth()->user()->favouriteJobs->contains($jobPost->id))
+                        ★ Remove Favourite
+                    @else
+                        ☆ Add to Favourite
+                    @endif
+                </button>
+            </form>
+        @endif
+
     @else
         <a href="{{ route('login') }}" class="apply-button"><button>Login to apply</button></a>
     @endauth

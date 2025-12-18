@@ -85,7 +85,7 @@
     </p>
 
     @if ($user->role === 'JobSeeker')
-    <section class="card">
+    <section class="applications">
         <h2>My Applications</h2>
         @if(isset($applications) && $applications->isNotEmpty())
         <ul>
@@ -122,24 +122,54 @@
         @endif
     </section>
 
-    @elseif($user->role === 'Employer')
-    <section id="jobposts">
-        @if(auth()->check() && auth()->id() === $user->id)
-        <h2>My JobPosts</h2>
-        @else
-        <h2>{{ $user->name }}'s JobPosts</h2>
-        @endif
+   <section>
+        <h3>⭐ Favourite Job Posts</h3>
 
-        @if (isset($jobPosts) && $jobPosts->isNotEmpty())
-        @foreach ($jobPosts as $jobPost)
-        @include('partials.jobpost', ['jobPost' => $jobPost])
-        @endforeach
+        @if($favourites->isEmpty())
+            <p>No favourites yet.</p>
         @else
-        <p>You have not created any job posts.</p>
+            <ul>
+            @foreach($favourites as $job)
+                <li>
+                    {{-- Mostra cada job usando o partial --}}
+                    @if ($job->employer)
+                        @include('partials.jobpost', ['jobPost' => $job])
+                    @endif
+                </li>
+            @endforeach
+            </ul>
         @endif
     </section>
-    @endif
 
+    @elseif($user->role === 'Employer')
+        <section id="jobposts">
+            @if(auth()->check() && auth()->id() === $user->id)
+            <h2>My Active JobPosts</h2>
+            @else
+            <h2>{{ $user->name }}'s JobPosts</h2>
+            @endif
+
+            @if (isset($jobPosts) && $jobPosts->isNotEmpty())
+            @foreach ($jobPosts as $jobPost)
+            @include('partials.jobpost', ['jobPost' => $jobPost])
+            @endforeach
+            @else
+            <p>You have no active job posts</p>
+            @endif
+        </section>
+        @if(auth()->check() && auth()->id() === $user->id)
+            <section id="expired_jobposts">
+                <h2>My Expired JobPosts</h2>
+                @if (isset($expiredjobPosts) && $expiredjobPosts->isNotEmpty())
+                    @foreach ($expiredjobPosts as $expiredjobPost)
+                        @include('partials.jobpost', ['jobPost' => $expiredjobPost])
+                    @endforeach
+                @else
+                <p>You have no expired jobPosts</p>
+                @endif
+            </section>
+        @endif
+    @endif
 </section>
 
 @endsection

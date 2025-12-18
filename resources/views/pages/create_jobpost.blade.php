@@ -55,6 +55,16 @@
                 <option value= "Hybrid">Hybrid</option>
             </select>
 
+            <label for="deadline">Deadline:</label>
+            <input
+                type="datetime-local"
+                id="deadline"
+                name="deadline"
+            >
+
+            @error('deadline')
+                <span class="error">{{ $message }}</span>
+            @enderror
             <label for="contract_type">Contract Type:</label>
             <select name="contract_type" id="contract_type" required>
                 <option value= "Internship">Internship</option>

@@ -13,9 +13,9 @@
         <br>
         <span class="contract_type"><b>Contract Type: </b>{{ $jobPost->contract_type }}</span>
         <br>
-        <span class="category"><b>Category: </b>{{ $jobPost->jobCategory->name }}</span>
-        <br>
         <span class="location"><b>Location: </b>{{ $jobPost->location ?? 'Not specified' }}</span>
+        <br>
+        <span class="category"><b>Category: </b>{{ $jobPost->jobCategory->name }}</span>
     </div>
     <br>
 </article>

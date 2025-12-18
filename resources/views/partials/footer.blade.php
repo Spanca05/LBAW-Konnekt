@@ -1,15 +1,10 @@
-<!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
-    <footer>
-        <div>
-            <p><a href="{{ route('pages.about') }}">About Us!</a></p>
-            <p><a href="{{ route('pages.contacts') }}">Contacts</a></p>
-            <p><a href="{{ route('pages.mainFeatures') }}">Main Features</a></p>
-        </div>
-        <div>
-            <p>2025 Konnekt! Project. <p>
-            <p>All rights reserved.</p>
-        </div>
-
-    </footer>
-</html>
+<footer>
+    <div class="footer-links">
+        <a href="{{ route('pages.about') }}">About Us</a>
+        <a href="{{ route('pages.contacts') }}">Contacts</a>
+        <a href="{{ route('pages.mainFeatures') }}">Main Features</a>
+    </div>
+    <div class="footer-copyright">
+        <span>&copy; 2025 Konnekt! Project. All rights reserved.</span>
+    </div>
+</footer>

@@ -23,6 +23,7 @@ class JobPostController extends Controller {
         //$jobPosts = JobPost::orderBy('created_at', 'desc')->get();
 
         $jobPosts = JobPost::with('employer')
+            ->where('blocked', false)
             ->get()
             ->filter(fn($jobPost) => ! $jobPost->isOwnerDeleted()) // só mantém os válidos
             ->sortByDesc('created_at');
@@ -36,6 +37,12 @@ class JobPostController extends Controller {
     public function show($id){
         $jobPost = JobPost::with('jobUser')->findOrFail($id);
 
+        // Preload applications for this job post for the employer view, excluding blocked ones
+        $applications = $jobPost->applications()
+            ->where('blocked', false)
+            ->orderByDesc('date')
+            ->get();
+
        // $name = $jobPost->jobUser->name;
 
         if ($jobPost->isOwnerDeleted()) {
@@ -43,8 +50,8 @@ class JobPostController extends Controller {
         }
 
         return view('pages.jobpost', [
-            'jobPost' => $jobPost
-            //'name' =>$name
+            'jobPost' => $jobPost,
+            'applications' => $applications,
         ]);
     }
 
@@ -77,6 +84,7 @@ class JobPostController extends Controller {
         'salary' => 'required|integer|min:0', // evita salários negativos
         'category_id' => 'required|integer',
         'work_model' => 'required|in:Remote,On-site,Hybrid',
+        'contract_type' => 'required|in:Internship,Full-time,Part-time',
         'location' => 'nullable|string|required_unless:work_model,Remote'
     ], [
         'salary.min' => 'Salary cannot be negative.',
@@ -89,6 +97,7 @@ class JobPostController extends Controller {
         $jobPost->description = $validated['description'];
         $jobPost->salary = $validated['salary'];
         $jobPost->work_model = $validated['work_model'];
+        $jobPost->contract_type = $validated['contract_type'];
         $jobPost->category_id = $validated['category_id'];
         $jobPost->employer_id = Auth::id();
         // Explicitly assign location
@@ -119,6 +128,7 @@ class JobPostController extends Controller {
             'salary' => 'required|numeric|min:0', // evita salários negativos
             'category_id' => 'required|integer|exists:category,id',
             'work_model' => 'required|in:Remote,On-site,Hybrid',
+            'contract_type' => 'required|in:Internship,Full-time,Part-time',
             'location' => 'nullable|string|required_unless:work_model,Remote'
         ], [
             'salary.min' => 'Salary cannot be negative.',
@@ -130,6 +140,7 @@ class JobPostController extends Controller {
         $jobPost->description = $validated['description'];
         $jobPost->salary = $validated['salary'];
         $jobPost->work_model = $validated['work_model'];
+        $jobPost->contract_type = $validated['contract_type'];
         $jobPost->category_id = $validated['category_id'];
         $location_ = preg_replace('/[^a-zA-ZÀ-ÿ0-9\s,-]/', '', $validated['location'] ?? '');
         $jobPost->location = Str::title(trim($location_)) ?: null;
@@ -157,9 +168,13 @@ class JobPostController extends Controller {
     {
         $pesquisa = $request->input('q');
         $categoryId = $request->input('category_id');
+        $work_model =$request->input('work_model');
+        $contract =$request->input('contract_type');
         $type = $request->input('type');
         $ordem = $request->input('ordem');
         $location = $request->input('location');
+        $min_salary = $request->input('min_salary');
+        $max_salary = $request->input('max_salary');
 
         $jobPosts = JobPost::query();
         $employers = User::where('role','Employer');
@@ -168,19 +183,37 @@ class JobPostController extends Controller {
 
             // filtrar por jobpost apenas
             if ($pesquisa) {
-                $jobPosts->whereRaw(
-                    "tsvectors @@ plainto_tsquery('english', ?)",
-                    [$pesquisa]
-                );
+                $jobPosts->where(function($query) use ($pesquisa) {
+                    $query->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$pesquisa])
+                    ->orWhere('title', 'ILIKE', '%' . $pesquisa . '%');
+            });
 
                 if (!$ordem || $ordem === 'relevance') {
                     $jobPosts->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$pesquisa]);
                 }
             }
-
             // FILTRO DE CATEGORIA
             if ($categoryId && $categoryId !== 'all') {
                 $jobPosts->where('category_id', $categoryId);
+            }
+
+            //filtrar work model
+            if ($work_model && $work_model !== 'all_') {
+                $jobPosts->where('work_model', $work_model);
+            }
+
+            //filtrar contrato
+            if ($contract && $contract !== 'all') {
+                $jobPosts->where('contract_type', $contract);
+            }
+
+            //filtrar por salario
+            if ($max_salary) {
+                $jobPosts->where('salary', '<=', $max_salary);
+            }
+            
+            if ($min_salary) {
+                $jobPosts->where('salary', '>=', $min_salary);
             }
 
             if ($location && $location !== 'all') {
@@ -201,17 +234,14 @@ class JobPostController extends Controller {
                 case 'Name_Z_A':
                     $jobPosts->orderby('title','desc');
                     break;
-                case 'Newest':
-                    $jobPosts->orderBy('created_at', 'desc');
+                case 'high':
+                    $jobPosts->orderBy('salary', 'desc');
                     break;
-                case 'Oldest':
-                    $jobPosts->orderBy('created_at', 'asc');
+                case 'low':
+                    $jobPosts->orderBy('salary', 'asc');
                     break;
                 default:
-                    if(!$pesquisa){
-                        $jobPosts->orderBy('created_at', 'desc');
-                        break;
-                    }        
+                    break;       
             }
 
             $locations = JobPost::select('location')
@@ -221,9 +251,20 @@ class JobPostController extends Controller {
                     ->orderBy('location', 'asc')
                     ->pluck('location');
 
-             // Aqui aplicas a filtragem de employers deletados
-            $jobPosts = $jobPosts->with('employer')->get()
+            $work_models =JobPost::select('work_model')->orderBy('work_model', 'asc')
+                ->distinct() 
+                ->pluck('work_model');  // buscar tds works da bd
+            
+            $contract_type =JobPost::select('contract_type')
+                ->distinct() 
+                ->pluck('contract_type');  // buscar tds contratos da bd são 3    
+                
+             // Aqui aplicas a filtragem de employers deletados e jobposts bloqueados
+            $jobPosts = $jobPosts->where('blocked', false)
+                                ->with('employer')->get()
                                 ->filter(fn($jp) => ! $jp->isOwnerDeleted());
+            
+
 
             return view('pages.search_results', [
                 'type' => $type,
@@ -232,7 +273,13 @@ class JobPostController extends Controller {
                 'query' => $pesquisa,
                 'selectedCategory' => $categoryId,
                 'ordem'=>$ordem,
+                'minSalary' => $min_salary,     // salario minimo que o user decidiu
+                'maxSalary' => $max_salary,     // salario maximo que o user decidiu
                 'selectedLocation' => $location, // a location selecionada no filter
+                'selectedWork' => $work_model, // a location selecionada no filter
+                'work_models'=> $work_models,
+                'contract_type'=> $contract_type,
+                'selectedContract'=> $contract,
                 'locations' => $locations,      //lista de tds as locations que existem na BD
                 'categories' => Category::all(),
             ]);
@@ -240,10 +287,11 @@ class JobPostController extends Controller {
 
         // procurar employers apenas
         if ($pesquisa) {
-            $employers->whereRaw(
-                "tsvectors @@ plainto_tsquery('english', ?)",
-                [$pesquisa]
-            );
+            $employers->where(function($query) use ($pesquisa) {
+                $query->whereRaw("tsvectors @@ plainto_tsquery('english', ?)")
+                ->orWhere('name', 'ILIKE', '%' . $pesquisa . '%');
+        });
+
             if (!$ordem || $ordem === 'relevance') {
                     $employers->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$pesquisa]);
                 }
@@ -280,7 +328,8 @@ class JobPostController extends Controller {
 
 
         $employers = $employers->get() // transforma em Collection
-                       ->filter(fn($user) => ! $user->isDeleted());
+                       ->filter(fn($user) => ! $user->isDeleted())
+                       ->filter(fn($user) => ! $user->isBlocked());
 
         return view('pages.search_results', [
             'type' => $type,
@@ -307,6 +356,7 @@ class JobPostController extends Controller {
         if($type == 'search_jobpost'){       // procurar por jobposts
             $jobPosts = JobPost::query()
                 ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$pesquisa])
+                ->orWhere('title', 'ILIKE', '%' . $pesquisa . '%')
                 ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$pesquisa])
                 ->with('employer') 
                 ->limit(5)
@@ -315,7 +365,7 @@ class JobPostController extends Controller {
         
         
             $resultados= $jobPosts
-                ->filter(fn($jp) => !$jp->isOwnerDeleted()) 
+                ->filter(fn($jp) => !$jp->isOwnerDeleted() && !$jp->blocked)
                 ->map(function ($job) {
                     return [
                         'name' => $job->title,
@@ -330,13 +380,14 @@ class JobPostController extends Controller {
         else if($type == 'search_employer'){
             $employers = User::query()
                 ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$pesquisa])
+                ->orWhere('name', 'ILIKE', '%' . $pesquisa . '%')   //direct match
                 ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$pesquisa])
                 ->limit(5)
                 ->get();  // pego so em 5 no max
 
 
             $resultados= $employers
-                ->filter(fn($emp) => !$emp->isDeleted()) 
+                ->filter(fn($emp) => !$emp->isDeleted() && !$emp->isBlocked())
                 ->map(function ($employer) {
                     return [
                         'name' => $employer->name,

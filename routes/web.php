@@ -12,6 +12,7 @@ use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\CVController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PageController;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
@@ -22,6 +23,9 @@ use Illuminate\Support\Facades\Password;
 // Home
 Route::redirect('/', '/login');
 
+Route::get('/about', [PageController::class, 'about'])->name('pages.about');
+Route::get('/mainFeatures', [PageController::class, 'mainFeatures'])->name('pages.mainFeatures');
+Route::get('/contacts', [PageController::class, 'contacts'])->name('pages.contacts');
 // Rota para o AJAX das sugestões
 Route::get('/api/search/suggestions', [JobPostController::class, 'suggestions'])->name('search.suggestions');
 //resultados da pesquisa por jobpost
@@ -94,6 +98,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/admin/users', [AdminController::class, 'listUsers'])->name('admin.users');
     Route::delete('/admin/users/{userId}', [AdminController::class, 'deleteUser'])->name('admin.deleteUser');
+    Route::get('/admin/users/blocked', [AdminController::class, 'listBlockedUsers'])->name('admin.users.blocked');
 
     Route::get('/admin/jobposts', [AdminController::class, 'listJobPosts'])->name('admin.jobposts');
     Route::delete('/admin/jobposts/{jobpostId}', [AdminController::class, 'deleteJobPost'])->name('admin.deleteJobPost');
@@ -102,6 +107,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/jobposts/{jobpostId}/applications', [AdminController::class, 'listJobpostApplications'])->name('admin.jobpost.applications');
     Route::get('/admin/applications/{applicationId}', [AdminController::class, 'showApplication'])->name('admin.application.show');
     Route::delete('/admin/applications/{applicationId}', [AdminController::class, 'deleteApplication'])->name('admin.deleteApplication');
+
+    // Block User Part
+    Route::post('/admin/users/{userId}/block', [AdminController::class, 'blockUser'])->name('admin.blockUser');
+    Route::post('/admin/users/{userId}/unblock', [AdminController::class, 'unblockUser'])->name('admin.unblockUser');
 });
 
 // Recover Password

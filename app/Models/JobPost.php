@@ -27,9 +27,11 @@ class JobPost extends Model
         'employer_id',
         'salary',
         'work_model',
+        'contract_type',
         'description',
         'category_id',
-        'location'
+        'location',
+        'blocked',
     ];
 
     
@@ -56,5 +58,10 @@ class JobPost extends Model
 
     public function isOwnerDeleted(): bool {
         return $this->employer && $this->employer->isDeleted();
+    }
+
+    public function isBlocked(): bool
+    {
+        return $this->blocked === true;
     }
 }

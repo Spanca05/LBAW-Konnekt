@@ -1,30 +1,30 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container min-vh-100 d-flex align-items-center justify-content-center">
-    <div class="row w-100 justify-content-md-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card rounded-3 shadow">
-                <div class="card-body p-5 p-md-6">
-                    <form method="POST" action="{{ route('register') }}">
-                        @csrf
-                        <div class="mb-4">
-                            <label for="name">Name</label>
-                            <input
-                                id="name"
-                                type="text"
-                                name="name"
-                                value="{{ old('name') }}"
-                                required
-                                autofocus
-                                autocomplete="name">
-                            @error('name')
-                            <span id="name-error" class="error" role="alert">{{ $message }}</span>
-                            @enderror
-                        </div>
+<form method="POST" action="{{ route('register') }}">
+    @csrf
+
+    <label for="name">Name</label>
+    <input
+        id="name"
+        type="text"
+        name="name"
+        value="{{ old('name') }}"
+        required
+        autofocus
+        autocomplete="name"
+    >
+    @error('name')
+      <span id="name-error" class="error" role="alert">{{ $message }}</span>
+    @enderror
 
                         <div class="mb-4">
-                            <label for="role">Role</label>
+                            <label for="role">Role
+        <span class="help-icon">
+            ?
+          <span class="tooltip-text">JobSeeker can apply to jobs, Employer is the one who posts job offers</span>
+        </span>
+    </label>
                             <select id="role" name="role" required>
                                 <option value="" disabled {{ old('role') ? '' : 'selected' }}>Select role</option>
                                 <option value="JobSeeker" {{ old('role') === 'JobSeeker' ? 'selected' : '' }}>JobSeeker</option>
@@ -98,7 +98,12 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="password">Password</label>
+                            <label for="password">Password
+        <span class="help-icon">
+            ?
+          <span class="tooltip-text">Password must be at least 8 characters</span>
+        </span>
+      </label>
                             <input
                                 id="password"
                                 type="password"

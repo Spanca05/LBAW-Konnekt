@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\BlockedUser;
 use App\Policies\AdminPolicy;
 
 class AdminController extends Controller
@@ -24,12 +25,14 @@ class AdminController extends Controller
         $userCount = User::count();
         $jobpostCount = JobPost::count();
         $applicationCount = Application::count();
+        $blockedCount = BlockedUser::count();
 
         return view('pages.admin', [
             'admin' => $user,
             'userCount' => $userCount,
             'jobpostCount' => $jobpostCount,
             'applicationCount' => $applicationCount,
+            'blockedCount' => $blockedCount,
         ]);
     }
 
@@ -71,6 +74,16 @@ class AdminController extends Controller
 
         $users = User::paginate(10);
         $userCount = User::count();
+        return view('pages.admin.admin_users', ['users' => $users, 'userCount' => $userCount,]);
+    }
+
+    public function listBlockedUsers()
+    {
+        Gate::policy(Admin::class, AdminPolicy::class);
+        Gate::authorize('listUsers', Admin::class);
+
+        $users = User::whereNotNull('blocked_id')->paginate(10);
+        $userCount = BlockedUser::count();
         return view('pages.admin.admin_users', ['users' => $users, 'userCount' => $userCount,]);
     }
 
@@ -152,5 +165,69 @@ class AdminController extends Controller
         return view('pages.admin.admin_application_show', [
             'application' => $application,
         ]);
+    }
+
+    public function blockUser(Request $request, $userId)
+    {
+        Gate::policy(Admin::class, AdminPolicy::class);
+        Gate::authorize('blockUser', Admin::class);
+
+        $request->validate([
+            'reason' => ['required', 'string', 'max:500'],
+        ]);
+
+        $user = User::findOrFail($userId);
+
+        if ($user->role === 'Admin') {
+            return redirect()->route('admin.users')->with('error', 'Cannot block admin users.');
+        }
+
+        if ($user->isBlocked()) {
+            return redirect()->route('admin.users')->with('error', 'User is already blocked.');
+        }
+
+        if ($user->role === 'Employer') JobPost::where('employer_id', $userId)->update(['blocked' => true]);
+        if ($user->role === 'JobSeeker') Application::where('jobseeker_id', $userId)->update(['blocked' => true]);
+
+        // Create blocked user record
+        $blockedUser = BlockedUser::create([
+            'user_id' => $userId,
+            'admin_id' => Auth::id(),
+            'reason' => $request->reason,
+            'blocked_at' => now(),
+        ]);
+
+        // Update user's blocked_id
+        $user->blocked_id = $blockedUser->id;
+        $user->save();
+
+        return redirect()->route('admin.users')->with('success', 'User blocked successfully.');
+    }
+
+    public function unblockUser($userId)
+    {
+        Gate::policy(Admin::class, AdminPolicy::class);
+        Gate::authorize('unblockUser', Admin::class);
+
+        $user = User::findOrFail($userId);
+
+        // Check if user is actually blocked
+        if (!$user->isBlocked()) {
+            return redirect()->route('admin.users')->with('error', 'User is not blocked.');
+        }
+
+        if ($user->role === 'Employer') JobPost::where('employer_id', $userId)->update(['blocked' => false]);
+        if ($user->role === 'JobSeeker') Application::where('jobseeker_id', $userId)->update(['blocked' => false]);
+
+        // Delete the blocked user record
+        $blockedUserId = $user->blocked_id;
+        
+        // Unblock user
+        $user->blocked_id = null;
+        $user->save();
+        
+        BlockedUser::destroy($blockedUserId);
+
+        return redirect()->route('admin.users')->with('success', 'User unblocked successfully.');
     }
 }

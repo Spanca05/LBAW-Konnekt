@@ -7,6 +7,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const filtrarCategoria =  document.getElementById('Categories'); 
     const ordem = document.getElementById('ordem');
     const location = document.getElementById('location');
+    const minSalary = document.getElementById('min-salary');
+    const maxSalary = document.getElementById('max-salary');
+    const workModel = document.getElementById('work_model');
+    const contract = document.getElementById('contract_type');
+
 
     function search() {
         const query = searchInput.value.trim();
@@ -37,6 +42,25 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if(location) location.addEventListener('change', updateFiltro);
+
+    if(minSalary) minSalary.addEventListener('input', adiarUpdate); // chama a função logo ao colocarmos input
+    if(maxSalary) maxSalary.addEventListener('input', adiarUpdate);
+
+    if(workModel) workModel.addEventListener('change',updateFiltro);
+    if(contract) contract.addEventListener('change',updateFiltro);
+
+    let timeout = null;
+
+    function adiarUpdate() {
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+
+        // Inicia uma nova contagem de 800ms (quase 1 segundo)
+        timeout = setTimeout(() => {
+            updateFiltro();
+        }, 1000); // conto 1 s antes de correr a função update filtro
+    }
     
     function updateFiltro(){
         //pegar no url atual na parte q e guardar na query ou ent n meter nd
@@ -52,18 +76,20 @@ document.addEventListener('DOMContentLoaded', function () {
             window.location.href = `/employers/search?q=${encodeURIComponent(query)}&type=${type}&ordem=${sort}&location=${local}`;
         }
         else {
+            const model = document.querySelector('select[name="work_model"]').value;
+            const contract_type = document.querySelector('select[name="contract_type"]').value;
+            const valorMax = maxSalary.value;
+            const valorMin = minSalary.value;
             const categoryId = document.querySelector('select[name="Categories"]').value;
-            window.location.href = `/jobposts/search?q=${encodeURIComponent(query)}&type=${type}&category_id=${categoryId}&ordem=${sort}&location=${local}`;    
+            window.location.href = `/jobposts/search?q=${encodeURIComponent(query)}&type=${type}&category_id=${categoryId}&ordem=${sort}&location=${local}&min_salary=${valorMin}&max_salary=${valorMax}&work_model=${model}&contract_type=${contract_type}`;    
             }
         }
 
-    let timeout=null;
 
     searchInput.addEventListener('input', function() {
         pesquisa = this.value.trim();       // tirar espaços do nosso input
         const type = document.getElementById("search_type").value;
         
-        clearTimeout(timeout);
 
         if(pesquisa.length < 2){    // n apresenta as sugestões
             sugestions.style.display = 'none';
@@ -71,9 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
 
         }
-        timeout = setTimeout(() => {
-            fetchSuggestions(pesquisa, type);
-        }, 300);
+        fetchSuggestions(pesquisa, type);
     });
 
     function fetchSuggestions(pesquisa,type){

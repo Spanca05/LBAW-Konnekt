@@ -12,13 +12,13 @@
         <ul>
             @foreach($applications as $app)
                 <li>
-                    <strong>{{ $app->user->name ?? 'Unknown' }}</strong>
-                    <p>{{ \Illuminate\Support\Str::limit($app->motivation, 300) }}</p>
+                    <strong>{{ $app->user->name }}</strong>
+                    <p>{{ $app->motivation }}</p>
                 </li>
             @endforeach
         </ul>
     @endif
 
-    <p><a class="button" href="{{ route('jobpost.show', ['jobpost' => $jobpost->id]) }}">Back to job</a></p>
+    <p><a class="button" href="{{ url()->previous() }}">Back to job</a></p>
 </section>
 @endsection

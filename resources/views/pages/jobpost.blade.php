@@ -43,7 +43,27 @@
             'application' => $myApplication,
             ])
 
-            @include('partials.applications_received', ['jobPost' => $jobPost])
+            @auth
+                @if(Auth::user()->role === 'JobSeeker')
+                    @if(!$hasApplied)
+                        <a href="{{ route('jobpost.apply.form', ['jobpost' => $jobPost->id]) }}"><button class="apply-button">Apply Now</button></a>
+                    @else
+                        <button class="apply-button" disabled>Already applied</button>
+                        @if($myApplication)
+                            <a class="button" href="{{ route('applications.edit', ['application' => $myApplication->id]) }}">Edit application</a>
+                        @endif
+                    @endif
+                @elseif(Auth::id() === $jobPost->employer_id)
+                    <a href="{{ route('jobpost.edit', ['jobpost' => $jobPost->id]) }}"><button class="edit-button">Edit</button></a>
+                @endif
+            @else
+                <a href="{{ route('login') }}" class="apply-button"><button>Login to apply</button></a>
+            @endauth
+            
+            @include('partials.applications_received', ['jobPost' => $jobPost, 'applications' => $applications])
+            
+            <a href="{{ url()->previous() }}"><button class="return">return</button></a>
+
         </div>
     </div>
 </div>

@@ -55,6 +55,13 @@
                 <option value= "Hybrid">Hybrid</option>
             </select>
 
+            <label for="contract_type">Contract Type:</label>
+            <select name="contract_type" id="contract_type" required>
+                <option value= "Internship">Internship</option>
+                <option value= "Full-time">Full-time</option>
+                <option value= "Part-time">Part-time</option>
+            </select>
+
             <button type="submit">Create</button>
         </form>
     </section>

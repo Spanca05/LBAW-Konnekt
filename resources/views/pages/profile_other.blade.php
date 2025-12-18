@@ -4,85 +4,88 @@
 
 @section('content')
 <section class="container">
-    <h2>Profile: {{ $other->name }}</h2>
-
-    @if(!empty($other->photo_url))
-    <div style="margin-bottom: 1rem">
-        <img
-            src="{{ $other->photo_url }}"
-            alt="Profile Picture of {{ $other->name }}"
-            style="max-width: 150px; max-height:150px; object-fit:cover; border-radius:6px;">
-    </div>
+    @if($other->isBlocked())
+        <h2><strong>This user has been blocked<br>Continue searching for other stuff</strong></h2>
     @else
-    <div style="margin-bottom:1rem">
-        <img
-            src="{{ asset('images/avatar-placeholder.png') }}"
-            alt="No photo"
-            style="max-width:150px; max-height:150px; object-fit:cover; border-radius:6px;">
-    </div>
-    @endif
+        <h2>Profile: {{ $other->name }}</h2>
 
-    <ul>
-        <li><strong>Name:</strong> {{ $other->name}}</li>
-        <li><strong>Email:</strong> {{ $other->email}}</li>
-        <li><strong>Phone:</strong> {{ $other->phone_number}}</li>
-        @if(!empty($other->location))
-            <li><strong>Location:</strong> {{ $other->location }}</li>
+        @if(!empty($other->photo_url))
+        <div style="margin-bottom: 1rem">
+            <img
+                src="{{ $other->photo_url }}"
+                alt="Profile Picture of {{ $other->name }}"
+                style="max-width: 150px; max-height:150px; object-fit:cover; border-radius:6px;">
+        </div>
         @else
-            <li><strong>Location:</strong>Not specified</li>
+        <div style="margin-bottom:1rem">
+            <img
+                src="{{ asset('images/avatar-placeholder.png') }}"
+                alt="No photo"
+                style="max-width:150px; max-height:150px; object-fit:cover; border-radius:6px;">
+        </div>
         @endif
-        <li><strong>Role:</strong> {{ $other->role}}</li>
-        @if($other->role === 'JobSeeker')
-            <li>
-                <strong>Skills:</strong>
-            @if($other->skills && count($other->skills))
-                <ul>
-                @foreach($other->skills as $skill)
-                    <li>{{ $skill->name}}</li>
-                @endforeach
-                </ul>
+
+        <ul>
+            <li><strong>Name:</strong> {{ $other->name}}</li>
+            <li><strong>Email:</strong> {{ $other->email}}</li>
+            <li><strong>Phone:</strong> {{ $other->phone_number}}</li>
+            @if(!empty($other->location))
+                <li><strong>Location:</strong> {{ $other->location }}</li>
             @else
-                <p>{{ $other->name }} has no Skills</p>
+                <li><strong>Location:</strong>Not specified</li>
             @endif
+            <li><strong>Role:</strong> {{ $other->role}}</li>
+            @if($other->role === 'JobSeeker')
+                <li>
+                    <strong>Skills:</strong>
+                @if($other->skills && count($other->skills))
+                    <ul>
+                    @foreach($other->skills as $skill)
+                        <li>{{ $skill->name}}</li>
+                    @endforeach
+                    </ul>
+                @else
+                    <p>{{ $other->name }} has no Skills</p>
+                @endif
+                </li>
+            @endif
+        </ul>
+
+        @if($other->role==='Employer' && isset($jobPosts) && $jobPosts->isNotEmpty())
+            <li><strong>Description:</strong>
+                @if($other->description !== null)
+                <div style="margin-top:0.5rem">{{ $other->description }}</div>
+                @else
+                No description.
+                @endif
             </li>
         @endif
-    </ul>
-
-    @if($other->role==='Employer' && isset($jobPosts) && $jobPosts->isNotEmpty())
-        <li><strong>Description:</strong>
-            @if($other->description !== null)
-            <div style="margin-top:0.5rem">{{ $other->description }}</div>
-            @else
-            No description.
+        </ul>
+        @if ($other->role === 'Employer')
+            @if(isset($jobPosts) && $jobPosts->isNotEmpty())
+            <section class="card">
+                <h3>Job Posts by {{ $other->name }}</h3>
+                <ul>
+                    @foreach($jobPosts as $job)
+                    <li>
+                        <a href="{{ route('jobpost.show', ['jobpost' => $job->id]) }}"><strong>{{ $job->title }}</strong></a>
+                        <p>
+                            Salary:{{ $job->salary }} <br>
+                            Work Model: {{ $job->work_model }} <br>
+                            Category: {{ $job->jobCategory->name  }}  
+                        </p>
+                    </li>
+                    @endforeach
+                </ul>
+            </section>
             @endif
-        </li>
-    @endif
-    </ul>
-    @if ($other->role === 'Employer')
-        @if(isset($jobPosts) && $jobPosts->isNotEmpty())
-        <section class="card">
-            <h3>Job Posts by {{ $other->name }}</h3>
-            <ul>
-                @foreach($jobPosts as $job)
-                <li>
-                    <a href="{{ route('jobpost.show', ['jobpost' => $job->id]) }}"><strong>{{ $job->title }}</strong></a>
-                    <p>
-                        Salary:{{ $job->salary }} <br>
-                        Work Model: {{ $job->work_model }} <br>
-                        Category: {{ $job->jobCategory->name  }}  
-                    </p>
-                </li>
-                @endforeach
-            </ul>
-        </section>
-        @endif
-    @elseif ($other->role === 'JobSeeker')
-        @if(optional($other->cv)->file_path)
-        <strong>CV:</strong>
-        <a class="button" href="{{ route('profile.cv.download_other', ['user' => $other->id]) }}">Download CV</a>
+        @elseif ($other->role === 'JobSeeker')
+            @if(optional($other->cv)->file_path)
+            <strong>CV:</strong>
+            <a class="button" href="{{ route('profile.cv.download_other', ['user' => $other->id]) }}">Download CV</a>
+            @endif
         @endif
     @endif
-
-    <p><a class="button" href="{{ route('pages.jobposts.index') }}">return</a></p>
+    <p><a class="button" href="{{ url()->previous() }}">return</a></p>
 </section>
 @endsection

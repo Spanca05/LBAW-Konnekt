@@ -443,6 +443,13 @@ input[type=password]:focus {
     box-shadow: none;
 }
 
+/* Keep checkbox style consistent when checked (not just on focus) */
+.form-check-input:checked {
+    background-color: #547792;
+    border-color: #547792;
+}
+
+
 /* remove glow azul do Bootstrap */
 footer {
     display: flex;

@@ -26,23 +26,9 @@
 
 <body>
     <main>
-        <header>
-            <h1><a href="{{ route('pages.jobposts.index') }}">Konnekt!</a></h1>
-            @auth
-                <a class="button button-outline" href="{{ route('notifications.index') }}"> 🔔 Notifications
-                    @if($unreadNotifications > 0)
-                        <span class="badge">{{ $unreadNotifications }}</span>
-                    @endif
-                </a>
-                <a class="button" href="{{ url('/logout') }}">Logout </a>
-                @if((Auth::user()->role ?? null) === 'Admin')
-                    <a class="button" href="{{ route('admin.index') }}">{{Auth::user()->name}}</a>
-                @else
-                    <a class="button" href="{{ route('profile') }}">{{ Auth::user()->name }}</a>
-                @endif
-            @else
-            <a class="button button-outline" href="{{ route('register') }}">Register</a> <a class="button" href="{{ route('login') }}">Login</a>
-            @endauth
+        <header class="d-flex align-items-center justify-content-between gap-3 flex-wrap">
+            <h1 class="m-0 flex-shrink-0"><a href="{{ route('pages.jobposts.index') }}">Konnekt!</a></h1>
+            
             @if(Route::currentRouteName() !== 'login' and Route::currentRouteName() !=='register' and Route::currentRouteName() !== 'password.request' and Route::currentRouteName() !== 'password.reset')
             <div class="search d-flex align-items-center gap-2 flex-nowrap">
                 <input type="text" id="search" placeholder="Search">
@@ -54,6 +40,24 @@
                 <a id="search_button" class="button">Search</a>
             </div>
             @endif
+            <div class="d-flex align-items-center gap-2 flex-shrink-0">
+
+                @auth
+                <a class="button button-outline" href="{{ route('notifications.index') }}"> 🔔 Notifications
+                    @if($unreadNotifications > 0)
+                    <span class="badge">{{ $unreadNotifications }}</span>
+                    @endif
+                </a>
+                @if((Auth::user()->role ?? null) === 'Admin')
+                <a class="button" href="{{ route('admin.index') }}">{{Auth::user()->name}}</a>
+                @else
+                <a class="button" href="{{ route('profile') }}">{{ Auth::user()->name }}</a>
+                @endif
+                <a class="button" href="{{ url('/logout') }}">Logout </a>
+                @else
+                <a class="button button-outline" href="{{ route('register') }}">Register</a> <a class="button" href="{{ route('login') }}">Login</a>
+                @endauth
+            </div>
         </header>
 
         <section id="content">

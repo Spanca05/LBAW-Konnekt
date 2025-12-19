@@ -1,0 +1,133 @@
+/* Admin Users Page specific styles */
+
+/* Accessibility helper (Bootstrap's visually-hidden alternative) */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Scope all rules to the admin page wrapper to avoid leaking globally */
+.admin-users-page .table th,
+.admin-users-page .table td {
+  vertical-align: middle;
+}
+
+/* Fix actions column to prevent wrapping issues */
+.admin-users-page .admin-actions {
+  min-width: 400px;
+  align-items: center;
+}
+
+/* Small button sizing for dense action cells */
+.admin-users-page .button-sm,
+.admin-users-page button.button,
+.admin-users-page a.button {
+  font-size: 0.75rem;
+  padding: 0.375rem 0.75rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
+  vertical-align: middle;
+}
+
+/* Large button helper (override small sizing when needed) */
+.admin-users-page .button.button-lg {
+  font-size: 1rem;
+  padding: 0.6rem 1rem;
+}
+
+.admin-users-page form {
+  display: inline-block;
+  margin: 0;
+  vertical-align: middle;
+}
+
+.admin-users-page .button-outline {
+  background-color: transparent;
+  border: 1px solid #547792;
+  color: #547792;
+}
+
+.admin-users-page .button-outline:hover {
+  background-color: #547792;
+  color: #fff;
+}
+
+/* Semantic button variants matching project's palette */
+.admin-users-page .button-danger {
+  background-color: #b00020;
+  border-color: #b00020;
+  color: #fff;
+}
+.admin-users-page .button-danger:hover,
+.admin-users-page .button-danger:focus {
+  filter: brightness(0.95);
+}
+
+.admin-users-page .button-success {
+  background-color: #1b5e20;
+  border-color: #1b5e20;
+  color: #fff;
+}
+.admin-users-page .button-success:hover,
+.admin-users-page .button-success:focus {
+  filter: brightness(0.95);
+}
+
+/* Details/summary dropdown behavior for block reason */
+.admin-users-page details > summary {
+  cursor: pointer;
+  list-style: none;
+  display: inline-block;
+}
+.admin-users-page details > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Textarea used to provide blocking reason */
+.admin-users-page .block-reason {
+  width: 240px;
+  min-width: 200px;
+  margin: 0;
+}
+
+/* Optional: subtle card elevation consistency (if needed) */
+.admin-users-page .card {
+  border: 1px solid rgba(33, 52, 72, 0.08);
+}
+
+/* Fix pagination arrows size */
+.admin-users-page nav[role="navigation"] {
+  font-size: 0.875rem !important;
+}
+
+.admin-users-page nav[role="navigation"] a,
+.admin-users-page nav[role="navigation"] span {
+  font-size: 0.875rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 25px !important;
+  text-decoration: none !important;
+}
+
+.admin-users-page nav[role="navigation"] svg {
+  width: 12px !important;
+  height: 12px !important;
+  flex-shrink: 0 !important;
+}
+
+.admin-users-page nav[role="navigation"] .flex {
+  gap: 0.5rem !important;
+}
+
+    

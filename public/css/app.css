@@ -1,208 +1,419 @@
 body {
-    background-color: #ffffff;
-    color: #9b4dca;
-  }
-  main > header {
+    background-color: #eae0cf;
+    color: #213448;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#content {
+    flex: 1;
+}
+
+main>header {
     display: grid;
     grid-template-columns: 1fr auto auto;
+    grid-template-rows: auto auto;
     align-items: center;
-    background-color: #d2afe7;
-    padding: 1em;
-    margin: 1em;
-  }
-  main > header h1 {
+    gap: 0.5rem;
+    background-color: #213448;
+    padding: 0.75rem 2rem;
+}
+
+
+
+main>header h1 {
     margin: 0;
-  }
-  main > header a.button {
+    font-weight: 700;
+}
+
+main>header h1 a {
+    text-decoration: none;
+    color: #547792;
+}
+
+main>header .button {
     margin: 1em;
     justify-self: center;
-  }
-  main > header span {
+}
+
+main>header span {
     margin: 1em;
     justify-self: center;
-  }
-  #cards {
+}
+
+#cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-  }
-  #cards article.card {
+}
+
+#cards article.card {
     display: flex;
     flex-direction: column;
     background-color: #d3edc3;
     padding: 1em;
     margin: 1em;
-  }
-  #cards article.card header {
+}
+
+#cards article.card header {
     display: flex;
     align-items: center;
-  }
-  #cards article.card header h2 {
+}
+
+#cards article.card header h2 {
     flex-grow: 1;
-  }
-  #cards article.card header a.delete {
+}
+
+#cards article.card header a.delete {
     display: none;
     font-size: 2.6rem;
     margin-top: .5rem;
     margin-bottom: 2.5rem;
     line-height: 1.25;
-  }
-  #cards article.card header:hover a.delete {
+}
+
+#cards article.card header:hover a.delete {
     display: inline;
-  }
-  #cards article.card li {
+}
+
+#cards article.card li {
     list-style-type: none;
-  }
-  #cards article.card li label {
+}
+
+#cards article.card li label {
     display: flex;
     align-items: baseline;
-  }
-  #cards article.card li label span {
+}
+
+#cards article.card li label span {
     margin-left: .5em;
     flex-grow: 1;
-  }
-  #cards article.card li label a {
+}
+
+#cards article.card li label a {
     display: none;
-  }
-  #cards article.card li label:hover a {
+}
+
+#cards article.card li label:hover a {
     display: inline;
-  }
-  #cards article.card input:checked + span {
+}
+
+#cards article.card input:checked+span {
     text-decoration: var(--primary-color) solid line-through;
-  }
-  #cards article.card ul {
+}
+
+#cards article.card ul {
     margin: 0;
-  }
-  #cards article.card form {
+}
+
+#cards article.card form {
     margin: 0;
-  }
-  #cards article.card input[type=text] {
+}
+
+#cards article.card input[type=text] {
     background-color: white;
     margin: 0;
-  }
-  #content label {
+}
+
+#content label {
     font-weight: normal;
-  }
-  #content > form {
+}
+
+#content>form {
     margin: 0 auto;
     padding: 1em;
     max-width: 20em;
     border: 1px solid #d2afe7;
-  }
-  #content > form .error {
+}
+
+#content>form .error {
     font-weight: bold;
     color: #ff3333;
-  }
-  #content > form .success {
+}
+
+#content>form .success {
     font-weight: bold;
     color: #106af1;
-  }
-  #content > form input {
-    background-color: white;
-  }
-  @media (max-width: 70em) {
+}
+
+
+@media (max-width: 70em) {
     #cards {
-      grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr);
     }
-    main > header {
-      display: grid;
-      grid-template-columns: 1fr auto;
+
+    main>header {
+        display: grid;
+        grid-template-columns: 1fr auto;
     }
-    main > header h1 {
-      grid-row-end: span 2;
+
+    main>header h1 {
+        grid-row-end: span 2;
     }
-  }
-  @media (max-width: 40em) {
+}
+
+@media (max-width: 40em) {
     #cards {
-      grid-template-columns: 1fr;
+        grid-template-columns: 1fr;
     }
-  }
-  @media (max-width: 25em) {
+}
+
+@media (max-width: 25em) {
     body {
-      margin: 0;
+        margin: 0;
     }
-    main > header {
-      margin: 0;
-      padding: 0.5em;
+
+    main>header {
+        margin: 0;
+        padding: 0.5em;
     }
-    main > header span {
-      margin: 0;
+
+    main>header span {
+        margin: 0;
     }
+
     #content form {
-      margin: 0;
-      max-width: 25em;
+        margin: 0;
+        max-width: 25em;
     }
+
     article.card {
-      margin: 0;
-      border-bottom: 1px solid rgba(96, 108, 118, 0.4);
+        margin: 0;
+        border-bottom: 1px solid rgba(96, 108, 118, 0.4);
     }
-  }
-  /**
+}
+
+/**
    * Override milligram colors
    * Some styles might be missing
    **/
-  button {
-    background-color: #9b4dca;
-    border-color: #9b4dca;
-  }
-  a.button {
-    background-color: #9b4dca;
-    border-color: #9b4dca;
-  }
-  a.button.button-outline {
+button,
+a.button,
+.button {
+    background-color: #547792;
+    border-color: #587a92;
+}
+
+/* Outline variant for both <a> and <button> using .button */
+.button.button-outline {
+    color: #547792;
+    background-color: transparent;
+    border-color: #547792;
+}
+
+button.button:disabled:hover {
+    background-color: #547792;
+    border-color: #587a92;
+    cursor: not-allowed;
+}
+
+a {
+    color: #547792;
+}
+
+input[type=text]:focus,
+input[type=email]:focus,
+input[type=password]:focus,
+input[type=number]:focus,
+textarea:focus {
+    border-color: #547792;
+    outline: 0;
+}
+
+/* Para dar override à seta roxa do miligram.css */
+select:focus {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 8' width='30'><path fill='%23547792' d='M0,0l6,8l6-8'/></svg>");
+    border-color: #547792;
+    outline: 0;
+}
+
+.card {
+    background: #f9f7f38d;
+}
+
+/* Jobpost cards */
+.jobpost-card {
+    border: 1px solid rgba(33, 52, 72, 0.08);
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.jobpost-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(33, 52, 72, 0.12);
+}
+
+.jobpost-title {
+    color: #213448;
+}
+
+.jobpost-badge {
+    background-color: #547792;
+    color: #fff;
+    border-radius: 999px;
+    padding: 0.35rem 0.75rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.jobpost-badge-soft {
+    background-color: rgba(84, 119, 146, 0.12);
+    color: #213448;
+    border-radius: 999px;
+    padding: 0.35rem 0.75rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+
+
+/* Ver o CSS que a Daniela colocou na página app.blade.php, e se é para o deixar*/
+/* Contentor da pesquisa */
+.search {
+    position: relative;
+}
+
+/* Input de pesquisa */
+#search {
+    width: 200px;
+    margin: 0;
+    background-color: #ffffff;
+}
+
+#search::placeholder {
+    color: #8a8a8a;
+}
+
+/* Select do tipo de pesquisa */
+#search_type {
+    width: 120px;
+    margin: 0;
+    background-color: #ffffff;
+}
+
+/* Botão de pesquisa */
+#search_button {
+    margin: 0;
+}
+
+/* Caixa de sugestões */
+#sugestions {
+    display: none;
+    /* Escondido por defeito */
+    position: absolute;
+    top: 100%;
+    /* Logo abaixo do input */
+    left: 0;
+    width: 100%;
+    /* Largura igual ao input */
+
+    background-color: #ffffff;
+    border: 1px solid #d2afe7;
+    /* Cor da borda igual ao teu tema */
+    border-radius: 0 0 4px 4px;
+
+    z-index: 10000;
+    /* Muito alto para ficar por cima do resto */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Sombra para dar profundidade */
+
+    max-height: 300px;
+    /* Se houver muitos, ganha scroll, não cresce infinito */
+    overflow-y: auto;
+    /* Scroll vertical */
+}
+
+/* Estilo da lista */
+#sugestions ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#sugestions li {
+    border-bottom: 1px solid #eee;
+    margin: 0;
+    /* Override do Milligram */
+}
+
+#sugestions li:last-child {
+    border-bottom: none;
+}
+
+#sugestions a {
+    text-decoration: none;
     color: #9b4dca;
-  }
-  a {
-    color: #9b4dca;
-  }
-  input[type=text]:focus,
-  input[type=email]:focus,
-  input[type=password]:focus {
-    border-color: #9b4dca;
-  }
-  
+    /* Tua cor roxa */
+    display: block;
+    padding: 10px;
+    transition: background 0.2s;
+}
+
+#sugestions li:hover {
+    background-color: #f4eef9;
+    /* Roxo muito clarinho ao passar o rato */
+}
+
+.nav-tabs {
+    border-bottom: 0;
+}
+
+input[type=text]:focus,
+input[type=email]:focus,
+input[type=password]:focus {
+    border-color: #547792;
+    outline: 0;
+}
+
 
 
 
 
 .help-icon {
-    display: inline-flex;       
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color: #d2afe7;  
-    color: #9b4dca;             
+    background-color: #547792;
+    color: #ffffff;
     width: 18px;
     height: 18px;
-    border-radius: 50%;         
+    border-radius: 50%;
     font-size: 12px;
     font-weight: bold;
-    cursor: help;               
-    margin-left: 5px;           
-    position: relative;         
+    cursor: help;
+    margin-left: 5px;
+    position: relative;
 }
 
 
 .help-icon .tooltip-text {
-    visibility: hidden;         
-    opacity: 0;                 
-    
-    width: 220px;               
-    background-color: #333;     
-    color: #fff;                
+    visibility: hidden;
+    opacity: 0;
+
+    width: 220px;
+    background-color: #333;
+    color: #fff;
     text-align: center;
     border-radius: 6px;
     padding: 8px;
     font-weight: normal;
     font-size: 1rem;
     line-height: 1.2;
-    
-   
+
+
     position: absolute;
     z-index: 100;
-    bottom: 135%;               
+    bottom: 135%;
     left: 50%;
-    transform: translateX(-50%); 
-    
-    
+    transform: translateX(-50%);
+
+
     transition: opacity 0.3s;
 }
 
@@ -210,7 +421,7 @@ body {
 .help-icon .tooltip-text::after {
     content: "";
     position: absolute;
-    top: 100%;                  
+    top: 100%;
     left: 50%;
     margin-left: -5px;
     border-width: 5px;
@@ -222,4 +433,62 @@ body {
 .help-icon:hover .tooltip-text {
     visibility: visible;
     opacity: 1;
+}
+
+/* Override Bootstrap focus styles for inputs */
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+    background-color: inherit;
+
+    border-color: #547792;
+    box-shadow: none;
+}
+
+/* Keep checkbox style consistent when checked (not just on focus) */
+.form-check-input:checked {
+    background-color: #547792;
+    border-color: #547792;
+}
+
+
+/* remove glow azul do Bootstrap */
+footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: #213448;
+    padding: 1.25rem 2rem;
+    margin-top: 2rem;
+    text-align: center;
+}
+
+footer .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+}
+
+footer .footer-links a {
+    color: #547792;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.01em;
+    transition: color 0.2s, text-decoration-color 0.2s;
+}
+
+footer .footer-links a:hover {
+    color: #6a93b3;
+}
+
+footer .footer-copyright {
+    text-align: center;
+}
+
+footer .footer-copyright span {
+    color: #547792;
+    font-size: 0.9rem;
 }

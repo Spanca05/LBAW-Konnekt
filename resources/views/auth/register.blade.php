@@ -1,122 +1,192 @@
 @extends('layouts.app')
 
+@section('title', 'Register')
+
 @section('content')
-<form method="POST" action="{{ route('register') }}">
-    @csrf
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-7 col-xl-6">
 
-    <label for="name">Name</label>
-    <input
-        id="name"
-        type="text"
-        name="name"
-        value="{{ old('name') }}"
-        required
-        autofocus
-        autocomplete="name"
-    >
-    @error('name')
-      <span id="name-error" class="error" role="alert">{{ $message }}</span>
-    @enderror
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
 
-    <label for="role">Role
-        <span class="help-icon">
-            ?
-          <span class="tooltip-text">JobSeeker can apply to jobs, Employer is the one who posts job offers</span>
-        </span>
-    </label>
-    <select id="role" name="role" required>
-        <option value="" disabled {{ old('role') ? '' : 'selected' }}>Select role</option>
-        <option value="JobSeeker" {{ old('role') === 'JobSeeker' ? 'selected' : '' }}>JobSeeker</option>
-        <option value="Employer" {{ old('role') === 'Employer' ? 'selected' : '' }}>Employer</option>
-    </select>
-    @error('role')
-      <span id="role-error" class="error" role="alert">{{ $message }}</span>
-    @enderror
+                    <h1 class="h4 mb-4">Create account</h1>
 
-    <label for="phone_number">Phone Number</label>
-    <input
-        id="phone_number"
-        type="text"
-        name="phone_number"
-        value="{{ old('phone_number') }}"
-        autocomplete="tel"
-    >
-    @error('phone_number')
-      <span id="phone_number-error" class="error" role="alert">{{ $message }}</span>
-    @enderror
+                    <form method="POST" action="{{ route('register') }}">
+                        @csrf
 
-    <label for="location">Location</label>
-    <input
-        id="location"
-        type="text"
-        name="location"
-        value="{{ old('location') }}"
-        autocomplete="street-address"
-    >
-    @error('location')
-      <span id="location-error" class="error" role="alert">{{ $message }}</span>
-    @enderror
+                        {{-- Name --}}
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input
+                                id="name"
+                                type="text"
+                                name="name"
+                                value="{{ old('name') }}"
+                                class="form-control @error('name') is-invalid @enderror"
+                                required
+                                autofocus
+                                autocomplete="name">
+                            @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-    <label for="email">E-Mail Address</label>
-    <input
-        id="email"
-        type="email"
-        name="email"
-        value="{{ old('email') }}"
-        required
-        autocomplete="email"
-        inputmode="email"
-    >
-    @error('email')
-      <span id="email-error" class="error" role="alert">{{ $message }}</span>
-    @enderror
+                        {{-- Role --}}
+                        <div class="mb-3">
+                            <label for="role" class="form-label">
+                                Role
+                                <span class="help-icon">
+                                    ?
+                                    <span class="tooltip-text">JobSeeker can apply to jobs, Employer is the one who posts job offers</span>
+                                </span>
+                            </label>
+                            <select
+                                id="role"
+                                name="role"
+                                class="@error('role') is-invalid @enderror"
+                                required>
+                                <option value="" disabled {{ old('role') ? '' : 'selected' }}>Select role</option>
+                                <option value="JobSeeker" {{ old('role') === 'JobSeeker' ? 'selected' : '' }}>JobSeeker</option>
+                                <option value="Employer" {{ old('role') === 'Employer' ? 'selected' : '' }}>Employer</option>
+                            </select>
+                            @error('role')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-   <div id="skills-wrapper">
-      <label>Select your skills</label>
-        @foreach($skills as $skill)
-            <label>
-                <input type="checkbox" name="skills[]" value="{{ $skill->id }}">
-                {{ $skill->name }}
-            </label>
-        @endforeach
-        @error('skills')
-            <small class="error" role="alert">{{ $message }}</small>
-        @enderror
+                        <div class="row g-3">
+                            {{-- Phone --}}
+                            <div class="col-12 col-md-6">
+                                <label for="phone_number" class="form-label">Phone Number</label>
+                                <input
+                                    id="phone_number"
+                                    type="text"
+                                    name="phone_number"
+                                    value="{{ old('phone_number') }}"
+                                    class="form-control @error('phone_number') is-invalid @enderror"
+                                    autocomplete="tel">
+                                @error('phone_number')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- Location --}}
+                            <div class="col-12 col-md-6">
+                                <label for="location" class="form-label">Location</label>
+                                <input
+                                    id="location"
+                                    type="text"
+                                    name="location"
+                                    value="{{ old('location') }}"
+                                    class="form-control @error('location') is-invalid @enderror"
+                                    autocomplete="street-address">
+                                @error('location')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        {{-- Email --}}
+                        <div class="mt-3 mb-3">
+                            <label for="email" class="form-label">E-Mail Address</label>
+                            <input
+                                id="email"
+                                type="email"
+                                name="email"
+                                value="{{ old('email') }}"
+                                class="form-control @error('email') is-invalid @enderror"
+                                required
+                                autocomplete="email"
+                                inputmode="email">
+                            @error('email')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- Skills --}}
+                        <div id="skills-wrapper" class="mb-3">
+                            <label class="form-label">Select your skills (only for JobSeekers)</label>
+
+                            <div class="d-flex flex-wrap gap-3">
+                                @foreach($skills as $skill)
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        name="skills[]"
+                                        value="{{ $skill->id }}"
+                                        id="skill-{{ $skill->id }}"
+                                        {{ in_array($skill->id, old('skills', [])) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="skill-{{ $skill->id }}">
+                                        {{ $skill->name }}
+                                    </label>
+                                </div>
+                                @endforeach
+                            </div>
+
+                            @error('skills')
+                            <div class="text-danger small mt-2">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- Description --}}
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <input
+                                id="description"
+                                name="description"
+                                type="text"
+                                value="{{ old('description') }}"
+                                class="form-control @error('description') is-invalid @enderror">
+                            @error('description')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="row g-3">
+                            {{-- Password --}}
+                            <div class="col-12 col-md-6">
+                                <label for="password" class="form-label">
+                                    Password
+                                    <span class="help-icon">
+                                        ?
+                                        <span class="tooltip-text">Password must be at least 8 characters</span>
+                                    </span>
+                                </label>
+                                <input
+                                    id="password"
+                                    type="password"
+                                    name="password"
+                                    class="form-control @error('password') is-invalid @enderror"
+                                    required
+                                    autocomplete="new-password">
+                                @error('password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- Confirm password --}}
+                            <div class="col-12 col-md-6">
+                                <label for="password-confirm" class="form-label">Confirm Password</label>
+                                <input
+                                    id="password-confirm"
+                                    type="password"
+                                    name="password_confirmation"
+                                    class="form-control"
+                                    required
+                                    autocomplete="new-password">
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 flex-wrap mt-4">
+                            <button type="submit" class="button">Register</button>
+                            <a class="button button-outline" href="{{ route('login') }}">Login</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
-    @error('description')
-      <span id="description-error" class="error" role="alert">{{ $message }}</span>
-    @enderror
-      <label for="description">Description</label>
-      <input id="description" name="description" type="text" >
-
-    <label for="password">Password
-        <span class="help-icon">
-            ?
-          <span class="tooltip-text">Password must be at least 8 characters</span>
-        </span>
-      </label>
-    <input
-        id="password"
-        type="password"
-        name="password"
-        required
-        autocomplete="new-password"
-    >
-    @error('password')
-      <span id="password-error" class="error" role="alert">{{ $message }}</span>
-    @enderror
-
-    <label for="password-confirm">Confirm Password</label>
-    <input
-        id="password-confirm"
-        type="password"
-        name="password_confirmation"
-        required
-        autocomplete="new-password"
-    >
-
-    <button type="submit">Register</button>
-    <a class="button button-outline" href="{{ route('login') }}">Login</a>
-</form>
+</div>
 @endsection

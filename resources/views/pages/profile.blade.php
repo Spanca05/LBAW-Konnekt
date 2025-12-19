@@ -48,3 +48,53 @@
     </div>
 </div>
 @endsection
+
+<!--   
+<section>
+        <h3>⭐ Favourite Job Posts</h3>
+        @if($favourites->isEmpty())
+            <p>No favourites yet.</p>
+        @else
+            <ul>
+            @foreach($favourites as $job)
+                <li>
+                    {{-- Mostra cada job usando o partial --}}
+                    @if ($job->employer)
+                        @include('partials.jobpost', ['jobPost' => $job])
+                    @endif
+                </li>
+            @endforeach
+            </ul>
+        @endif
+    </section>
+    @if($user->role === 'Employer')
+        <section id="jobposts">
+            @if(auth()->check() && auth()->id() === $user->id)
+            <h2>My Active JobPosts</h2>
+            @else
+            <h2>{{ $user->name }}'s JobPosts</h2>
+            @endif
+
+    @if (isset($jobPosts) && $jobPosts->isNotEmpty())
+            @foreach ($jobPosts as $jobPost)
+            @include('partials.jobpost', ['jobPost' => $jobPost])
+            @endforeach
+            @else
+            <p>You have no active job posts</p>
+            @endif
+        </section>
+        @if(auth()->check() && auth()->id() === $user->id)
+            <section id="expired_jobposts">
+                <h2>My Expired JobPosts</h2>
+                @if (isset($expiredjobPosts) && $expiredjobPosts->isNotEmpty())
+                    @foreach ($expiredjobPosts as $expiredjobPost)
+                        @include('partials.jobpost', ['jobPost' => $expiredjobPost])
+                    @endforeach
+                @else
+                <p>You have no expired jobPosts</p>
+                @endif
+            </section>
+        @endif
+    @endif
+</section> 
+-->

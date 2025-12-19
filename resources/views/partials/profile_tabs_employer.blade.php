@@ -1,16 +1,16 @@
 <!-- Navigation Tabs -->
 <ul class="nav nav-tabs" id="profileTabs" role="tablist">
-    <li class="nav-item" role="presentation">
+    <li class="nav-item mb-0" role="presentation">
         <button class="nav-link active" id="jobposts-tab" data-bs-toggle="tab" data-bs-target="#jobposts" type="button" role="tab" aria-controls="jobposts" aria-selected="true">
             My Job Posts
         </button>
     </li>
-    <li class="nav-item" role="presentation">
+    <li class="nav-item mb-0" role="presentation">
         <button class="nav-link" id="applications-received-tab" data-bs-toggle="tab" data-bs-target="#applications-received" type="button" role="tab" aria-controls="applications-received" aria-selected="false">
             Applications Received
         </button>
     </li>
-    <li class="nav-item" role="presentation">
+    <li class="nav-item mb-0" role="presentation">
         <button class="nav-link" id="account-tab" data-bs-toggle="tab" data-bs-target="#account" type="button" role="tab" aria-controls="account" aria-selected="false">
             Account
         </button>

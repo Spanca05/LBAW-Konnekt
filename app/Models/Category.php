@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 // Import Eloquent relationship classes.
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
@@ -30,6 +30,10 @@ class Category extends Model
 
     public function jobPosts(): HasMany{
         return $this->hasMany(JobPost::class, 'category_id');
+    }
+
+    public function skills(): BelongsToMany{
+        return $this->belongsToMany(Skill::class, 'skill_category', 'category_id', 'skill_id');
     }
 
 }

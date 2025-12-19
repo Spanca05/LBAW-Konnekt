@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 // Import Eloquent relationship classes.
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\JobPost;
@@ -19,8 +20,7 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    // Disable default created_at and updated_at timestamps for this model.
-    public $timestamps  = false;
+    public $timestamps  = true;
 
     /**
      * The attributes that are mass assignable.
@@ -103,6 +103,10 @@ class User extends Authenticatable
         return $this->belongsToMany(Skill::class, 'skill_user', 'user_id', 'skill_id');
     }
 
+    public function favouriteJobs() {
+        return $this->belongsToMany(JobPost::class, 'favourite_job', 'jobseeker_id', 'jobpost_id');
+    }
+
     public function isDeleted()
     {
         return preg_match('/^deleted_\d+@delete\.app$/', $this->email) &&
@@ -111,6 +115,14 @@ class User extends Authenticatable
             $this->phone_number === '000000000' &&
             $this->location === null &&
             $this->photo_path === null;
+    }
+
+    public function notifications(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Notification::class,
+            'user_notification'
+        )->withPivot('seen');
     }
 
     public function blockedRecord(): HasOne

@@ -5,35 +5,41 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 // Import Eloquent relationship classes.
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 
 class Notification extends Model
 {
-    // Disable default created_at and updated_at timestamps for this model.
-    public $timestamps = false;
+    public const CREATED_AT = 'date';
+    public const UPDATED_AT = null;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * Only these fields may be filled using methods like create() or update().
-     * This protects against mass-assignment vulnerabilities.
-     *
-     * @var list<string>
-     */
     protected $table = 'notification';
     protected $fillable = [
         'title',
-        'id',
-        'seen',
         'date',
         'type',
         'jobpost_id',
         'application_id'
     ];
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            User::class,
+            'user_notification'
+        )->withPivot('seen');
+    }
+
+
+    public function jobPost(): BelongsTo {
+        return $this->belongsTo(JobPost::class, 'jobpost_id');
+    }
+
     
-    public function jobPosts(): HasMany{
-    return $this->hasMany(JobPost::class, 'notification_id');
-}
-    
+    public function application(): BelongsTo {
+        return $this->belongsTo(Application::class);
+    }
+
 
 }

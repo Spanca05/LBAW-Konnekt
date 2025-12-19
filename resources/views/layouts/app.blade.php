@@ -29,12 +29,17 @@
         <header>
             <h1><a href="{{ route('pages.jobposts.index') }}">Konnekt!</a></h1>
             @auth
-            <a class="button" href="{{ url('/logout') }}">Logout </a>
-            @if((Auth::user()->role ?? null) === 'Admin')
-            <a class="button" href="{{ route('admin.index') }}">{{Auth::user()->name}}</a>
-            @else
-            <a class="button" href="{{ route('profile') }}">{{ Auth::user()->name }}</a>
-            @endif
+                <a class="button button-outline" href="{{ route('notifications.index') }}"> 🔔 Notifications
+                    @if($unreadNotifications > 0)
+                        <span class="badge">{{ $unreadNotifications }}</span>
+                    @endif
+                </a>
+                <a class="button" href="{{ url('/logout') }}">Logout </a>
+                @if((Auth::user()->role ?? null) === 'Admin')
+                    <a class="button" href="{{ route('admin.index') }}">{{Auth::user()->name}}</a>
+                @else
+                    <a class="button" href="{{ route('profile') }}">{{ Auth::user()->name }}</a>
+                @endif
             @else
             <a class="button button-outline" href="{{ route('register') }}">Register</a> <a class="button" href="{{ route('login') }}">Login</a>
             @endauth

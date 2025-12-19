@@ -14,23 +14,23 @@ use Illuminate\Support\Str;
 
 class JobPostController extends Controller {
 
-    /**
-     * Display a listing of the user's cards.
-     */
     public function index(Request $request)
     {
         // vai buscar todos os jobposts ordenados do mais recente para o mais antigo
         //$jobPosts = JobPost::orderBy('created_at', 'desc')->get();
 
         $jobPosts = JobPost::with('employer')
+            ->where(function ($q) {
+                $q->whereNull('deadline')
+                ->orWhere('deadline', '>', now());
+            })
             ->where('blocked', false)
             ->get()
-            ->filter(fn($jobPost) => ! $jobPost->isOwnerDeleted()) // só mantém os válidos
+            ->filter(fn($jobPost) => ! $jobPost->isOwnerDeleted())
             ->sortByDesc('created_at');
-
-        // Render the 'pages.cards' view with the user's cards.
+        
         return view('pages.jobposts', [
-            'jobPosts' => $jobPosts
+            'jobPosts' => $jobPosts,
         ]);
     }
 
@@ -45,9 +45,7 @@ class JobPostController extends Controller {
 
        // $name = $jobPost->jobUser->name;
 
-        if ($jobPost->isOwnerDeleted()) {
-            abort(404);
-        }
+        Gate::authorize('view', $jobPost);
 
         return view('pages.jobpost', [
             'jobPost' => $jobPost,
@@ -84,8 +82,9 @@ class JobPostController extends Controller {
         'salary' => 'required|integer|min:0', // evita salários negativos
         'category_id' => 'required|integer',
         'work_model' => 'required|in:Remote,On-site,Hybrid',
-        'contract_type' => 'required|in:Internship,Full-time,Part-time',
-        'location' => 'nullable|string|required_unless:work_model,Remote'
+        'location' => 'nullable|string|required_unless:work_model,Remote',
+        'deadline' => 'nullable|date|after:now',
+        'contract_type' => 'required|in:Internship,Full-time,Part-time'
     ], [
         'salary.min' => 'Salary cannot be negative.',
         'location.required_unless' => 'Location is required unless the job is Remote.'
@@ -99,6 +98,7 @@ class JobPostController extends Controller {
         $jobPost->work_model = $validated['work_model'];
         $jobPost->contract_type = $validated['contract_type'];
         $jobPost->category_id = $validated['category_id'];
+        $jobPost->deadline = $validated['deadline'];
         $jobPost->employer_id = Auth::id();
         // Explicitly assign location
 
@@ -128,8 +128,9 @@ class JobPostController extends Controller {
             'salary' => 'required|numeric|min:0', // evita salários negativos
             'category_id' => 'required|integer|exists:category,id',
             'work_model' => 'required|in:Remote,On-site,Hybrid',
-            'contract_type' => 'required|in:Internship,Full-time,Part-time',
-            'location' => 'nullable|string|required_unless:work_model,Remote'
+            'location' => 'nullable|string|required_unless:work_model,Remote',
+            'deadline' => 'nullable|date|after:now',
+            'contract_type' => 'required|in:Internship,Full-time,Part-time'
         ], [
             'salary.min' => 'Salary cannot be negative.',
             'location.required_unless' => 'Location is required unless the job is Remote.'
@@ -142,6 +143,7 @@ class JobPostController extends Controller {
         $jobPost->work_model = $validated['work_model'];
         $jobPost->contract_type = $validated['contract_type'];
         $jobPost->category_id = $validated['category_id'];
+        $jobPost->deadline = $validated['deadline'];
         $location_ = preg_replace('/[^a-zA-ZÀ-ÿ0-9\s,-]/', '', $validated['location'] ?? '');
         $jobPost->location = Str::title(trim($location_)) ?: null;
         //$jobPost->location = $validated['location'] ?? null;
@@ -155,7 +157,7 @@ class JobPostController extends Controller {
     public function delete($id) {
 
         $jobPost = JobPost::findOrFail($id);
-        Gate::authorize('delete', $jobPost);
+        Gate::authorize('update', $jobPost);
         $jobPost->notifications()->delete();
         DB::table('jobpost_category')->where('jobpost_id', $jobPost->id)->delete(); // remove dependency
         $nome = $jobPost->title;
@@ -398,6 +400,23 @@ class JobPostController extends Controller {
 
             return response()->json($resultados);       // devolve resultados em formato json
         }
+    }
+
+    public function changeFavourite($jobpostId)
+    {
+        $user = Auth::user();
+        $job = JobPost::findOrFail($jobpostId);
+
+        Gate::authorize('canFavourite', $job);
+
+        // check if it is already favourite
+        if ($user->favouriteJobs()->where('jobpost_id', $jobpostId)->exists()) {
+            $user->favouriteJobs()->detach($jobpostId);  //remove favourite
+            return back()->with('success', 'Removed from favourites.');
+        }
+
+        $user->favouriteJobs()->attach($jobpostId);
+        return back()->with('success', 'Added to favourites.');
     }
 
 }

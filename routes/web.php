@@ -169,3 +169,44 @@ Route::post('/reset-password', function (Request $request) {
         ? redirect()->route('login')->with('status', __($status))
         : back()->withErrors(['email' => [__($status)]]);
 })->middleware('guest')->name('password.update');
+
+
+Route::middleware('auth')->get('/profile/jobposts-status', function() {
+    $user = auth()->user();
+
+    $active = $user->jobposts()
+        ->where('deadline', '>', now())
+        ->orderBy('deadline')
+        ->get();
+
+    $expired = $user->jobposts()
+        ->where('deadline', '<=', now())
+        ->orderByDesc('deadline')
+        ->get();
+
+    // Renderiza cada jobpost usando o partial existente
+    $activeHtml = '';
+    foreach ($active as $jobPost) {
+        $activeHtml .= view('partials.jobpost', ['jobPost' => $jobPost])->render();
+    }
+
+    $expiredHtml = '';
+    foreach ($expired as $jobPost) {
+        $expiredHtml .= view('partials.jobpost', ['jobPost' => $jobPost])->render();
+    }
+
+    return response()->json([
+        'active' => $activeHtml,
+        'expired' => $expiredHtml
+    ]);
+})->name('profile.jobposts-status');
+
+
+Route::middleware('auth')->get('/notifications/unread-count', function() {
+    $user = auth()->user();
+    $unreadCount = $user->notifications()->wherePivot('seen', false)->count();
+    
+    return response()->json(['unread' => $unreadCount]);
+})->name('notifications.unread-count');
+
+

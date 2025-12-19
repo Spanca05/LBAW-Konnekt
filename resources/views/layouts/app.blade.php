@@ -16,6 +16,8 @@
         <script src="{{ asset('js/app.js') }}" defer></script>
         <script src="{{ asset('js/register.js') }}" defer></script>
         <script src="{{ asset('js/search_bar.js') }}"defer ></script>
+        <script src="{{ asset('js/profile.js') }}"defer ></script>
+        <script src="{{ asset('js/notification.js') }}"defer ></script>
         @stack('scripts')
     </head>
     <body>
@@ -24,9 +26,11 @@
                 <h1><a href="{{ route('pages.jobposts.index') }}">Konnekt!</a></h1>
                 @auth
                     <a class="button button-outline" href="{{ route('notifications.index') }}">
-                        🔔 Notifications
+                        Notifications
                         @if($unreadNotifications > 0)
-                            <span class="badge">{{ $unreadNotifications }}</span>
+                            <span class="badge" id="notifications_badge">{{ $unreadNotifications }}</span>
+                        @else
+                            <span class="badge" id="notifications_badge" style="display: none;"></span>
                         @endif
                     </a>
                     <a class="button" href="{{ url('/logout') }}">Logout </a>

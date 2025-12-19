@@ -123,7 +123,7 @@
     </section>
 
    <section>
-        <h3>⭐ Favourite Job Posts</h3>
+        <h3>Favourite Job Posts</h3>
 
         @if($favourites->isEmpty())
             <p>No favourites yet.</p>
@@ -149,24 +149,29 @@
             <h2>{{ $user->name }}'s JobPosts</h2>
             @endif
 
-            @if (isset($jobPosts) && $jobPosts->isNotEmpty())
-            @foreach ($jobPosts as $jobPost)
-            @include('partials.jobpost', ['jobPost' => $jobPost])
-            @endforeach
-            @else
-            <p>You have no active job posts</p>
-            @endif
+            <div id="active_jobposts_list">
+                @if (isset($jobPosts) && $jobPosts->isNotEmpty())
+                    @foreach ($jobPosts as $jobPost)
+                    @include('partials.jobpost', ['jobPost' => $jobPost])
+                    @endforeach
+                @else
+                <p id="no_active_jobposts">You have no active job posts</p>
+                @endif
+            </div>
+            
         </section>
         @if(auth()->check() && auth()->id() === $user->id)
             <section id="expired_jobposts">
                 <h2>My Expired JobPosts</h2>
-                @if (isset($expiredjobPosts) && $expiredjobPosts->isNotEmpty())
-                    @foreach ($expiredjobPosts as $expiredjobPost)
-                        @include('partials.jobpost', ['jobPost' => $expiredjobPost])
-                    @endforeach
-                @else
-                <p>You have no expired jobPosts</p>
-                @endif
+                <div id="expired_jobposts_list">
+                    @if (isset($expiredjobPosts) && $expiredjobPosts->isNotEmpty())
+                        @foreach ($expiredjobPosts as $expiredjobPost)
+                            @include('partials.jobpost', ['jobPost' => $expiredjobPost])
+                        @endforeach
+                    @else
+                    <p id="no_expired_jobposts">You have no expired jobPosts</p>
+                    @endif
+                </div>
             </section>
         @endif
     @endif

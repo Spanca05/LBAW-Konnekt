@@ -24,19 +24,19 @@
 
             <ul class="nav nav-tabs mb-0" id="adminTabs" role="tablist">
                 <li class="nav-item m-0" role="presentation">
-                    <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="true">
+                    <button class="nav-link {{ $activeTab === 'profile' ? 'active' : '' }}" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="{{ $activeTab === 'profile' ? 'true' : 'false' }}">
                         Profile
                     </button>
                 </li>
                 <li class="nav-item m-0" role="presentation">
-                    <button class="nav-link" id="admin-tools-tab" data-bs-toggle="tab" data-bs-target="#admin-tools" type="button" role="tab" aria-controls="admin-tools" aria-selected="false">
+                    <button class="nav-link {{ $activeTab === 'admin-tools' ? 'active' : '' }}" id="admin-tools-tab" data-bs-toggle="tab" data-bs-target="#admin-tools" type="button" role="tab" aria-controls="admin-tools" aria-selected="{{ $activeTab === 'admin-tools' ? 'true' : 'false' }}">
                         Admin Tools
                     </button>
                 </li>
             </ul>
 
             <div class="tab-content border border-top-0 rounded-0 rounded-bottom p-4 bg-white" id="adminTabsContent">
-                <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="tab-pane fade {{ $activeTab === 'profile' ? 'show active' : '' }}" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                     <div class="mb-3">
                         <p class="mb-1 text-muted">Email</p>
                         <p class="mb-0 h5">{{ $admin->email }}</p>
@@ -55,7 +55,7 @@
                     </div>
                 </div>
 
-                <div class="tab-pane fade" id="admin-tools" role="tabpanel" aria-labelledby="admin-tools-tab">
+                <div class="tab-pane fade {{ $activeTab === 'admin-tools' ? 'show active' : '' }}" id="admin-tools" role="tabpanel" aria-labelledby="admin-tools-tab">
                     <div class="row gy-3">
                         <div class="col-12">
                             <h5 class="mb-2">Create Admin Account</h5>

@@ -11,7 +11,7 @@
     <div class="row justify-content-center">
         <div class="col-12 col-md-10 col-lg-9">
             <h3 class="mb-3">JobPosts Management</h3>
-            <a href="{{ route('admin.index') }}" class="button button-outline mb-3">Back to Admin Dashboard</a>
+            <a href="{{ route('admin.index', ['tab' => 'admin-tools']) }}" class="button button-outline mb-3">Back to Admin Dashboard</a>
             <p class="mb-3"><strong>Total JobPosts:</strong> {{$jobpostCount}}</p>
 
             <div class="card shadow-sm">

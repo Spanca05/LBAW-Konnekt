@@ -16,7 +16,7 @@ use App\Policies\AdminPolicy;
 class AdminController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
         Gate::policy(Admin::class, AdminPolicy::class);
         Gate::authorize('view', Admin::class);
@@ -26,6 +26,7 @@ class AdminController extends Controller
         $jobpostCount = JobPost::count();
         $applicationCount = Application::count();
         $blockedCount = BlockedUser::count();
+        $activeTab = $request->query('tab', 'profile');
 
         return view('pages.admin', [
             'admin' => $user,
@@ -33,6 +34,7 @@ class AdminController extends Controller
             'jobpostCount' => $jobpostCount,
             'applicationCount' => $applicationCount,
             'blockedCount' => $blockedCount,
+            'activeTab' => $activeTab,
         ]);
     }
 

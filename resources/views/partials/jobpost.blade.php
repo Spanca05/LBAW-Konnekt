@@ -72,7 +72,7 @@
                 <a class="button" href="{{ route('login') }}">Login to apply</a>
                 @endauth
 
-                <a class="button" href="{{ route('pages.jobposts.index') }}">Return</a>
+                <a class="button" href="{{ url()->previous() }}">Return</a>
             </div>
             @endif
 

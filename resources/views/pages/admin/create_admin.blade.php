@@ -10,7 +10,7 @@
 <div class="container my-5 admin-users-page">
     <div class="row justify-content-center">
         <div class="col-12 col-md-8 col-lg-6">
-            <a href="{{ route('admin.index') }}" class="button button-outline mb-3" style="text-decoration: none;">
+            <a href="{{ route('admin.index', ['tab' => 'admin-tools']) }}" class="button button-outline mb-3" style="text-decoration: none;">
                 ← Back to Admin Dashboard
             </a>
 

@@ -54,7 +54,7 @@
 
 
                         <div class="actions">
-                            <button type="submit">Login</button>
+                            <button class="button" type="submit">Login</button>
                             <a class="button button-outline" href="{{ route('register') }}">Register</a>
                         </div>
 

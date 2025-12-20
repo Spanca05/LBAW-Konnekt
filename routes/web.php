@@ -31,7 +31,7 @@ Route::get('/contacts', [PageController::class, 'contacts'])->name('pages.contac
 Route::get('/api/search/suggestions', [JobPostController::class, 'suggestions'])->name('search.suggestions');
 //resultados da pesquisa por jobpost
 Route::get('/jobposts/search', [JobPostController::class, 'search'])->name('jobpost.search');
-Route::get('/employers/search', [JobPostController::class, 'search'])->name('jobpost.search');
+Route::get('/employers/search', [JobPostController::class, 'search'])->name('employer.search');
 
 Route::get('/jobposts', [JobPostController::class, 'index'])->name('pages.jobposts.index');
 

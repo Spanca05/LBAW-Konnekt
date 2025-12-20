@@ -31,7 +31,7 @@ Route::get('/contacts', [PageController::class, 'contacts'])->name('pages.contac
 Route::get('/api/search/suggestions', [JobPostController::class, 'suggestions'])->name('search.suggestions');
 //resultados da pesquisa por jobpost
 Route::get('/jobposts/search', [JobPostController::class, 'search'])->name('jobpost.search');
-Route::get('/employers/search', [JobPostController::class, 'search'])->name('jobpost.search');
+Route::get('/employers/search', [JobPostController::class, 'search'])->name('employer.search');
 
 Route::get('/jobposts', [JobPostController::class, 'index'])->name('pages.jobposts.index');
 
@@ -88,7 +88,7 @@ Route::middleware('auth')->group(function () {
     // Jobseeker application management
     Route::get('/applications/{application}/edit', [ApplicationController::class, 'edit'])->name('applications.edit');
     Route::put('/applications/{application}', [ApplicationController::class, 'update'])->name('applications.update');
-    Route::delete('/applications/{application}', [ApplicationController::class, 'destroy'])->name('applications.destroy');
+    Route::delete('/applications/{application}', [ApplicationController::class, 'delete'])->name('applications.destroy');
     // Employer: update application status (Accept / Reject)
     Route::patch('/applications/{application}/status', [ApplicationController::class, 'status_update'])->name('applications.status.update');
 });

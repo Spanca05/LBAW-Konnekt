@@ -119,7 +119,9 @@
                     </form>
 
                     @if($user->photo_path)
-                    <form method="POST" action="{{ route('profile.photo.destroy') }}" class="mt-3">@csrf @method('DELETE')
+                    <form method="POST" action="{{ route('profile.photo.destroy') }}" class="mt-3">
+                        @csrf 
+                        @method('DELETE')
                         <button class="button button-outline" type="submit">Remove photo</button>
                     </form>
                     @endif
@@ -127,7 +129,9 @@
                     @if(optional($user->cv)->file_path)
                     <div class="mt-3">
                         <a class="button" href="{{ route('profile.cv.download') }}">Download current CV</a>
-                        <form method="POST" action="{{ route('profile.cv.destroy') }}" class="mt-2">@csrf @method('DELETE')
+                        <form method="POST" action="{{ route('profile.cv.destroy') }}" class="mt-2">
+                            @csrf 
+                            @method('DELETE')
                             <button class="button button-outline" type="submit">Remove CV</button>
                         </form>
                     </div>

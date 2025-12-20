@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JobPost;
+
 class HomeController extends Controller
 {       
         // Pagina inicial com jobposts

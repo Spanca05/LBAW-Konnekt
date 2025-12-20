@@ -111,6 +111,8 @@ class ProfileController extends Controller {
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'photo' => ['nullable', 'image', 'max:2048'],
             'description' => ['nullable', 'string', 'max:2000'],
+            'skills' => ['sometimes', 'array'],
+            'skills.*' => ['integer', 'exists:skill,id'],
         ]);
 
         $user->name = $data['name'];
@@ -126,7 +128,7 @@ class ProfileController extends Controller {
 
         // Se for JobSeeker, attach das skills (sem validação)
         if ($user->role === 'JobSeeker') {
-            //adiciona novas skills e remove as que não estão no array.
+            // adiciona novas skills e remove as que não estão no array
             $user->skills()->sync($request->input('skills', []));
         }
 

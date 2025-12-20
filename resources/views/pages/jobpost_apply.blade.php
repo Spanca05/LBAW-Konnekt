@@ -48,7 +48,7 @@
                             @csrf
                             <div class="mb-3">
                                 <label for="motivation" class="form-label">Cover Letter (optional)</label>
-                                <textarea class="form-control" id="motivation" name="motivation" rows="6">{{ old('motivation') }}</textarea>
+                                <textarea class="form-control" id="motivation" name="motivation" rows="6" placeholder="Write here your Cover Letter">{{ old('motivation') }}</textarea>
                             </div>
 
                             <div class="d-flex gap-3 flex-wrap">

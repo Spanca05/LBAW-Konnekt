@@ -111,11 +111,11 @@
             </div>
             @else
             @if($type=='search_jobpost')
-            <div class="d-flex flex-column gap-3">
+            <div class="row g-4">
                 @foreach ($jobPosts as $jobpost)
-                <a class="text-decoration-none" href="{{ route('jobpost.show', $jobpost->id) }}">
-                    @include('partials.jobpost', ['jobPost' => $jobpost])
-                </a>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        @include('partials.jobpost', ['jobPost' => $jobpost])
+                    </div>
                 @endforeach
             </div>
             @else

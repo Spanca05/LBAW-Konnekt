@@ -11,6 +11,10 @@
     @csrf
 
     <label for="email">Email</label>
+    <span class="help-icon">
+        ?
+        <span class="tooltip-text">You must right the email where you want to receive the link to reset you password</span>
+    </span>    
     <input
         id="email"
         name="email"

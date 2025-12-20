@@ -18,6 +18,10 @@
                         {{-- Name --}}
                         <div class="mb-3">
                             <label for="name" class="form-label">Name</label>
+                            <span class="help-icon">
+                                ?
+                                <span class="tooltip-text">Please enter your full name as it will appear on your public profile.</span>
+                            </span>                            
                             <input
                                 id="name"
                                 type="text"
@@ -76,6 +80,10 @@
                             {{-- Location --}}
                             <div class="col-12 col-md-6">
                                 <label for="location" class="form-label">Location</label>
+                                <span class="help-icon">
+                                    ?
+                                <span class="tooltip-text">Please enter the location where you want to find work or you live.</span>
+                            </span>
                                 <input
                                     id="location"
                                     type="text"
@@ -175,6 +183,10 @@
                             {{-- Confirm password --}}
                             <div class="col-12 col-md-6">
                                 <label for="password-confirm" class="form-label">Confirm Password</label>
+                                    <span class="help-icon">
+                                        ?
+                                    <span class="tooltip-text">You must enter the same password here that you typed in the previous field.</span>
+                                    </span>
                                 <input
                                     id="password-confirm"
                                     type="password"

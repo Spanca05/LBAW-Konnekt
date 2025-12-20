@@ -21,12 +21,16 @@ class AdminController extends Controller
         Gate::policy(Admin::class, AdminPolicy::class);
         Gate::authorize('view', Admin::class);
 
+        $validated = $request->validate([
+            'tab' => ['sometimes', 'in:profile,admin-tools'],
+        ]);
+
         $user = Auth::user();
         $userCount = User::count();
         $jobpostCount = JobPost::count();
         $applicationCount = Application::count();
         $blockedCount = BlockedUser::count();
-        $activeTab = $request->query('tab', 'profile');
+        $activeTab = $validated['tab'] ?? 'profile';
 
         return view('pages.admin', [
             'admin' => $user,

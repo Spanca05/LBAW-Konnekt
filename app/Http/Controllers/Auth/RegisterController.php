@@ -45,7 +45,9 @@ class RegisterController extends Controller
             'location' => 'nullable|string|max:255',
             'email' => 'required|email|max:250|unique:users',
             'password' => 'required|min:8|confirmed',
-            'description' => 'nullable|string|max:2000'
+            'description' => 'nullable|string|max:2000',
+            'skills' => 'sometimes|array',
+            'skills.*' => 'integer|exists:skill,id'
         ]);
         $location_ = preg_replace('/[^a-zA-ZÀ-ÿ0-9\s,-]/', '', $request['location'] ?? '');
         // Create the new user.

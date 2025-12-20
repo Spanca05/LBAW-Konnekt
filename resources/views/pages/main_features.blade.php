@@ -4,23 +4,17 @@
 
 @section('content')
 <div class="container" >
-    
     <h1>Why use Konnekt?</h1>
     <p class="lead">The bridge between talent and opportunity.</p>
-    
-
-    <div >
-            <h3>Advanced Search Engine</h3>
-            <p>
-                Forget simple keyword matching. Our platform uses <strong>PostgreSQL Full Text Search</strong> 
-                to rank results by relevance. Filter jobs by category, sort by date or alphabetical order, 
-                and find exactly what you are looking for instantly via AJAX suggestions.
-            </p>
-        </div>
+    <div>
+        <h3>Advanced Search Engine</h3>
+        <p>
+            Forget simple keyword matching. Our platform uses <strong>PostgreSQL Full Text Search</strong> 
+            to rank results by relevance. Filter jobs by category, sort by date or alphabetical order, 
+            and find exactly what you are looking for instantly via AJAX suggestions.
+        </p>
     </div>
-
     <hr>
-
     <div>
         <div>
             <h3>For Employers</h3>
@@ -31,9 +25,7 @@
             </p>
         </div>
     </div>
-
     <hr>
-
     <div class="row" style="margin-bottom: 30px; align-items: center;">
         <div >
             <h3>For Job Seekers</h3>

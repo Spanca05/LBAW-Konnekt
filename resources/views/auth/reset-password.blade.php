@@ -19,7 +19,8 @@
         type="email"
         value="{{ old('email', request('email')) }}"
         required
-        autocomplete="email">
+        autocomplete="email"
+        placeholder="email@example.com">
 
     @error('email')
     <div class="error">{{ $message }}</div>
@@ -31,7 +32,8 @@
         type="password"
         name="password"
         required
-        autocomplete="new-password">
+        autocomplete="new-password"
+        placeholder="Type your new password">
     @error('password')
     <span id="password-error" class="error" role="alert">{{ $message }}</span>
     @enderror
@@ -42,7 +44,11 @@
         type="password"
         name="password_confirmation"
         required
-        autocomplete="new-password">
+        autocomplete="new-password"
+        placeholder="Type again the new password">
+    @error('password_confirmation')
+    <span id="password-error" class="error" role="alert">{{ $message }}</span>
+    @enderror        
 
     <button type="submit">Reset password</button>
 

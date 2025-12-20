@@ -18,6 +18,10 @@
                         {{-- Name --}}
                         <div class="mb-3">
                             <label for="name" class="form-label">Name</label>
+                            <span class="help-icon">
+                                ?
+                                <span class="tooltip-text">Please enter your full name as it will appear on your public profile.</span>
+                            </span>                            
                             <input
                                 id="name"
                                 type="text"
@@ -26,7 +30,8 @@
                                 class="form-control @error('name') is-invalid @enderror"
                                 required
                                 autofocus
-                                autocomplete="name">
+                                autocomplete="name"
+                                placeholder="Your Name">
                             @error('name')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -61,7 +66,8 @@
                                 <label for="phone_number" class="form-label">Phone Number</label>
                                 <input
                                     id="phone_number"
-                                    type="text"
+                                    type="tel"
+                                    placeholder="ex:123456789"
                                     name="phone_number"
                                     value="{{ old('phone_number') }}"
                                     class="form-control @error('phone_number') is-invalid @enderror"
@@ -74,13 +80,18 @@
                             {{-- Location --}}
                             <div class="col-12 col-md-6">
                                 <label for="location" class="form-label">Location</label>
+                                <span class="help-icon">
+                                    ?
+                                <span class="tooltip-text">Please enter the location where you want to find work or you live.</span>
+                            </span>
                                 <input
                                     id="location"
                                     type="text"
                                     name="location"
                                     value="{{ old('location') }}"
                                     class="form-control @error('location') is-invalid @enderror"
-                                    autocomplete="street-address">
+                                    autocomplete="street-address"
+                                    placeholder="ex:Lisboa">
                                 @error('location')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -98,7 +109,8 @@
                                 class="form-control @error('email') is-invalid @enderror"
                                 required
                                 autocomplete="email"
-                                inputmode="email">
+                                inputmode="email"
+                                placeholder="email@example.com">
                             @error('email')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -138,7 +150,8 @@
                                 name="description"
                                 type="text"
                                 value="{{ old('description') }}"
-                                class="form-control @error('description') is-invalid @enderror">
+                                class="form-control @error('description') is-invalid @enderror"
+                                placeholder="Small description about you">
                             @error('description')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -160,7 +173,8 @@
                                     name="password"
                                     class="form-control @error('password') is-invalid @enderror"
                                     required
-                                    autocomplete="new-password">
+                                    autocomplete="new-password"
+                                    placeholder="Type your password">
                                 @error('password')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -169,13 +183,18 @@
                             {{-- Confirm password --}}
                             <div class="col-12 col-md-6">
                                 <label for="password-confirm" class="form-label">Confirm Password</label>
+                                    <span class="help-icon">
+                                        ?
+                                    <span class="tooltip-text">You must enter the same password here that you typed in the previous field.</span>
+                                    </span>
                                 <input
                                     id="password-confirm"
                                     type="password"
                                     name="password_confirmation"
                                     class="form-control"
                                     required
-                                    autocomplete="new-password">
+                                    autocomplete="new-password"
+                                    placeholder="Repeat password">
                             </div>
                         </div>
 

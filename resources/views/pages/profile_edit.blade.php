@@ -35,13 +35,13 @@
                         <div class="row g-3">
                             <div class="col-12 col-md-6">
                                 <label for="name" class="form-label">Name</label>
-                                <input id="name" name="name" type="text" value="{{ old('name', $user->name) }}" class="form-control @error('name') is-invalid @enderror">
+                                <input id="name" name="name" type="text" value="{{ old('name', $user->name) }}" placeholder="Your Name" class="form-control @error('name') is-invalid @enderror">
                                 @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
 
                             <div class="col-12 col-md-6">
                                 <label for="email" class="form-label">Email</label>
-                                <input id="email" name="email" type="email" value="{{ old('email', $user->email) }}" class="form-control @error('email') is-invalid @enderror">
+                                <input id="email" name="email" type="email" value="{{ old('email', $user->email) }}" placeholder="email@example.com" class="form-control @error('email') is-invalid @enderror">
                                 @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                         </div>
@@ -49,14 +49,14 @@
                         <div class="row g-3 mt-0">
                             <div class="col-12 col-md-6">
                                 <label for="phone_number" class="form-label">Phone</label>
-                                <input id="phone_number" name="phone_number" type="text" value="{{ old('phone_number', $user->phone_number) }}" class="form-control @error('phone_number') is-invalid @enderror">
+                                <input id="phone_number" name="phone_number" type="tel" value="{{ old('phone_number', $user->phone_number) }}" placeholder="ex:123456789" class="form-control @error('phone_number') is-invalid @enderror">
                                 @error('phone_number') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
 
                             @if($user->role !== 'Admin')
                             <div class="col-12 col-md-6">
                                 <label for="location" class="form-label">Location</label>
-                                <input id="location" name="location" type="text" value="{{ old('location', $user->location) }}" class="form-control @error('location') is-invalid @enderror">
+                                <input id="location" name="location" type="text" value="{{ old('location', $user->location) }}" placeholder="ex:Famalicão" class="form-control @error('location') is-invalid @enderror">
                                 @error('location') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             @endif
@@ -86,7 +86,7 @@
                         @if($user->role !== 'Admin')
                         <div class="mb-3">
                             <label for="description" class="form-label">Description</label>
-                            <input id="description" name="description" type="text" value="{{ old('description', $user->description) }}" class="form-control @error('description') is-invalid @enderror">
+                            <input id="description" name="description" type="text" value="{{ old('description', $user->description) }}" placeholder="Small description about you" class="form-control @error('description') is-invalid @enderror">
                             @error('description') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         @endif
@@ -94,12 +94,12 @@
                         <div class="row g-3">
                             <div class="col-12 col-md-6">
                                 <label for="password" class="form-label">New password (leave blank to keep current)</label>
-                                <input id="password" name="password" type="password" class="form-control @error('password') is-invalid @enderror">
+                                <input id="password" name="password" type="password" placeholder="Type a new password" class="form-control @error('password') is-invalid @enderror">
                                 @error('password') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="password_confirmation" class="form-label">Confirm new password</label>
-                                <input id="password_confirmation" name="password_confirmation" type="password" class="form-control">
+                                <input id="password_confirmation" name="password_confirmation" type="password" placeholder="Type new password again" class="form-control">
                             </div>
                         </div>
 

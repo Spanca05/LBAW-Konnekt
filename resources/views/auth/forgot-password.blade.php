@@ -11,16 +11,21 @@
     @csrf
 
     <label for="email">Email</label>
+    <span class="help-icon">
+        ?
+        <span class="tooltip-text">You must right the email where you want to receive the link to reset you password</span>
+    </span>    
     <input
         id="email"
         name="email"
         type="email"
         value="{{ old('email') }}"
         required
+        placeholder="Type here your email"
     >
 
     @error('email')
-        <div class="error">{{ $message }}</div>
+        <div class="error" role="alert" id="email-error">{{ $message }}</div>
     @enderror
 
     <button type="submit">Send password reset link</button>

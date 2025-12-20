@@ -1,141 +1,166 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Profile')
+@section('title', 'Create Job Post | ' . config('app.name'))
 
 @section('content')
 <div class="container my-5">
     <div class="row justify-content-center">
-        <div class="col-12 col-md-10 col-lg-8">
+        <div class="col-12 col-md-10 col-lg-7 col-xl-6">
 
             <div class="card rounded-3 shadow">
-                <div class="card-body p-5 p-md-6">
+                <div class="card-body p-5">
 
-                    <h1 class="mb-4">Edit Profile</h1>
+                    <h1 class="h4 mb-4">Create Job Post</h1>
 
-                    @if(session('success'))
-                    <p class="success" role="alert">{{ session('success') }}</p>
-                    @endif
-
-                    {{-- Unified profile + CV form --}}
-                    <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('jobpost.store') }}">
                         @csrf
-                        @method('PUT')
 
-                        @if($user->role !== 'Admin')
                         <div class="mb-3">
-                            <label for="photo" class="form-label">Profile Picture</label>
-                            <input id="photo" name="photo" type="file" accept="image/*" class="form-control">
-                            @error('photo') <div class="text-danger small mt-2">{{ $message }}</div> @enderror
-                            @if($user->photo_path)
-                            <div class="form-text">Current photo uploaded.</div>
-                            @endif
-                        </div>
-                        @endif
-
-                        <div class="row g-3">
-                            <div class="col-12 col-md-6">
-                                <label for="name" class="form-label">Name</label>
-                                <input id="name" name="name" type="text" value="{{ old('name', $user->name) }}" placeholder="Your Name" class="form-control @error('name') is-invalid @enderror">
-                                @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
-
-                            <div class="col-12 col-md-6">
-                                <label for="email" class="form-label">Email</label>
-                                <input id="email" name="email" type="email" value="{{ old('email', $user->email) }}" placeholder="email@example.com" class="form-control @error('email') is-invalid @enderror">
-                                @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
+                            <label for="title" class="form-label">Title</label>
+                            <input
+                                type="text"
+                                id="title"
+                                name="title"
+                                required
+                                placeholder="ex: Designer"
+                                class="form-control @error('title') is-invalid @enderror"
+                            >
+                            @error('title')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
-                        <div class="row g-3 mt-0">
-                            <div class="col-12 col-md-6">
-                                <label for="phone_number" class="form-label">Phone</label>
-                                <input id="phone_number" name="phone_number" type="tel" value="{{ old('phone_number', $user->phone_number) }}" placeholder="ex:123456789" class="form-control @error('phone_number') is-invalid @enderror">
-                                @error('phone_number') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
-
-                            @if($user->role !== 'Admin')
-                            <div class="col-12 col-md-6">
-                                <label for="location" class="form-label">Location</label>
-                                <input id="location" name="location" type="text" value="{{ old('location', $user->location) }}" placeholder="ex:Famalicão" class="form-control @error('location') is-invalid @enderror">
-                                @error('location') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
-                            @endif
-                        </div>
-
-                        @if ($user->role === 'JobSeeker')
-                        <div class="mt-3 mb-3">
-                            <label class="form-label">Change your skills</label>
-                            <div class="d-flex flex-wrap gap-3">
-                                @foreach($skills as $skill)
-                                <div class="form-check">
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        name="skills[]"
-                                        value="{{ $skill->id }}"
-                                        id="skill-{{ $skill->id }}"
-                                        {{ (collect(old('skills', $user->skills->pluck('id')))->contains($skill->id)) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="skill-{{ $skill->id }}">{{ $skill->name }}</label>
-                                </div>
-                                @endforeach
-                            </div>
-                            @error('skills') <div class="text-danger small mt-2">{{ $message }}</div> @enderror
-                        </div>
-                        @endif
-
-                        @if($user->role !== 'Admin')
                         <div class="mb-3">
                             <label for="description" class="form-label">Description</label>
-                            <input id="description" name="description" type="text" value="{{ old('description', $user->description) }}" placeholder="Small description about you" class="form-control @error('description') is-invalid @enderror">
-                            @error('description') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            <textarea
+                                id="description"
+                                name="description"
+                                required
+                                placeholder="Small description about the work"
+                                class="form-control @error('description') is-invalid @enderror"
+                                rows="4"
+                            ></textarea>
+                            @error('description')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        @endif
 
                         <div class="row g-3">
                             <div class="col-12 col-md-6">
-                                <label for="password" class="form-label">New password (leave blank to keep current)</label>
-                                <input id="password" name="password" type="password" placeholder="Type a new password" class="form-control @error('password') is-invalid @enderror">
-                                @error('password') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                <label for="salary" class="form-label">Salary</label>
+                                <input
+                                    type="number"
+                                    id="salary"
+                                    name="salary"
+                                    required
+                                    placeholder="ex: 12000"
+                                    class="form-control @error('salary') is-invalid @enderror"
+                                >
+                                @error('salary')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
+
                             <div class="col-12 col-md-6">
-                                <label for="password_confirmation" class="form-label">Confirm new password</label>
-                                <input id="password_confirmation" name="password_confirmation" type="password" placeholder="Type new password again" class="form-control">
+                                <label for="location" class="form-label">Location</label>
+                                <input
+                                    id="location"
+                                    type="text"
+                                    name="location"
+                                    autocomplete="street-address"
+                                    placeholder="ex: Porto"
+                                    class="form-control @error('location') is-invalid @enderror"
+                                >
+                                @error('location')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 
-                        @if($user->role === 'JobSeeker')
-                        <div class="mt-4">
-                            <h3 class="h6 mb-2">Curriculum Vitae</h3>
-                            <label for="cv_file" class="form-label">Upload CV (PDF, DOC, DOCX)</label>
-                            <input id="cv_file" name="cv_file" type="file" accept=".pdf,.doc,.docx" class="form-control">
-                            @error('cv_file') <div class="text-danger small mt-2">{{ $message }}</div> @enderror
+                        <div class="row g-3 mt-3">
+                            <div class="col-12 col-md-6">
+                                <label for="category_id" class="form-label">Category</label>
+                                <select
+                                    name="category_id"
+                                    id="category_id"
+                                    required
+                                    class="form-select @error('category_id') is-invalid @enderror"
+                                >
+                                    <option value="1">Coding</option>
+                                    <option value="2">Design</option>
+                                    <option value="3">Marketing</option>
+                                    <option value="4">Finance</option>
+                                    <option value="5">Education</option>
+                                    <option value="6">Healthcare</option>
+                                    <option value="7">Engineering</option>
+                                    <option value="8">Human Resources</option>
+                                    <option value="9">Law</option>
+                                    <option value="10">Management</option>
+                                    <option value="11">Construction</option>
+                                    <option value="12">Science</option>
+                                    <option value="13">Other</option>
+                                </select>
+                                @error('category_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label for="work_model" class="form-label">Work Model</label>
+                                <select
+                                    name="work_model"
+                                    id="work_model"
+                                    required
+                                    class="form-select @error('work_model') is-invalid @enderror"
+                                >
+                                    <option value="Remote">Remote</option>
+                                    <option value="On-site">On-site</option>
+                                    <option value="Hybrid">Hybrid</option>
+                                </select>
+                                @error('work_model')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
-                        @endif
+
+                        <div class="row g-3 mt-3">
+                            <div class="col-12 col-md-6">
+                                <label for="contract_type" class="form-label">Contract Type</label>
+                                <select
+                                    name="contract_type"
+                                    id="contract_type"
+                                    required
+                                    class="form-select @error('contract_type') is-invalid @enderror"
+                                >
+                                    <option value="Internship">Internship</option>
+                                    <option value="Full-time">Full-time</option>
+                                    <option value="Part-time">Part-time</option>
+                                </select>
+                                @error('contract_type')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label for="deadline" class="form-label">Deadline</label>
+                                <input
+                                    type="datetime-local"
+                                    id="deadline"
+                                    name="deadline"
+                                    class="form-control @error('deadline') is-invalid @enderror"
+                                >
+                                @error('deadline')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
 
                         <div class="d-flex gap-2 flex-wrap mt-4">
-                            <button type="submit" class="button">Save changes</button>
-                            <a class="button button-outline" href="{{ $user->role === 'Admin' ? route('admin.index') : route('profile') }}">Cancel</a>
+                            <button type="submit" class="button">Create</button>
+                            <a class="button button-outline" href="{{ url()->previous() }}">Go Back</a>
                         </div>
-                    </form>
 
-                    @if($user->photo_path)
-                    <form method="POST" action="{{ route('profile.photo.destroy') }}" class="mt-3">
-                        @csrf 
-                        @method('DELETE')
-                        <button class="button button-outline" type="submit">Remove photo</button>
                     </form>
-                    @endif
-
-                    @if(optional($user->cv)->file_path)
-                    <div class="mt-3">
-                        <a class="button" href="{{ route('profile.cv.download') }}">Download current CV</a>
-                        <form method="POST" action="{{ route('profile.cv.destroy') }}" class="mt-2">
-                            @csrf 
-                            @method('DELETE')
-                            <button class="button button-outline" type="submit">Remove CV</button>
-                        </form>
-                    </div>
-                    @endif
 
                 </div>
             </div>

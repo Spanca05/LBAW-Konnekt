@@ -51,7 +51,7 @@
 
 <!--   
 <section>
-        <h3>⭐ Favourite Job Posts</h3>
+        <h3> Favourite Job Posts</h3>
         @if($favourites->isEmpty())
             <p>No favourites yet.</p>
         @else

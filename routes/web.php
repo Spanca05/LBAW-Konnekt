@@ -88,7 +88,7 @@ Route::middleware('auth')->group(function () {
     // Jobseeker application management
     Route::get('/applications/{application}/edit', [ApplicationController::class, 'edit'])->name('applications.edit');
     Route::put('/applications/{application}', [ApplicationController::class, 'update'])->name('applications.update');
-    Route::delete('/applications/{application}', [ApplicationController::class, 'destroy'])->name('applications.destroy');
+    Route::delete('/applications/{application}', [ApplicationController::class, 'delete'])->name('applications.destroy');
     // Employer: update application status (Accept / Reject)
     Route::patch('/applications/{application}/status', [ApplicationController::class, 'status_update'])->name('applications.status.update');
 });

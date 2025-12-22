@@ -33,6 +33,8 @@ Schedule::call(function () {
             ['seen' => false]
         );
 
+        event(new NewNotificationCreated($jobPost->employer->id, $notification));
+
     }
 
     // JOB POSTS EXPIRED
@@ -59,6 +61,8 @@ Schedule::call(function () {
             $notification->id,
             ['seen' => false]
         );
+
+         event(new NewNotificationCreated($jobPost->employer->id, $notification));
     }
 
 })->everySecond()->name('jobpost-expiration-check')->withoutOverlapping();

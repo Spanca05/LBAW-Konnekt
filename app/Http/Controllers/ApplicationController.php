@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\JobPost;
 use App\Models\Application;
 use App\Models\Notification;
+use App\Events\NewNotificationCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -53,6 +54,20 @@ class ApplicationController extends Controller
             'date' => now(),
             'status' => 'Pending'
         ]);
+
+        $employer = $jobpost->employer;
+
+
+        $employerNotification = Notification::create([
+            'title' => 'New application submitted for your job post "' . $jobpost->title . '"',
+            'type' => 'ApplicationNotification',
+            'jobpost_id' => $jobpost->id,
+            'application_id' => $application->id,
+        ]);
+
+        $employerNotification->users()->attach($employer->id);
+
+        event(new NewNotificationCreated($employer->id, $employerNotification));
 
         return redirect()->route('jobpost.show', $jobpost)->with('success', 'Application submitted.');
     }
@@ -114,13 +129,31 @@ class ApplicationController extends Controller
     {   
         $this->authorize('status_update',$application);
 
+
+
         $data = $request->validate([
             'status' => ['required', 'in:Accepted,Rejected']
         ]);
 
+        $oldStatus = $application->status;
+
         $application->status = $data['status'];
         $application->date = now();
         $application->save();
+
+        $applicantNotification = Notification::create([
+            'title' => 'Your application to "' . $application->jobPost->title . 
+                    '" changed from ' . $oldStatus . 
+                    ' to ' . $application->status,
+            'type' => 'ApplicationNotification',
+            'jobpost_id' => $application->jobpost_id,
+            'application_id' => $application->id,
+        ]);
+
+        $user = $application->user;
+        $applicantNotification->users()->attach($user->id);
+
+        event(new NewNotificationCreated($user->id, $applicantNotification));
 
         return back()->with('success', 'Application status updated.');
     }

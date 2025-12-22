@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
+use App\Models\Notification;
 use App\Models\JobPost;
 use App\Models\User;
 use App\Models\Category;
+use App\Events\NewNotificationCreated;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
@@ -117,6 +119,39 @@ class JobPostController extends Controller
 
 
         $jobPost->save();
+
+        $notification = Notification::create([
+            'title' => 'Your job post "' . $jobPost->title . '" is now active!',
+            'type' => 'JobPostNotification',
+            'jobpost_id' => $jobPost->id,
+        ]);
+
+        $notification->users()->attach(Auth::id());
+
+        event(new NewNotificationCreated(Auth::id(), $notification));
+
+
+        $matchingJobSeekers = User::where('role', 'JobSeeker')
+            ->whereHas('skills.categories', function ($q) use ($jobPost) {
+                $q->where('id', $jobPost->category_id); // Laravel já resolve a tabela
+            })
+            ->when($jobPost->work_model !== 'Remote', function ($q) use ($jobPost) {
+                $q->where('location', $jobPost->location);
+            })
+            ->get();
+
+        foreach ($matchingJobSeekers as $user) {
+            $seekerNotification = Notification::create([
+                'title' => 'New job opportunity matching your profile: "' . $jobPost->title . '"',
+                'type' => 'JobPostNotification',
+                'jobpost_id' => $jobPost->id,
+            ]);
+
+            $seekerNotification->users()->attach($user->id);
+
+            // Envia evento Pusher
+            event(new NewNotificationCreated($user->id, $seekerNotification));
+        }
 
         return redirect()->route('jobpost.show', ['jobpost' => $jobPost->id]);
     }

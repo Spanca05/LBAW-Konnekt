@@ -44,10 +44,16 @@
                             @enderror
                         </div>
 
-                        <div class="d-flex justify-content-center mt-4">
+                        <div class="d-flex justify-content-center gap-3 mt-4">
+                            
                             <button type="submit" class="button w-50">
                                 Send password reset link
                             </button>
+                            
+                            <a href="{{ route('profile') }}" class="button" style="background-color: red    ">
+                                Cancel
+                            </a>
+
                         </div>
                     </form>
 

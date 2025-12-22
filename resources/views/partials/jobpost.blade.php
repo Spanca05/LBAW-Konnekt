@@ -11,47 +11,47 @@
             <div class="d-flex justify-content-between align-items-start gap-2">
                 <div>
                     @if($isDetail)
-                    <h3 class="card-title mb-1">{{ $jobPost->title }}</h3>
+                    <h3 class="card-title mb-1 fs-2">{{ $jobPost->title }}</h3>
                     @else
-                    <h5 class="card-title mb-1">
+                    <h5 class="card-title mb-1 fs-2">
                         <a href="{{ route('jobpost.show', ['jobpost' => $jobPost->id]) }}" class="text-decoration-none jobpost-title">
                             {{ $jobPost->title }}
                         </a>
                     </h5>
                     @endif
-                    <div class="small text-muted">
+                    <div class="text-muted fs-5">
                         <a href="{{ route('profile.other', ['id' => $jobPost->employer_id]) }}" class="text-decoration-none text-muted">
                             {{ $jobPost->employer->name ?? '' }}
                         </a>
                     </div>
                 </div>
 
-                <span class="badge jobpost-badge">
+                <span class="badge jobpost-badge fs-5">
                     {{ $jobPost->work_model }}
                 </span>
             </div>
 
             <div class="mt-3 d-flex flex-wrap gap-2">
-                <span class="badge jobpost-badge-soft">
+                <span class="badge jobpost-badge-soft fs-5">
                     {{ $jobPost->jobCategory->name }}
                 </span>
-                <span class="badge jobpost-badge-soft">
+                <span class="badge jobpost-badge-soft fs-5">
                     {{ $jobPost->location ?? 'Not specified' }}
                 </span>
-                <span class="badge jobpost-badge-soft">
+                <span class="badge jobpost-badge-soft fs-5">
                     {{ $jobPost->salary }}€
                 </span>
             </div>
 
             @if($isDetail)
             <div class="mt-3 border-top pt-3">
-                <h6 class="mb-2">Contract Type</h6>
-                <p class="small mb-0">{{ $jobPost->contract_type }}</p>
+                <h6 class="mb-3 fs-4">Contract Type</h6>
+                <p class="small mb-0 fs-5">{{ $jobPost->contract_type }}</p>
             </div>
 
             <div class="mt-3 border-top pt-3">
-                <h6 class="mb-2">Description</h6>
-                <p class="small mb-0">{{ $description ?? $jobPost->description }}</p>
+                <h6 class="mb-3 fs-4">Description</h6>
+                <p class="mb-0 fs5">{{ $description ?? $jobPost->description }}</p>
             </div>
 
             <div class="mt-3 border-top pt-3 d-flex gap-3 flex-wrap">
@@ -72,7 +72,7 @@
                 <a class="button" href="{{ route('login') }}">Login to apply</a>
                 @endauth
 
-                <a class="button" href="{{ url()->previous() }}">Return</a>
+                <a class="button" href="{{ route('pages.jobposts.index') }}">Return</a>
             </div>
             @endif
 

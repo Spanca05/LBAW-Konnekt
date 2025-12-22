@@ -11,7 +11,7 @@
     <div class="row justify-content-center">
         <div class="col-12 col-md-10 col-lg-9">
             <h1 class="mb-3">Users Management</h1>
-            <a href="{{ route('admin.index', ['tab' => 'admin-tools']) }}" class="button button-outline mb-3">Back to Admin Dashboard</a>
+            <a href="{{ route('admin.index', ['tab' => 'admin-tools']) }}" class="btn btn-secondary mb-3"style="color:white">Back to Admin Dashboard</a>
             <p class="mb-3"><strong>Total Users:</strong> {{$userCount}}</p>
 
             <div class="card shadow-sm">
@@ -20,8 +20,8 @@
                     <div class="table-responsive">
                         <table class="table align-middle mb-0">
                             <thead>
-                                <tr>
-                                    <th>ID</th>
+                                <tr class="fs-3">
+                                    <th class="px-4">ID</th>
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Phone</th>
@@ -31,18 +31,18 @@
                             <tbody>
                                 @foreach($users as $user)
                                 <tr>
-                                    <td>{{ $user->id }}</td>
+                                    <td class="fs-4 px-4 fw-semibold">{{ $user->id }}</td>
                                     <td>
-                                        <div class="d-flex align-items-center gap-2">
+                                        <div class="d-flex align-items-center gap-2 fs-4 fw-semibold">
                                             <span>{{ $user->name }}</span>
                                             <span class="badge jobpost-badge-soft">{{ $user->role }}</span>
                                         </div>
                                     </td>
-                                    <td>{{ $user->email }}</td>
-                                    <td>{{ $user->phone_number }}</td>
+                                    <td class="fs-5">{{ $user->email }}</td>
+                                    <td class="fs-5 px-4">{{ $user->phone_number }}</td>
                                     <td>
                                         <div class="d-flex flex-wrap gap-2 admin-actions">
-                                            <a href="{{ route('profile.other', $user->id) }}" class="button button-sm">View Profile</a>
+                                            <a href="{{ route('profile.other', $user->id) }}" class="button ">View Profile</a>
                                             <form method="POST" action="{{ route('admin.deleteUser', $user->id) }}" onsubmit="return confirm('Are you sure you want to delete this user?');">
                                                 @csrf
                                                 @method('DELETE')
@@ -52,12 +52,12 @@
                                             @if($user->isBlocked())
                                             <form method="POST" action="{{ route('admin.unblockUser', $user->id) }}">
                                                 @csrf
-                                                <button type="submit" class="button button-success button-sm">Unblock</button>
+                                                <button type="submit" class="button button-danger button-sm" style="background-color: grey;">Unblock</button>
                                             </form>
                                             @else
                                             <details>
                                                 <summary>
-                                                    <span class="button button-danger button-sm">Block</span>
+                                                    <span class="button button-danger button-sm" style="background-color: black;">Block</span>
                                                 </summary>
                                                 <div class="mt-2 d-flex align-items-start gap-2 flex-wrap">
                                                     <form method="POST" action="{{ route('admin.blockUser', $user->id) }}" class="d-flex gap-2 align-items-start flex-wrap">

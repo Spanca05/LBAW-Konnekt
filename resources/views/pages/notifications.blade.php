@@ -7,7 +7,7 @@
     <h1 class="mb-4">Notifications</h1>
 
     @if($notifications->isEmpty())
-        <div class="alert alert-info" role="alert">
+        <div class="alert alert-info h5" role="alert">
             You don't have notifications.
         </div>
     @else

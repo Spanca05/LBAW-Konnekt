@@ -107,6 +107,9 @@
                     </div>
 
                     <div class="d-flex gap-2">
+                        @if($app->status === 'Accepted')
+                        <a class="button" style="font-size: 0.875rem; padding: 0.4rem 0.8rem;" href="{{ route('applications.conversation', ['application' => $app->id]) }}">Chat</a>
+                        @endif
                         <a class="button" style="font-size: 0.875rem; padding: 0.4rem 0.8rem;" href="{{ route('jobpost.application', ['jobpost' => $jobPost->id]) }}">View</a>
                     </div>
                 </div>
@@ -161,6 +164,7 @@
         <div class="pt-3 border-top">
             <h5 class="mb-3" style="color: #213448;">Actions</h5>
             <div class="d-flex gap-2 flex-wrap">
+                <a class="button" href="{{ route('conversations.index') }}">View Chats</a>
                 <a class="button" href="{{ route('profile.edit') }}">Edit Profile</a>
                 <a class="button" href="{{ route('jobpost.create') }}">Create New JobPost</a>
 

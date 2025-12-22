@@ -58,4 +58,13 @@ class ApplicationPolicy
     {
         return false;
     }
+
+    public function openConversation(User $user, Application $application): bool
+    {
+        $isJobseeker = $user->id === $application->jobseeker_id;
+
+        $isEmployer = $user->id === $application->jobPost->employer_id;
+
+        return ($isJobseeker || $isEmployer) && $application->status === 'Accepted';
+    }
 }

@@ -492,3 +492,20 @@ footer .footer-copyright span {
     color: #547792;
     font-size: 0.9rem;
 }
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.avatar-sm {
+    width: 30px;
+    height: 30px;
+}
+
+.avatar-lg {
+    width: 60px;
+    height: 60px;
+}

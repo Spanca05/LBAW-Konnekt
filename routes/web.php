@@ -12,6 +12,8 @@ use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\CVController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PageController;
 use App\Models\User;
@@ -91,6 +93,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/applications/{application}', [ApplicationController::class, 'delete'])->name('applications.destroy');
     // Employer: update application status (Accept / Reject)
     Route::patch('/applications/{application}/status', [ApplicationController::class, 'status_update'])->name('applications.status.update');
+});
+
+// Conversation & Messages
+Route::middleware('auth')->group(function () {
+    Route::get('/conversations', [ConversationController::class, 'index'])->name('conversations.index');
+    Route::get('/applications/{application}/conversation', [ConversationController::class, 'getOrCreate'])->name('applications.conversation');
+    Route::get('/conversations/{conversation}', [ConversationController::class, 'show'])->name('conversations.show');
+    Route::post('/conversations/{conversation}/messages', [MessageController::class, 'store'])->name('messages.store');
 });
 
 // Admin dashboard

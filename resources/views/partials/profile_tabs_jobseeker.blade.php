@@ -61,6 +61,8 @@
                         <a class="button" style="font-size: 0.875rem; padding: 0.4rem 0.8rem;" href="{{ route('applications.edit', ['application' => $app->id]) }}">Resend</a>
                         @elseif($app->status === 'Pending')
                         <a class="button" style="font-size: 0.875rem; padding: 0.4rem 0.8rem;" href="{{ route('applications.edit', ['application' => $app->id]) }}">Edit</a>
+                        @else
+                        <a class="button" style="font-size: 0.875rem; padding: 0.4rem 0.8rem;" href="{{ route('applications.conversation', ['application' => $app->id]) }}">Chat</a>
                         @endif
 
                         <form method="POST" action="{{ route('applications.destroy', ['application' => $app->id]) }}" onsubmit="return confirm('Withdraw this application?')" class="d-inline">
@@ -139,6 +141,7 @@
         <div class="pt-3 border-top">
             <h5 class="mb-3" style="color: #213448;">Actions</h5>
             <div class="d-flex gap-2 flex-wrap">
+                <a class="button" href="{{ route('conversations.index') }}">View Chats</a>
                 <a class="button" href="{{ route('profile.edit') }}">Edit Profile</a>
 
                 <form action="{{ route('profile.destroy') }}" method="POST" class="d-inline">

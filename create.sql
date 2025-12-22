@@ -350,28 +350,6 @@ FOR EACH ROW
 EXECUTE FUNCTION set_updated_at();
 
 
--- Trigger 2
-CREATE OR REPLACE FUNCTION limit_search_history()
-RETURNS TRIGGER AS $$
-BEGIN
-    DELETE FROM search_history
-    WHERE user_id = NEW.user_id
-      AND id IN (
-          SELECT id
-          FROM search_history
-          WHERE user_id = NEW.user_id
-          ORDER BY created_at ASC
-          OFFSET 10
-      );
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER maintain_search_history
-AFTER INSERT ON search_history
-FOR EACH ROW
-EXECUTE FUNCTION limit_search_history();
-
 
 -- Trigger 3
 CREATE OR REPLACE FUNCTION user_soft_deletion()

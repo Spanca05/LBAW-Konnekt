@@ -282,8 +282,14 @@ class JobPostController extends Controller
 
             // Aqui aplicas a filtragem de employers deletados e jobposts bloqueados
             $jobPosts = $jobPosts->where('blocked', false)
-                ->with('employer')->get()
+                ->with('employer')
+                ->where(function ($q) {
+                    $q->whereNull('deadline')
+                        ->orWhere('deadline', '>', now());
+                })
+                ->get()
                 ->filter(fn($jp) => ! $jp->isOwnerDeleted());
+
 
 
 

@@ -72,9 +72,6 @@
                 <div class="card shadow-sm mb-4">
                     <div class="card-header">
                         <ul class="nav nav-tabs card-header-tabs" id="jobpostTabs" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="active-tab" data-bs-toggle="tab" data-bs-target="#active" type="button" role="tab">Active JobPosts</button>
-                            </li>
                             @if(auth()->check() && auth()->id() === $user->id)
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="expired-tab" data-bs-toggle="tab" data-bs-target="#expired" type="button" role="tab">Expired JobPosts</button>
@@ -85,26 +82,10 @@
                     <div class="card-body">
                         <div class="tab-content" id="jobpostTabsContent">
 
-                            
-                            <!-- Active JobPosts -->
-                            <div class="tab-pane fade show active" id="active" role="tabpanel" aria-labelledby="active-tab">
-                                @if(isset($jobPosts) && $jobPosts->isNotEmpty())
-                                    <div class="row g-4">
-                                        @foreach($jobPosts as $jobPost)
-                                            <div class="col-12 col-sm-6 col-lg-4">
-                                                @include('partials.jobpost', ['jobPost' => $jobPost])
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @else
-                                    <p class="text-muted mb-0">You have no active job posts.</p>
-                                @endif
-                            </div>
-
                             <!-- Expired JobPosts -->
                             @if(auth()->check() && auth()->id() === $user->id)
-                                <div class="tab-pane fade" id="expired" role="tabpanel" aria-labelledby="expired-tab">
-                                    @if(isset($expiredjobPosts) && $expiredjobPosts->isNotEmpty())
+                                <div class="tab-pane fade show active" id="expired" role="tabpanel" aria-labelledby="expired-tab">
+                                    @if($expiredjobPosts->isNotEmpty())
                                         <div class="row g-4">
                                             @foreach($expiredjobPosts as $expiredjobPost)
                                                 <div class="col-12 col-sm-6 col-lg-4">

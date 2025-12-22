@@ -28,7 +28,6 @@
                 </div>
             </div>
 
-            @if($applicationCount > 0)
             <div class="card shadow-sm">
                 <div class="card-body p-3">
                     @if($applicationCount > 0)

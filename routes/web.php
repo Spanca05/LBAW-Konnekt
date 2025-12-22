@@ -86,7 +86,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/jobposts/{jobpost}/apply', [ApplicationController::class, 'create'])->name('jobpost.apply.form');
     Route::post('/jobposts/{jobpost}/application', [ApplicationController::class, 'store'])->name('jobpost.apply');
-    Route::get('/jobposts/{jobpost}/application', [ApplicationController::class, 'index'])->name('jobpost.application'); // employer view
+    Route::get('/jobposts/{jobpost}/applications', [ApplicationController::class, 'index'])->name('jobpost.applications'); // employer view: all applications for a jobpost
+    Route::get('/applications/{application}', [ApplicationController::class, 'show'])->name('applications.show'); // single application view
     // Jobseeker application management
     Route::get('/applications/{application}/edit', [ApplicationController::class, 'edit'])->name('applications.edit');
     Route::put('/applications/{application}', [ApplicationController::class, 'update'])->name('applications.update');

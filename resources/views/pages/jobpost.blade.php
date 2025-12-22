@@ -11,19 +11,11 @@
             @if(session('success'))
             <div class="message success">{{ session('success') }}</div>
             @endif
-            @if(session('error'))   
+            @if(session('error'))
             <div class="message error">{{ session('error') }}</div>
             @endif
 
-            @auth
-            @if(Auth::id() === $jobPost->employer_id)
-            <form method="POST" action="{{ route('jobpost.delete', ['jobpost' => $jobPost->id]) }}">
-                @csrf
-                @method('DELETE')
-                <button class="delete-button" onclick="return confirm('Do you want to delete?');">Delete</button>
-            </form>
-            @endif
-            @endauth
+
 
             @php
             $myApplication = null;
@@ -43,9 +35,7 @@
             'application' => $myApplication,
             ])
 
-            
-            
-            @include('partials.applications_received', ['jobPost' => $jobPost, 'applications' => $applications])
+
         </div>
     </div>
 </div>

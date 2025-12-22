@@ -10,6 +10,11 @@
             Account
         </button>
     </li>
+        <li class="nav-item m-0" role="presentation">
+        <button class="nav-link" id="favourites-tab" data-bs-toggle="tab" data-bs-target="#favourites" type="button" role="tab" aria-controls="favourites" aria-selected="false">
+            Favourite Job Posts
+        </button>
+    </li>
 </ul>
 
 <!-- Tab Content -->
@@ -149,6 +154,23 @@
             </div>
         </div>
         @endif
-    </div>
+                </div>
+
+        <!-- Favourite Job Posts Tab -->
+        <div class="tab-pane fade" id="favourites" role="tabpanel" aria-labelledby="favourites-tab">
+            @if($favourites->isEmpty())
+                <p class="text-muted mb-0">No favourites yet.</p>
+            @else
+                <div class="row g-4">
+                    @foreach($favourites as $job)
+                        @if ($job->employer)
+                            <div class="col-12 col-sm-6 col-lg-4">
+                                @include('partials.jobpost', ['jobPost' => $job])
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            @endif
+        </div>
 
 </div>

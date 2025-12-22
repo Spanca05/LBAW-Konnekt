@@ -8,6 +8,7 @@ use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ApplicationController extends Controller
@@ -59,7 +60,7 @@ class ApplicationController extends Controller
     public function index(JobPost $jobpost)
     {
         // ensure the current user owns the job or is employer
-        $this->authorize('viewApplications', $jobpost);
+        $this->authorize('view', $jobpost);
         $applications = $jobpost->applications()->with('user')->orderByDesc('date')->get();
         return view('pages.jobpost_applications', compact('jobpost', 'applications'));
     }
@@ -89,7 +90,7 @@ class ApplicationController extends Controller
     }
 
     
-    public function destroy(Application $application)
+    public function delete(Request $request, Application $application)
     {
         $this->authorize('delete', $application);
 
@@ -97,7 +98,14 @@ class ApplicationController extends Controller
 
         $application->delete();
 
-        $redirectTo = request('redirect_to', route('jobpost.show', $application->jobPost->id));
+        $validated = $request->validate([
+            'redirect_to' => ['nullable', 'string', Rule::in([
+                route('profile'),
+                route('jobpost.show', $application->jobPost->id)
+            ])],
+        ]);
+
+        $redirectTo = $validated['redirect_to'] ?? route('jobpost.show', $application->jobPost->id);
 
         return redirect($redirectTo)->with('success', 'Application withdrawn.');
     }

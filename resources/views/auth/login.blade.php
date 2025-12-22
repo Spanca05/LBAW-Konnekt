@@ -18,7 +18,8 @@
                                 required
                                 autofocus
                                 inputmode="email"
-                                autocomplete="email">
+                                autocomplete="email"
+                                placeholder = "email@example.com">
                             @error('email')
                             <span id="email-error" class="error" role="alert">
                                 {{ $message }}
@@ -27,13 +28,14 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="password">Password</label>
+                            <label for="password">&#128272 Password</label>
                             <input
                                 id="password"
                                 name="password"
                                 type="password"
                                 required
-                                autocomplete="current-password">
+                                autocomplete="current-password"
+                                placeholder="password">
                             @error('password')
                             <span id="password-error" class="error" role="alert">
                                 {{ $message }}

@@ -45,7 +45,7 @@
             <div class="d-flex align-items-center gap-2 flex-shrink-0">
 
                 @auth
-                <a class="button button-outline" href="{{ route('notifications.index') }}"> 🔔 Notifications
+                <a class="button button-outline" href="{{ route('notifications.index') }}"> &#128276 Notifications
                     @if($unreadNotifications > 0)
                     <span class="badge">{{ $unreadNotifications }}</span>
                     @endif

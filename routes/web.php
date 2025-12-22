@@ -33,7 +33,7 @@ Route::get('/contacts', [PageController::class, 'contacts'])->name('pages.contac
 Route::get('/api/search/suggestions', [JobPostController::class, 'suggestions'])->name('search.suggestions');
 //resultados da pesquisa por jobpost
 Route::get('/jobposts/search', [JobPostController::class, 'search'])->name('jobpost.search');
-Route::get('/employers/search', [JobPostController::class, 'search'])->name('jobpost.search');
+Route::get('/employers/search', [JobPostController::class, 'search'])->name('employer.search');
 
 Route::get('/jobposts', [JobPostController::class, 'index'])->name('pages.jobposts.index');
 
@@ -90,7 +90,7 @@ Route::middleware('auth')->group(function () {
     // Jobseeker application management
     Route::get('/applications/{application}/edit', [ApplicationController::class, 'edit'])->name('applications.edit');
     Route::put('/applications/{application}', [ApplicationController::class, 'update'])->name('applications.update');
-    Route::delete('/applications/{application}', [ApplicationController::class, 'destroy'])->name('applications.destroy');
+    Route::delete('/applications/{application}', [ApplicationController::class, 'delete'])->name('applications.destroy');
     // Employer: update application status (Accept / Reject)
     Route::patch('/applications/{application}/status', [ApplicationController::class, 'status_update'])->name('applications.status.update');
 });
@@ -112,12 +112,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/users', [AdminController::class, 'listUsers'])->name('admin.users');
     Route::delete('/admin/users/{userId}', [AdminController::class, 'deleteUser'])->name('admin.deleteUser');
     Route::get('/admin/users/blocked', [AdminController::class, 'listBlockedUsers'])->name('admin.users.blocked');
+    Route::get('/admin/users/search', [AdminController::class, 'searchUsers'])->name('admin.users.search');
 
     Route::get('/admin/jobposts', [AdminController::class, 'listJobPosts'])->name('admin.jobposts');
     Route::delete('/admin/jobposts/{jobpostId}', [AdminController::class, 'deleteJobPost'])->name('admin.deleteJobPost');
+    Route::get('/admin/jobposts/search', [AdminController::class, 'searchJobPosts'])->name('admin.jobposts.search');
 
     Route::get('/admin/applications', [AdminController::class, 'listApplications'])->name('admin.applications');
+    Route::get('/admin/applications/search', [AdminController::class, 'searchApplications'])->name('admin.applications.search');
     Route::get('/admin/jobposts/{jobpostId}/applications', [AdminController::class, 'listJobpostApplications'])->name('admin.jobpost.applications');
+    Route::get('/admin/jobposts/{jobpostId}/applications/search', [AdminController::class, 'searchJobpostApplications'])->name('admin.jobpost.applications.search');
     Route::get('/admin/applications/{applicationId}', [AdminController::class, 'showApplication'])->name('admin.application.show');
     Route::delete('/admin/applications/{applicationId}', [AdminController::class, 'deleteApplication'])->name('admin.deleteApplication');
 

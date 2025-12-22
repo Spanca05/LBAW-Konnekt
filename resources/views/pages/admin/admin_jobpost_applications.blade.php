@@ -14,6 +14,16 @@
             <a href="{{ route('admin.jobposts') }}" class="button button-outline mb-3">Back to JobPosts Management</a>
             <p class="mb-3"><strong>Total Applications:</strong> {{$applicationCount}}</p>
 
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-3">
+                    <form action="{{ route('admin.jobpost.applications.search', $jobpost->id) }}" method="GET" class="d-flex gap-2">
+                        <input type="text" name="search" class="form-control" placeholder="Search by jobseeker, status or motivation" value="{{ $search ?? '' }}" required>
+                        <button type="submit" class="button">Search</button>
+                        <a href="{{ route('admin.jobpost.applications', $jobpost->id) }}" class="button button-outline">Clear</a>
+                    </form>
+                </div>
+            </div>
+
             @if($applicationCount > 0)
             <div class="card shadow-sm">
                 <div class="card-body p-3">

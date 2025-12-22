@@ -35,4 +35,35 @@ class Application extends Model
     {
         return $this->blocked === true;
     }
+
+    public function scopeSearch($query, $search)
+    {
+        if (!$search) {
+            return $query;
+        }
+
+        return $query->whereHas('user', function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%')
+                          ->orWhere('email', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('jobPost', function ($q) use ($search) {
+                        $q->where('title', 'like', '%' . $search . '%')
+                          ->orWhere('description', 'like', '%' . $search . '%')
+                          ->orWhere('location', 'like', '%' . $search . '%')
+                          ->orWhere('work_model', 'like', '%' . $search . '%')
+                          ->orWhere('contract_type', 'like', '%' . $search . '%')
+                          ->orWhere('salary', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('jobPost.jobCategory', function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhere('status', 'like', '%' . $search . '%')
+                    ->orWhere('motivation', 'like', '%' . $search . '%')
+                    ->orWhere('blocked', 'like', '%' . $search . '%');
+    }
+    public function jobSeeker()
+    {
+        return $this->belongsTo(User::class, 'jobseeker_id');
+    }
+
 }

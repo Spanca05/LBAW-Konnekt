@@ -3,26 +3,57 @@
 @section('title', 'Forgot Password')
 
 @section('content')
-<h2>Forgot your password?</h2>
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow">
+                <div class="card-body p-4"> <h2 class="card-title text-center mb-4 fw-bold">Forgot your password?</h2>
+                    <p class="text-center text-muted mb-4">
+                        Enter your email address and we will send you a password reset link.
+                    </p>
 
-<p>Enter your email address and we will send you a password reset link.</p>
+                    <form method="post" action="{{ route('password.email') }}">
+                        @csrf
 
-<form method="post" action="{{ route('password.email') }}">
-    @csrf
+                        <div class="mb-3">
+                            <div class="d-flex align-items-center mb-1">
+                                <label for="email" class="form-label mb-0 me-2">Email</label>
+                                
+                                <span class="badge rounded-pill bg-secondary" 
+                                      data-bs-toggle="tooltip" 
+                                      title="You must write the email where you want to receive the link to reset you password"
+                                      style="cursor: help;">
+                                    ?
+                                </span>
+                            </div>
 
-    <label for="email">Email</label>
-    <input
-        id="email"
-        name="email"
-        type="email"
-        value="{{ old('email') }}"
-        required
-    >
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                class="form-control @error('email') is-invalid @enderror"
+                                value="{{ old('email') }}"
+                                required
+                                placeholder="Type here your email"
+                            >
 
-    @error('email')
-        <div class="error">{{ $message }}</div>
-    @enderror
+                            @error('email')
+                                <div class="invalid-feedback" role="alert" id="email-error">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
 
-    <button type="submit">Send password reset link</button>
-</form>
+                        <div class="d-flex justify-content-center mt-4">
+                            <button type="submit" class="button w-50">
+                                Send password reset link
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

@@ -21,12 +21,16 @@ class AdminController extends Controller
         Gate::policy(Admin::class, AdminPolicy::class);
         Gate::authorize('view', Admin::class);
 
+        $validated = $request->validate([
+            'tab' => ['sometimes', 'in:profile,admin-tools'],
+        ]);
+
         $user = Auth::user();
         $userCount = User::count();
         $jobpostCount = JobPost::count();
         $applicationCount = Application::count();
         $blockedCount = BlockedUser::count();
-        $activeTab = $request->query('tab', 'profile');
+        $activeTab = $validated['tab'] ?? 'profile';
 
         return view('pages.admin', [
             'admin' => $user,
@@ -74,9 +78,26 @@ class AdminController extends Controller
         Gate::policy(Admin::class, AdminPolicy::class);
         Gate::authorize('listUsers', Admin::class);
 
-        $users = User::paginate(10);
+        $users = User::orderBy('id', 'asc')->paginate(10);
         $userCount = User::count();
         return view('pages.admin.admin_users', ['users' => $users, 'userCount' => $userCount,]);
+    }
+
+    public function searchUsers(Request $request)
+    {
+        Gate::policy(Admin::class, AdminPolicy::class);
+        Gate::authorize('listUsers', Admin::class);
+
+        $validated = $request->validate([
+            'search' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $search = $validated['search'] ?? '';
+        $userCount = User::count();
+
+        $users = User::search($search)->orderBy('id', 'asc')->paginate(10)->appends(['search' => $search]);
+
+        return view('pages.admin.admin_users', ['users' => $users, 'userCount' => $userCount, 'search' => $search]);
     }
 
     public function listBlockedUsers()
@@ -84,7 +105,7 @@ class AdminController extends Controller
         Gate::policy(Admin::class, AdminPolicy::class);
         Gate::authorize('listUsers', Admin::class);
 
-        $users = User::whereNotNull('blocked_id')->paginate(10);
+        $users = User::whereNotNull('blocked_id')->orderBy('id', 'asc')->paginate(10);
         $userCount = BlockedUser::count();
         return view('pages.admin.admin_users', ['users' => $users, 'userCount' => $userCount,]);
     }
@@ -105,9 +126,26 @@ class AdminController extends Controller
         Gate::policy(Admin::class, AdminPolicy::class);
         Gate::authorize('listJobPosts', Admin::class);
 
-        $jobposts = JobPost::paginate(10);
+        $jobposts = JobPost::orderBy('id', 'asc')->paginate(10);
         $jobpostCount = JobPost::count();
         return view('pages.admin.admin_jobposts', ['jobposts' => $jobposts, 'jobpostCount' => $jobpostCount,]);
+    }
+
+    public function searchJobPosts(Request $request)
+    {
+        Gate::policy(Admin::class, AdminPolicy::class);
+        Gate::authorize('listJobPosts', Admin::class);
+
+        $validated = $request->validate([
+            'search' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $search = $validated['search'] ?? '';
+        $jobpostCount = JobPost::count();
+
+        $jobposts = JobPost::search($search)->orderBy('id', 'asc')->paginate(10)->appends(['search' => $search]);
+
+        return view('pages.admin.admin_jobposts', ['jobposts' => $jobposts, 'jobpostCount' => $jobpostCount, 'search' => $search]);
     }
 
     public function deleteJobPost($jobpostId)
@@ -126,9 +164,26 @@ class AdminController extends Controller
         Gate::policy(Admin::class, AdminPolicy::class);
         Gate::authorize('listApplications', Admin::class);
 
-        $applications = Application::with(['user', 'jobPost'])->paginate(10);
+        $applications = Application::with(['user', 'jobPost'])->orderBy('id', 'asc')->paginate(10);
         $applicationCount = Application::count();
         return view('pages.admin.admin_applications', ['applications' => $applications, 'applicationCount' => $applicationCount,]);
+    }
+
+    public function searchApplications(Request $request)
+    {
+        Gate::policy(Admin::class, AdminPolicy::class);
+        Gate::authorize('listApplications', Admin::class);
+
+        $validated = $request->validate([
+            'search' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $search = $validated['search'] ?? '';
+        $applicationCount = Application::count();
+
+        $applications = Application::search($search)->with(['user', 'jobPost'])->orderBy('id', 'asc')->paginate(10)->appends(['search' => $search]);
+
+        return view('pages.admin.admin_applications', ['applications' => $applications, 'applicationCount' => $applicationCount, 'search' => $search]);
     }
 
     public function listJobpostApplications($jobpostId)
@@ -137,12 +192,41 @@ class AdminController extends Controller
         Gate::authorize('listApplications', Admin::class);
 
         $jobpost = JobPost::findOrFail($jobpostId);
-        $applications = Application::where('jobpost_id', $jobpostId)->with(['user', 'jobPost'])->paginate(10);
+        $applications = Application::where('jobpost_id', $jobpostId)->with(['user', 'jobPost'])->orderBy('id', 'asc')->paginate(10);
         $applicationCount = Application::where('jobpost_id', $jobpostId)->count();
         return view('pages.admin.admin_jobpost_applications', [
             'applications' => $applications,
             'applicationCount' => $applicationCount,
             'jobpost' => $jobpost,
+        ]);
+    }
+
+    public function searchJobpostApplications($jobpostId, Request $request)
+    {
+        Gate::policy(Admin::class, AdminPolicy::class);
+        Gate::authorize('listApplications', Admin::class);
+
+        $validated = $request->validate([
+            'search' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $search = $validated['search'] ?? '';
+        $jobpost = JobPost::findOrFail($jobpostId);
+        
+        $applications = Application::where('jobpost_id', $jobpostId)
+            ->search($search)
+            ->with(['user', 'jobPost'])
+            ->orderBy('id', 'asc')
+            ->paginate(10)
+            ->appends(['search' => $search]);
+        
+        $applicationCount = Application::where('jobpost_id', $jobpostId)->count();
+        
+        return view('pages.admin.admin_jobpost_applications', [
+            'applications' => $applications,
+            'applicationCount' => $applicationCount,
+            'jobpost' => $jobpost,
+            'search' => $search,
         ]);
     }
 
@@ -180,30 +264,12 @@ class AdminController extends Controller
 
         $user = User::findOrFail($userId);
 
-        if ($user->role === 'Admin') {
-            return redirect()->route('admin.users')->with('error', 'Cannot block admin users.');
+        try {
+            $user->block($request->reason, Auth::id());
+            return back()->with('success', 'User blocked successfully.');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
         }
-
-        if ($user->isBlocked()) {
-            return redirect()->route('admin.users')->with('error', 'User is already blocked.');
-        }
-
-        if ($user->role === 'Employer') JobPost::where('employer_id', $userId)->update(['blocked' => true]);
-        if ($user->role === 'JobSeeker') Application::where('jobseeker_id', $userId)->update(['blocked' => true]);
-
-        // Create blocked user record
-        $blockedUser = BlockedUser::create([
-            'user_id' => $userId,
-            'admin_id' => Auth::id(),
-            'reason' => $request->reason,
-            'blocked_at' => now(),
-        ]);
-
-        // Update user's blocked_id
-        $user->blocked_id = $blockedUser->id;
-        $user->save();
-
-        return redirect()->route('admin.users')->with('success', 'User blocked successfully.');
     }
 
     public function unblockUser($userId)
@@ -213,23 +279,11 @@ class AdminController extends Controller
 
         $user = User::findOrFail($userId);
 
-        // Check if user is actually blocked
-        if (!$user->isBlocked()) {
-            return redirect()->route('admin.users')->with('error', 'User is not blocked.');
+        try {
+            $user->unblock();
+            return back()->with('success', 'User unblocked successfully.');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
         }
-
-        if ($user->role === 'Employer') JobPost::where('employer_id', $userId)->update(['blocked' => false]);
-        if ($user->role === 'JobSeeker') Application::where('jobseeker_id', $userId)->update(['blocked' => false]);
-
-        // Delete the blocked user record
-        $blockedUserId = $user->blocked_id;
-        
-        // Unblock user
-        $user->blocked_id = null;
-        $user->save();
-        
-        BlockedUser::destroy($blockedUserId);
-
-        return redirect()->route('admin.users')->with('success', 'User unblocked successfully.');
     }
 }

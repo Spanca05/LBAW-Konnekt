@@ -61,4 +61,9 @@ class Application extends Model
                     ->orWhere('motivation', 'like', '%' . $search . '%')
                     ->orWhere('blocked', 'like', '%' . $search . '%');
     }
+    public function jobSeeker()
+    {
+        return $this->belongsTo(User::class, 'jobseeker_id');
+    }
+
 }

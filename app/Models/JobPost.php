@@ -72,9 +72,8 @@ class JobPost extends Model
         return $this->blocked === true;
     }
 
-    public static function scopeSearch($search)
+    public static function scopeSearch($query,$search)
     {
-        $query = self::query();
 
         if (!$search) {
             return $query;

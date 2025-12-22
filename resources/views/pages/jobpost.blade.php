@@ -51,27 +51,3 @@
 </div>
 
 @endsection
-
-<!--
-@include('partials.jobpost', ['jobPost' => $jobPost])
-
-    @if($jobPost->jobCategory && $jobPost->jobCategory->skills->isNotEmpty())
-        <span class="skills"><b>Skills required:</b>
-        <ul>
-            @foreach($jobPost->jobCategory->skills as $skill)
-                <li><span class="skill_name">{{ $skill->name }}</span></li>
-            @endforeach
-        </ul>
-        </span>
-    @endif
-
-    <p class="description"><b>Description:</b> {{ $jobPost->description }} </p>
-    <p>
-        <strong>Deadline:</strong>
-        @if($jobPost->deadline)
-            {{ $jobPost->deadline->format('d M Y, H:i') }}
-        @else
-            None
-        @endif
-    </p>
-            -->

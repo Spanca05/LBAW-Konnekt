@@ -24,7 +24,7 @@
                         @if($user->role !== 'Admin')
                         <div class="mb-3">
                             <label for="photo" class="form-label">Profile Picture</label>
-                            <input id="photo" name="photo" type="file" accept="image/*" class="form-control">
+                            <input id="photo" name="photo" type="file" accept="image/*" class="form-control w-50">
                             @error('photo') <div class="text-danger small mt-2">{{ $message }}</div> @enderror
                             @if($user->photo_path)
                             <div class="form-text">Current photo uploaded.</div>
@@ -65,20 +65,23 @@
                         @if ($user->role === 'JobSeeker')
                         <div class="mt-3 mb-3">
                             <label class="form-label">Change your skills</label>
-                            <div class="d-flex flex-wrap gap-3">
-                                @foreach($skills as $skill)
-                                <div class="form-check">
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        name="skills[]"
-                                        value="{{ $skill->id }}"
-                                        id="skill-{{ $skill->id }}"
-                                        {{ (collect(old('skills', $user->skills->pluck('id')))->contains($skill->id)) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="skill-{{ $skill->id }}">{{ $skill->name }}</label>
-                                </div>
-                                @endforeach
-                            </div>
+                            <div class="d-flex flex-wrap gap-3"> @foreach($skills as $skill)
+                                <input 
+                                    type="checkbox" 
+                                    class="btn-check" 
+                                    name="skills[]" 
+                                    value="{{ $skill->id }}" 
+                                    id="skill-{{ $skill->id }}" 
+                                    autocomplete="off"
+                                    {{ (collect(old('skills', $user->skills->pluck('id')))->contains($skill->id)) ? 'checked' : '' }}
+                                >
+                                
+                                <label class="btn btn-outline-dark btn-lg" for="skill-{{ $skill->id }}">
+                                    {{ $skill->name }}
+                                </label>
+                            @endforeach
+                        </div>
+
                             @error('skills') <div class="text-danger small mt-2">{{ $message }}</div> @enderror
                         </div>
                         @endif
@@ -105,9 +108,8 @@
 
                         @if($user->role === 'JobSeeker')
                         <div class="mt-4">
-                            <h3 class="h6 mb-2">Curriculum Vitae</h3>
                             <label for="cv_file" class="form-label">Upload CV (PDF, DOC, DOCX)</label>
-                            <input id="cv_file" name="cv_file" type="file" accept=".pdf,.doc,.docx" class="form-control">
+                            <input id="cv_file" name="cv_file" type="file" accept=".pdf,.doc,.docx" class="form-control w-50">
                             @error('cv_file') <div class="text-danger small mt-2">{{ $message }}</div> @enderror
                         </div>
                         @endif

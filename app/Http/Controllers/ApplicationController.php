@@ -60,7 +60,7 @@ class ApplicationController extends Controller
     public function index(JobPost $jobpost)
     {
         // ensure the current user owns the job or is employer
-        $this->authorize('viewApplications', $jobpost);
+        $this->authorize('view', $jobpost);
         $applications = $jobpost->applications()->with('user')->orderByDesc('date')->get();
         return view('pages.jobpost_applications', compact('jobpost', 'applications'));
     }

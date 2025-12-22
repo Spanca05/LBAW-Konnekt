@@ -28,7 +28,7 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="password">Password</label>
+                            <label for="password">&#128272 Password</label>
                             <input
                                 id="password"
                                 name="password"

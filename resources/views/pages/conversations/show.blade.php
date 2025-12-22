@@ -25,7 +25,7 @@
                         {{-- COLUNA DIREITA: chat --}}
                         <div class="col-md-6 col-lg-7 col-xl-8">
 
-                            <div class="pt-3 pe-3 overflow-y-auto"
+                            <div id="chat-scroll" class="pt-3 pe-3 overflow-y-auto"
                                 style="position: relative; height: 400px">
 
                                 {{-- HEADER --}}
@@ -71,6 +71,16 @@
                                 </div>
 
                             </div>
+                            
+                            <script>
+                                // Scroll to bottom immediately to prevent visible jump
+                                (function() {
+                                    const scroller = document.getElementById('chat-scroll');
+                                    if (scroller) {
+                                        scroller.scrollTop = scroller.scrollHeight;
+                                    }
+                                })();
+                            </script>
                             {{-- FORM ENVIAR --}}
 
                             <div class="text-muted d-flex justify-content-start align-items-center pe-3 pt-3 mt-2">

@@ -14,12 +14,22 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!conversationId || !authUserId) return;
 
     const container = document.getElementById("messages");
-    if (!container) return;
+    const scroller = document.getElementById("chat-scroll");
+    if (!container || !scroller) return;
+
+    const scrollToBottom = () => {
+        scroller.scrollTop = scroller.scrollHeight;
+    };
 
     window.Echo.private(`conversation.${conversationId}`)
         .subscribed(() => console.log("subscribed"))
         .error((e) => console.log("subscription error", e))
         .listen(".message.sent", (e) => {
+            // Only show message if it belongs to this conversation
+            if (Number(e.conversation_id) !== Number(conversationId)) {
+                return;
+            }
+
             const mine = Number(e.sender_id) === Number(authUserId);
 
             const wrapper = document.createElement("div");
@@ -44,9 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 `;
 
             container.appendChild(wrapper);
-            container.scrollTop = container.scrollHeight;
+            scrollToBottom();
         });
-
-    // scroll inicial para baixo
-    container.scrollTop = container.scrollHeight;
 });

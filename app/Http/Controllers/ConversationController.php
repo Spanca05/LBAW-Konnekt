@@ -63,8 +63,10 @@ class ConversationController extends Controller {
 
         $messages = $conversation->messages()
             ->with('sender')
-            ->orderBy('created_at')
-            ->paginate(20);
+            ->latest()
+            ->take(50)
+            ->get()
+            ->reverse();
 
         return view('pages.conversations.show', [
             'conversation' => $conversation,

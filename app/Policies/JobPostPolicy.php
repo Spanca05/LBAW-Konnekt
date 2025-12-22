@@ -38,5 +38,8 @@ class JobPostPolicy
         return $user->role === 'JobSeeker' && !$jobPost->isOwnerDeleted();
     }
 
-
+    public function viewApplications(User $user, JobPost $jobPost): bool
+    {
+        return $user->id === $jobPost->employer_id || $user->role === 'Admin';
+    }
 }

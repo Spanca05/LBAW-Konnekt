@@ -11,6 +11,7 @@
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/milligram.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     @stack('styles')
 
@@ -28,7 +29,7 @@
     <main>
         <header class="d-flex align-items-center justify-content-between gap-3 flex-wrap">
             <h1 class="m-0 flex-shrink-0"><a href="{{ route('pages.jobposts.index') }}">Konnekt!</a></h1>
-            
+
             @if(Route::currentRouteName() !== 'login' and Route::currentRouteName() !=='register' and Route::currentRouteName() !== 'password.request' and Route::currentRouteName() !== 'password.reset')
             <div class="search d-flex align-items-center gap-2 flex-nowrap">
                 <input type="text" id="search" placeholder="Search">

@@ -24,17 +24,36 @@ class ConversationController extends Controller {
             })
             ->with([
                 'application.jobPost',
-                'application.jobSeeker',
+                'application.user',
                 'application.jobPost.employer',
                 'latestMessage.sender'
             ])
+            ->orderByDesc('updated_at')
             ->paginate(20);
 
-        return view('conversations.index', ['conversations' => $conversations]);
+        return view('pages.conversations.index', ['conversations' => $conversations]);
     }
 
     public function show(Conversation $conversation) {
         $this->authorize('view', $conversation);
+
+        $user = Auth::user();
+
+        $conversations = Conversation::query()
+            ->whereHas('application', function ($q) use ($user) {
+                $q->where('jobseeker_id', $user->id)
+                    ->orWhereHas('jobPost', function ($q2) use ($user) {
+                        $q2->where('employer_id', $user->id);
+                    });
+            })
+            ->with([
+                'application.jobPost',
+                'application.user',
+                'application.jobPost.employer',
+                'latestMessage.sender'
+            ])
+            ->orderByDesc('updated_at')
+            ->get();
 
         $conversation->load([
             'application.jobPost',
@@ -47,9 +66,10 @@ class ConversationController extends Controller {
             ->orderBy('created_at')
             ->paginate(20);
 
-        return view('conversations.show', [
+        return view('pages.conversations.show', [
             'conversation' => $conversation,
             'messages' => $messages,
+            'conversations' => $conversations,
         ]);
     }
 

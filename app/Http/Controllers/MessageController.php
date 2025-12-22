@@ -26,6 +26,9 @@ class MessageController extends Controller
             'body' => $data['body'],
         ]);
 
+        //Update updated_at
+        $conversation->touch();
+
         return redirect()
             ->route('conversations.show', $conversation)
             ->with('success', 'Message sent.');

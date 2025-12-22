@@ -77,7 +77,12 @@ class User extends Authenticatable
         return $this->hasMany(JobPost::class, 'employer_id');
     }
 
-    public function getPhotoUrlAttribute()
+    public function avatarUrl(): string
+    {
+        return $this->photoUrl() ?? asset('/images/profile-placeholder.png');
+    }
+
+    public function photoUrl() : ?string
     {
         return $this->photo_path ? Storage::url($this->photo_path) : null;
     }

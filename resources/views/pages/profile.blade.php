@@ -22,9 +22,9 @@
                         <!-- Photo -->
                         <div>
                             <img
-                                src="{{ !empty($user->photo_url) ? $user->photo_url : asset('images/profile-placeholder.png') }}"
+                                src="{{ $user->avatarUrl() }}"
                                 alt="Profile Picture of {{ $user->name }}"
-                                class="rounded"
+                                class="avatar"
                                 style="width: 64px; height: 64px; object-fit: cover;">
                         </div>
 

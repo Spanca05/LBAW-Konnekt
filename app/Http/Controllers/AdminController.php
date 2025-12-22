@@ -78,9 +78,22 @@ class AdminController extends Controller
         Gate::policy(Admin::class, AdminPolicy::class);
         Gate::authorize('listUsers', Admin::class);
 
-        $users = User::paginate(10);
+        $users = User::orderBy('id', 'asc')->paginate(10);
         $userCount = User::count();
         return view('pages.admin.admin_users', ['users' => $users, 'userCount' => $userCount,]);
+    }
+
+    public function searchUsers(Request $request)
+    {
+        Gate::policy(Admin::class, AdminPolicy::class);
+        Gate::authorize('listUsers', Admin::class);
+
+        $search = $request->input('search', '');
+        $userCount = User::count();
+
+        $users = User::search($search)->orderBy('id', 'asc')->paginate(10)->appends(['search' => $search]);
+
+        return view('pages.admin.admin_users', ['users' => $users, 'userCount' => $userCount, 'search' => $search]);
     }
 
     public function listBlockedUsers()
@@ -185,11 +198,11 @@ class AdminController extends Controller
         $user = User::findOrFail($userId);
 
         if ($user->role === 'Admin') {
-            return redirect()->route('admin.users')->with('error', 'Cannot block admin users.');
+            return back()->with('error', 'Cannot block admin users.');
         }
 
         if ($user->isBlocked()) {
-            return redirect()->route('admin.users')->with('error', 'User is already blocked.');
+            return back()->with('error', 'User is already blocked.');
         }
 
         if ($user->role === 'Employer') JobPost::where('employer_id', $userId)->update(['blocked' => true]);
@@ -207,7 +220,7 @@ class AdminController extends Controller
         $user->blocked_id = $blockedUser->id;
         $user->save();
 
-        return redirect()->route('admin.users')->with('success', 'User blocked successfully.');
+        return back()->with('success', 'User blocked successfully.');
     }
 
     public function unblockUser($userId)
@@ -219,7 +232,7 @@ class AdminController extends Controller
 
         // Check if user is actually blocked
         if (!$user->isBlocked()) {
-            return redirect()->route('admin.users')->with('error', 'User is not blocked.');
+            return back()->with('error', 'User is not blocked.');
         }
 
         if ($user->role === 'Employer') JobPost::where('employer_id', $userId)->update(['blocked' => false]);
@@ -227,13 +240,13 @@ class AdminController extends Controller
 
         // Delete the blocked user record
         $blockedUserId = $user->blocked_id;
-        
+
         // Unblock user
         $user->blocked_id = null;
         $user->save();
-        
+
         BlockedUser::destroy($blockedUserId);
 
-        return redirect()->route('admin.users')->with('success', 'User unblocked successfully.');
+        return back()->with('success', 'User unblocked successfully.');
     }
 }

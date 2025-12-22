@@ -102,6 +102,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/users', [AdminController::class, 'listUsers'])->name('admin.users');
     Route::delete('/admin/users/{userId}', [AdminController::class, 'deleteUser'])->name('admin.deleteUser');
     Route::get('/admin/users/blocked', [AdminController::class, 'listBlockedUsers'])->name('admin.users.blocked');
+    Route::get('/admin/users/search', [AdminController::class, 'searchUsers'])->name('admin.users.search');
 
     Route::get('/admin/jobposts', [AdminController::class, 'listJobPosts'])->name('admin.jobposts');
     Route::delete('/admin/jobposts/{jobpostId}', [AdminController::class, 'deleteJobPost'])->name('admin.deleteJobPost');

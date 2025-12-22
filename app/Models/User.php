@@ -149,4 +149,18 @@ class User extends Authenticatable
     {
         return $this->blockedRecord?->blocked_at;
     }
+
+    public static function search($search)
+    {
+        $query = self::query();
+        
+        if (!$search) {
+            return $query;
+        }
+
+        return $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%')
+                    ->orWhere('phone_number', 'like', '%' . $search . '%')
+                    ->orWhere('role', 'like', '%' . $search . '%');
+    }
 }

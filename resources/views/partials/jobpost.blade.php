@@ -54,6 +54,31 @@
                 <p class="small mb-0">{{ $description ?? $jobPost->description }}</p>
             </div>
 
+            <div class="mt-3 border-top pt-3">
+                <h6 class="mb-2">Deadline</h6>
+                <p class="small mb-0">
+                    @if($jobPost->deadline)
+                            {{ $jobPost->deadline->format('d M Y, H:i') }}
+                    @else
+                        None
+                    @endif
+                </p>
+            </div>
+
+
+            @if($jobPost->jobCategory && $jobPost->jobCategory->skills->isNotEmpty())
+                <div class="mt-3 border-top pt-3">
+                    <h6 class="mb-2">Skills required</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            @foreach($jobPost->jobCategory->skills as $skill)
+                                <span class="badge skill-badge py-2 px-3">
+                                    {{ $skill->name }}
+                                </span>
+                            @endforeach
+                        </div>
+                </div>
+            @endif
+
             <div class="mt-3 border-top pt-3 d-flex gap-3 flex-wrap">
                 @auth
                 @if(Auth::user()->role === 'JobSeeker')

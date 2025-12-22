@@ -1,0 +1,68 @@
+/* Notifications - Estilo igual aos Job Posts */
+.notification-card {
+    border: 1px solid rgba(33, 52, 72, 0.08);
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
+    background: #f9f7f38d !important; /* Cor que você quer */
+}
+
+.notification-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(33, 52, 72, 0.12);
+}
+
+/* Estados de leitura - Mantenha a borda, mas fundo igual */
+.notification-unread {
+    border-left: 3px solid #547792;
+}
+
+.notification-read {
+    /* Fundo já definido na .notification-card */
+}
+
+/* Título da notificação */
+.notification-title a {
+    color: #213448;
+}
+
+.notification-title a:hover {
+    color: #547792;
+    text-decoration: underline;
+}
+
+/* Apenas os estilos essenciais para diferenciar */
+.notification-card .card-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Botão Delete - Corrigido */
+.button.btn-delete {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: white !important;
+}
+
+.button.btn-delete:hover {
+    background-color: #c82333 !important;
+    border-color: #bd2130 !important;
+}
+
+/* Responsivo - igual aos job posts */
+@media (max-width: 767.98px) {
+    .col-md-6 {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+    
+    .d-flex.justify-content-between.align-items-center.mb-4 {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .d-flex.gap-2 {
+        flex-direction: column;
+        gap: 0.5rem !important;
+    }
+}

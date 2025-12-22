@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 
+
+use App\Events\JobPostActivated;
 use Illuminate\Http\Request;
 use App\Models\JobPost;
 use App\Models\User;
@@ -118,7 +120,11 @@ class JobPostController extends Controller
 
         $jobPost->save();
 
-        return redirect()->route('jobpost.show', ['jobpost' => $jobPost->id]);
+        
+        event(new JobPostActivated($jobPost));
+
+        return redirect()->route('jobpost.show', $jobPost->id)
+        ->with('success', 'Job post created successfully!');
     }
 
 
@@ -154,7 +160,6 @@ class JobPostController extends Controller
         $jobPost->deadline = $validated['deadline'];
         $location_ = preg_replace('/[^a-zA-ZÀ-ÿ0-9\s,-]/', '', $validated['location'] ?? '');
         $jobPost->location = Str::title(trim($location_)) ?: null;
-        //$jobPost->location = $validated['location'] ?? null;
 
 
         $jobPost->save();

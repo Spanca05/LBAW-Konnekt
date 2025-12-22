@@ -71,4 +71,33 @@
     </main>
 </body>
 
+
+
+<script src="https://js.pusher.com/8.2/pusher.min.js"></script>
+
+<script>
+    @auth
+        Pusher.logToConsole = true; 
+
+        var pusher = new Pusher('{{ config('broadcasting.connections.pusher.key') }}', {
+            cluster: '{{ config('broadcasting.connections.pusher.options.cluster') }}',
+            forceTLS: true,
+            authEndpoint: '/broadcasting/auth',
+            auth: {
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }
+        });
+
+        var userId = {{ Auth::id() }};
+
+        var channel = pusher.subscribe('private-App.Models.User.' + userId);
+
+        channel.bind('jobpost.active', function(data) {
+            console.log("JobPost created", data);       // ver se criou direito
+            alert(data.message); 
+        });
+    @endauth
+</script>
 </html>

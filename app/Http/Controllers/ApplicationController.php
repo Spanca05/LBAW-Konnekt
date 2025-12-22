@@ -65,6 +65,13 @@ class ApplicationController extends Controller
         return view('pages.jobpost_applications', compact('jobpost', 'applications'));
     }
 
+    public function show(Application $application)
+    {
+        // Ensure the current user is the employer of the jobpost or otherwise authorized to view
+        $this->authorize('view', $application->jobPost);
+        return view('pages.application_show', compact('application'));
+    }
+
     
     public function edit(Application $application)
     {

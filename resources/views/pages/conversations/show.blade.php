@@ -25,15 +25,15 @@
                         {{-- COLUNA DIREITA: chat --}}
                         <div class="col-md-6 col-lg-7 col-xl-8">
 
-                            <div id="chat-scroll" class="pt-3 pe-3 overflow-y-auto"
-                                style="position: relative; height: 400px">
+                            {{-- HEADER (fixo no topo) --}}
+                            <div class="border-bottom pb-2 mb-2 pt-3 pe-3">
+                                <h4>
+                                    {{ $conversation->displayConversationName(Auth::user()) ?? 'Conversation' }}
+                                </h4>
+                            </div>
 
-                                {{-- HEADER --}}
-                                <div class="border-bottom pb-2 mb-2">
-                                    <strong>
-                                        {{ $conversation->displayConversationName(Auth::user()) ?? 'Conversation' }}
-                                    </strong>
-                                </div>
+                            <div id="chat-scroll" class="pe-3 overflow-y-auto"
+                                style="position: relative; height: 400px">
 
                                 {{-- MENSAGENS --}}
                                 <div id="messages"

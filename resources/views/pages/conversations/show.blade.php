@@ -96,4 +96,10 @@
 
         </div>
     </div>
+    @push('scripts')
+    <script>
+        window.conversationId = {{ $conversation->id }};
+        window.authUserId = {{ auth()->id() }};
+    </script>
+    @endpush
     @endsection

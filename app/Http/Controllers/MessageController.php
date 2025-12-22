@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageSent;
 use App\Models\Conversation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,10 +22,14 @@ class MessageController extends Controller
             'body' => ['required', 'string', 'max:2000'],
         ]);
 
-        $conversation->messages()->create([
+        $message = $conversation->messages()->create([
             'sender_id' => $user->id,
             'body' => $data['body'],
         ]);
+
+
+        // Broadcast to other participants
+        broadcast(new MessageSent($message))->toOthers();
 
         //Update updated_at
         $conversation->touch();

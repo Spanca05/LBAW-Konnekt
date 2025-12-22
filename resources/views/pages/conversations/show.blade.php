@@ -100,6 +100,8 @@
     <script>
         window.conversationId = {{ $conversation->id }};
         window.authUserId = {{ auth()->id() }};
+        window.authAvatarUrl = @json(Auth::user()->avatarUrl());
+        window.otherAvatarUrl = @json($conversation->otherUserFor(Auth::user())->avatarUrl());
     </script>
     @endpush
     @endsection

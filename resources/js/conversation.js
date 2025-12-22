@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const conversationId = window.conversationId;
     const authUserId = window.authUserId;
 
-    if(!conversationId || !authUserId) return;
+    if (!conversationId || !authUserId) return;
 
     const container = document.getElementById("messages");
     if (!container) return;
@@ -33,14 +33,16 @@ document.addEventListener("DOMContentLoaded", () => {
                         <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">${escapeHtml(e.body)}</p>
                         <p class="small me-3 mb-3 rounded-3 text-muted">just now</p>
                     </div>
+                    <img src="${window.authAvatarUrl || ''}" alt="avatar" class="avatar">
                 `
                 : `
+                    <img src="${window.otherAvatarUrl || ''}" alt="avatar" class="avatar">
                     <div>
                         <p class="small p-2 ms-3 mb-1 rounded-3 bg-light">${escapeHtml(e.body)}</p>
                         <p class="small ms-3 mb-3 rounded-3 text-muted">just now</p>
                     </div>
                 `;
-            
+
             container.appendChild(wrapper);
             container.scrollTop = container.scrollHeight;
         });

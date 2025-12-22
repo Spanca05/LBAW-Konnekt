@@ -114,16 +114,15 @@ $application=$application ?? null;
             @endauth
 
             @if(auth()->check() && auth()->user()->role === 'JobSeeker')
-            <form action="{{ route('jobpost.favourite', $jobPost->id) }}" method="POST">
+            <form action="{{ route('jobpost.favourite', $jobPost->id) }}" method="POST" class="d-inline">
                 @csrf
-                <button type="submit" class="favourite-button">
+                <button type="submit" class="button">
                     @if(auth()->user()->favouriteJobs->contains($jobPost->id))
                     Remove Favourite
                     @else
                     Add to Favourite
                     @endif
                 </button>
-
             </form>
             @endif
             <a class="button" href="{{ url()->previous() }}">Return</a>

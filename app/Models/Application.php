@@ -35,4 +35,10 @@ class Application extends Model
     {
         return $this->blocked === true;
     }
+
+    public function jobSeeker()
+    {
+        return $this->belongsTo(User::class, 'jobseeker_id');
+    }
+
 }

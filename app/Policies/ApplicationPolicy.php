@@ -13,7 +13,7 @@ class ApplicationPolicy
     
     public function view(User $user, Application $application): bool
     {
-        return ($user->id === $application->jobseeker_id) || ($user->role === 'Admin');
+        return ($user->id === $application->jobseeker_id) || ($user->role === 'Admin') || ($user->id === $application->jobPost()->employer()->employer_id);
     }
     
     public function create(User $user): bool

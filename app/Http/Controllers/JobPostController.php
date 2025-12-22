@@ -38,7 +38,8 @@ class JobPostController extends Controller
 
     public function show($id)
     {
-        $jobPost = JobPost::with('jobUser')->findOrFail($id);
+        $jobPost = JobPost::with('jobUser')
+            ->findOrFail($id);
 
         // Preload applications for this job post for the employer view, excluding blocked ones
         $applications = $jobPost->applications()

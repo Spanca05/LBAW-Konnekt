@@ -44,65 +44,6 @@
                     @include('partials.profile_tabs_employer', ['user' => $user, 'jobPosts' => $jobPosts ?? collect()])
                 </div>
             @endif
-
-            <!-- fav job -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0">Favourite Job Posts</h5>
-                </div>
-                <div class="card-body">
-                    @if($favourites->isEmpty())
-                        <p class="text-muted mb-0">No favourites yet.</p>
-                    @else
-                        <div class="row g-4">
-                            @foreach($favourites as $job)
-                                @if ($job->employer)
-                                    <div class="col-12 col-sm-6 col-lg-4">
-                                        @include('partials.jobpost', ['jobPost' => $job])
-                                    </div>
-                                @endif
-                            @endforeach
-                        </div>
-                    @endif
-                </div>
-            </div>
-
-            <!--ativos e expirados jobposts -->
-            @if($user->role === 'Employer')
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header">
-                        <ul class="nav nav-tabs card-header-tabs" id="jobpostTabs" role="tablist">
-                            @if(auth()->check() && auth()->id() === $user->id)
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="expired-tab" data-bs-toggle="tab" data-bs-target="#expired" type="button" role="tab">Expired JobPosts</button>
-                            </li>
-                            @endif
-                        </ul>
-                    </div>
-                    <div class="card-body">
-                        <div class="tab-content" id="jobpostTabsContent">
-
-                            <!-- Expired JobPosts -->
-                            @if(auth()->check() && auth()->id() === $user->id)
-                                <div class="tab-pane fade show active" id="expired" role="tabpanel" aria-labelledby="expired-tab">
-                                    @if($expiredjobPosts->isNotEmpty())
-                                        <div class="row g-4">
-                                            @foreach($expiredjobPosts as $expiredjobPost)
-                                                <div class="col-12 col-sm-6 col-lg-4">
-                                                    @include('partials.jobpost', ['jobPost' => $expiredjobPost])
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    @else
-                                        <p class="text-muted mb-0">You have no expired job posts.</p>
-                                    @endif
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            @endif
-
         </div>
     </div>
 </div>

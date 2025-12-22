@@ -14,6 +14,16 @@
             <a href="{{ route('admin.index', ['tab' => 'admin-tools']) }}" class="button button-outline mb-3">Back to Admin Dashboard</a>
             <p class="mb-3"><strong>Total JobPosts:</strong> {{$jobpostCount}}</p>
 
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-3">
+                    <form action="{{ route('admin.jobposts.search') }}" method="GET" class="d-flex gap-2">
+                        <input type="text" name="search" class="form-control" placeholder="Search by title, description, location or employer" value="{{ $search ?? '' }}" required>
+                        <button type="submit" class="button">Search</button>
+                        <a href="{{ route('admin.jobposts') }}" class="button button-outline">Clear</a>
+                    </form>
+                </div>
+            </div>
+
             <div class="card shadow-sm">
                 <div class="card-body p-3">
                     @if($jobpostCount > 0)

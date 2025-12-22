@@ -71,4 +71,26 @@ class JobPost extends Model
     {
         return $this->blocked === true;
     }
+
+    public static function scopeSearch($search)
+    {
+        $query = self::query();
+
+        if (!$search) {
+            return $query;
+        }
+
+        return $query->where('title', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%')
+                    ->orWhere('location', 'like', '%' . $search . '%')
+                    ->orWhere('work_model', 'like', '%' . $search . '%')
+                    ->orWhere('contract_type', 'like', '%' . $search . '%')
+                    ->orWhere('salary', 'like', '%' . $search . '%')
+                    ->orWhereHas('employer', function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('jobCategory', function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    });
+    }
 }

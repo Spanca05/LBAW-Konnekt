@@ -45,6 +45,26 @@ class ApplicationController extends Controller
             return back()->withErrors(['You have already applied to this job.']);
         }
 
+        Notification::create([
+            'title' => 'New application submitted for your job post "' . $jobpost->title . '"',
+            'type' => 'ApplicationNotification',
+            'jobpost_id' => $jobpost->id,
+            'application_id' => $application->id,
+            'user_id' => $jobpost->employer_id
+        ]);
+
+        Notification::create([
+            'title' => 'Your application to "' . $application->jobPost->title . 
+                    '" changed from ' . $application->getOriginal('status') . 
+                    ' to ' . $application->status,
+            'type' => 'ApplicationNotification',
+            'jobpost_id' => $application->jobpost_id,
+            'application_id' => $application->id,
+            'user_id' => $application->jobseeker_id
+        ]);
+
+
+
 
         $application = Application::create([
             'jobseeker_id' => $user->id,

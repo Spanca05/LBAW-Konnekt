@@ -485,6 +485,7 @@ BEFORE INSERT OR UPDATE ON jobpost
 FOR EACH ROW
 EXECUTE FUNCTION check_jobpost_deadline();
 
+/*
 
 --- Notification triggers
 
@@ -661,3 +662,5 @@ CREATE TRIGGER trg_notify_jobseeker_on_status_update
 AFTER UPDATE ON application
 FOR EACH ROW
 EXECUTE FUNCTION notify_jobseeker_on_status_update();
+
+*/

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\JobPost;
 use App\Models\User;
 use App\Models\Category;
+use App\Models\Notification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
@@ -117,6 +118,35 @@ class JobPostController extends Controller
 
 
         $jobPost->save();
+
+        Notification::create([
+            'title' => 'Your job post "' . $jobPost->title . '" is now active!',
+            'type' => 'JobPostNotification',
+            'jobpost_id' => $jobPost->id,
+            'user_id' => $jobPost->employer_id
+        ]);
+
+        $matchingJobSeekers = User::where('role', 'JobSeeker')
+            ->where(function($q) use ($jobPost) {
+                $q->whereHas('skills', function($q2) use ($jobPost) {
+                    $q2->whereHas('categories', function($q3) use ($jobPost) {
+                        $q3->where('id', $jobPost->category_id);
+                    });
+                })
+                ->orWhere('location', $jobPost->location);
+            })
+            ->get();
+
+        foreach ($matchingJobSeekers as $seeker) {
+            $notification = Notification::create([
+                'title' => 'New job opportunity matching your profile: "' . $jobPost->title . '"',
+                'type' => 'JobPostNotification',
+                'jobpost_id' => $jobPost->id,
+                'user_id' => $seeker->id  // Set user_id for each job seeker
+            ]);
+            
+            $seeker->notifications()->attach($notification->id);
+        }
 
         return redirect()->route('jobpost.show', ['jobpost' => $jobPost->id]);
     }

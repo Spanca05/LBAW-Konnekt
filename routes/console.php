@@ -61,4 +61,4 @@ Schedule::call(function () {
         );
     }
 
-})->everySecond()->name('jobpost-expiration-check')->withoutOverlapping();
+})->everyMinute()->name('jobpost-expiration-check')->withoutOverlapping();

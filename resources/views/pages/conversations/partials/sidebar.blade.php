@@ -1,7 +1,7 @@
 <div class="p-3">
 
     {{-- COLUNA ESQUERDA: lista de conversas --}}
-    <h6 class="mb-3">Conversations</h6>
+    <h4 class="mb-3">Conversations</h4>
 
     <div class="overflow-y-auto" style="position: relative; height: 400px">
         <ul class="list-unstyled mb-0">

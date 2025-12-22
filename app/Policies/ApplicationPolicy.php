@@ -13,7 +13,7 @@ class ApplicationPolicy
     
     public function view(User $user, Application $application): bool
     {
-        return ($user->id === $application->jobseeker_id) || ($user->role === 'Admin');
+        return ($user->id === $application->jobseeker_id) || ($user->role === 'Admin') || ($user->id === $application->jobPost()->employer()->employer_id);
     }
     
     public function create(User $user): bool
@@ -57,5 +57,14 @@ class ApplicationPolicy
     public function forceDelete(User $user, Application $application): bool
     {
         return false;
+    }
+
+    public function openConversation(User $user, Application $application): bool
+    {
+        $isJobseeker = $user->id === $application->jobseeker_id;
+
+        $isEmployer = $user->id === $application->jobPost->employer_id;
+
+        return ($isJobseeker || $isEmployer) && $application->status === 'Accepted';
     }
 }

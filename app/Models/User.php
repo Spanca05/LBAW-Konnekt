@@ -77,7 +77,12 @@ class User extends Authenticatable
         return $this->hasMany(JobPost::class, 'employer_id');
     }
 
-    public function getPhotoUrlAttribute()
+    public function avatarUrl(): string
+    {
+        return $this->photoUrl() ?? asset('/images/profile-placeholder.png');
+    }
+
+    public function photoUrl() : ?string
     {
         return $this->photo_path ? Storage::url($this->photo_path) : null;
     }
@@ -103,7 +108,8 @@ class User extends Authenticatable
         return $this->belongsToMany(Skill::class, 'skill_user', 'user_id', 'skill_id');
     }
 
-    public function favouriteJobs() {
+    public function favouriteJobs()
+    {
         return $this->belongsToMany(JobPost::class, 'favourite_job', 'jobseeker_id', 'jobpost_id');
     }
 
@@ -148,5 +154,66 @@ class User extends Authenticatable
     public function blockedAt(): ?string
     {
         return $this->blockedRecord?->blocked_at;
+    }
+
+    public function block($reason, $adminId): void
+    {
+        if ($this->role === 'Admin') {
+            throw new \Exception('Cannot block admin users.');
+        }
+
+        if ($this->isBlocked()) {
+            throw new \Exception('User is already blocked.');
+        }
+
+        if ($this->role === 'Employer') {
+            JobPost::where('employer_id', $this->id)->update(['blocked' => true]);
+        }
+        if ($this->role === 'JobSeeker') {
+            Application::where('jobseeker_id', $this->id)->update(['blocked' => true]);
+        }
+
+        $blockedUser = BlockedUser::create([
+            'user_id' => $this->id,
+            'admin_id' => $adminId,
+            'reason' => $reason,
+            'blocked_at' => now(),
+        ]);
+
+        $this->blocked_id = $blockedUser->id;
+        $this->save();
+    }
+
+    public function unblock(): void
+    {
+        if (!$this->isBlocked()) {
+            throw new \Exception('User is not blocked.');
+        }
+
+        if ($this->role === 'Employer') {
+            JobPost::where('employer_id', $this->id)->update(['blocked' => false]);
+        }
+        if ($this->role === 'JobSeeker') {
+            Application::where('jobseeker_id', $this->id)->update(['blocked' => false]);
+        }
+
+        $blockedUserId = $this->blocked_id;
+        $this->blocked_id = null;
+        $this->save();
+        BlockedUser::destroy($blockedUserId);
+    }
+
+    public static function search($search)
+    {
+        $query = self::query();
+
+        if (!$search) {
+            return $query;
+        }
+
+        return $query->where('name', 'like', '%' . $search . '%')
+            ->orWhere('email', 'like', '%' . $search . '%')
+            ->orWhere('phone_number', 'like', '%' . $search . '%')
+            ->orWhere('role', 'like', '%' . $search . '%');
     }
 }

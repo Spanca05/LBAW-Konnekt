@@ -77,7 +77,14 @@ class ProfileController extends Controller {
         $jobPosts = [];
 
         if ($other->role === 'Employer') {
-            $jobPosts = $other->jobposts()->orderBy('created_at', 'desc')->get();
+            $jobPosts = $other
+                ->jobposts()
+                ->orderBy('created_at', 'desc')
+                ->where(function ($q) {
+                    $q->whereNull('deadline')
+                        ->orWhere('deadline', '>', now());
+                })
+                ->get();
         }
 
         // Render the public profile sview for other users

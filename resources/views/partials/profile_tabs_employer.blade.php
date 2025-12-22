@@ -15,6 +15,21 @@
             Account
         </button>
     </li>
+    @if(auth()->check() && auth()->id() === $user->id)
+    <li class="nav-item mb-0" role="presentation">
+        <button class="nav-link"
+                id="expired-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#expired"
+                type="button"
+                role="tab"
+                aria-controls="expired"
+                aria-selected="false">
+            Expired Job Posts
+        </button>
+    </li>
+    @endif
+
 </ul>
 
 <!-- Tab Content -->
@@ -92,6 +107,9 @@
                     </div>
 
                     <div class="d-flex gap-2">
+                        @if($app->status === 'Accepted')
+                        <a class="button" style="font-size: 0.875rem; padding: 0.4rem 0.8rem;" href="{{ route('applications.conversation', ['application' => $app->id]) }}">Chat</a>
+                        @endif
                         <a class="button" style="font-size: 0.875rem; padding: 0.4rem 0.8rem;" href="{{ route('jobpost.application', ['jobpost' => $jobPost->id]) }}">View</a>
                     </div>
                 </div>
@@ -146,6 +164,7 @@
         <div class="pt-3 border-top">
             <h5 class="mb-3" style="color: #213448;">Actions</h5>
             <div class="d-flex gap-2 flex-wrap">
+                <a class="button" href="{{ route('conversations.index') }}">View Chats</a>
                 <a class="button" href="{{ route('profile.edit') }}">Edit Profile</a>
                 <a class="button" href="{{ route('jobpost.create') }}">Create New JobPost</a>
 
@@ -160,5 +179,23 @@
         </div>
         @endif
     </div>
+        @if(auth()->check() && auth()->id() === $user->id)
+            <div class="tab-pane fade" id="expired" role="tabpanel" aria-labelledby="expired-tab">
 
+                <div class="mb-3"><h4>Expired Job Posts</h4></div>
+
+                @if($expiredjobPosts->isNotEmpty())
+                    <div class="row g-3">
+                        @foreach($expiredjobPosts as $expiredjobPost)
+                            <div class="col-12 col-md-6">
+                                @include('partials.jobpost', ['jobPost' => $expiredjobPost])
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-muted mb-0">You have no expired job posts.</p>
+                @endif
+            </div>
+        @endif
+           
 </div>

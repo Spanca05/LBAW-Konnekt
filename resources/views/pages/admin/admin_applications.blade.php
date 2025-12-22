@@ -18,6 +18,16 @@
             
             <p class="mb-3"><strong>Total Applications:</strong> {{ $applicationCount }}</p>
 
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-3">
+                    <form action="{{ route('admin.applications.search') }}" method="GET" class="d-flex gap-2">
+                        <input type="text" name="search" class="form-control" placeholder="Search by jobseeker, job title, status or motivation" value="{{ $search ?? '' }}" required>
+                        <button type="submit" class="button">Search</button>
+                        <a href="{{ route('admin.applications') }}" class="button button-outline">Clear</a>
+                    </form>
+                </div>
+            </div>
+
             <div class="card shadow-sm">
                 <div class="card-body p-3">
                     @if($applicationCount > 0)

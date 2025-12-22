@@ -9,6 +9,11 @@
             Account
         </button>
     </li>
+        <li class="nav-item m-0" role="presentation">
+        <button class="nav-link" id="favourites-tab" data-bs-toggle="tab" data-bs-target="#favourites" type="button" role="tab" aria-controls="favourites" aria-selected="false">
+            Favourite Job Posts
+        </button>
+    </li>
 </ul>
 
 <div class="tab-content border border-top-0 rounded-0 rounded-bottom p-4 bg-white" id="profileTabsContent">
@@ -52,6 +57,9 @@
                         <a class="button fs-5 px-4 py-2" href="{{ route('applications.edit', ['application' => $app->id]) }}">Resend</a>
                         @elseif($app->status === 'Pending')
                         <a class="button fs-5 px-4 py-2" href="{{ route('applications.edit', ['application' => $app->id]) }}">Edit</a>
+
+                        @else
+                        <a class="button" style="font-size: 0.875rem; padding: 0.4rem 0.8rem;" href="{{ route('applications.conversation', ['application' => $app->id]) }}">Chat</a>
                         @endif
 
                         <form method="POST" action="{{ route('applications.destroy', ['application' => $app->id]) }}" onsubmit="return confirm('Withdraw this application?')" class="d-inline">
@@ -123,6 +131,7 @@
         <div class="pt-3 border-top">
             <h5 class="mb-3 fs-4" style="color: #213448;">Actions</h5>
             <div class="d-flex gap-2 flex-wrap">
+                <a class="button" href="{{ route('conversations.index') }}">View Chats</a>
                 <a class="button fs-5 px-4" href="{{ route('profile.edit') }}">Edit Profile</a>
 
                 <form action="{{ route('profile.destroy') }}" method="POST" class="d-inline">
@@ -135,6 +144,23 @@
             </div>
         </div>
         @endif
-    </div>
+                </div>
+
+        <!-- Favourite Job Posts Tab -->
+        <div class="tab-pane fade" id="favourites" role="tabpanel" aria-labelledby="favourites-tab">
+            @if($favourites->isEmpty())
+                <p class="text-muted mb-0">No favourites yet.</p>
+            @else
+                <div class="row g-4">
+                    @foreach($favourites as $job)
+                        @if ($job->employer)
+                            <div class="col-12 col-sm-6 col-lg-4">
+                                @include('partials.jobpost', ['jobPost' => $job])
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            @endif
+        </div>
 
 </div>

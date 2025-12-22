@@ -131,6 +131,23 @@ class AdminController extends Controller
         return view('pages.admin.admin_jobposts', ['jobposts' => $jobposts, 'jobpostCount' => $jobpostCount,]);
     }
 
+    public function searchJobPosts(Request $request)
+    {
+        Gate::policy(Admin::class, AdminPolicy::class);
+        Gate::authorize('listJobPosts', Admin::class);
+
+        $validated = $request->validate([
+            'search' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $search = $validated['search'] ?? '';
+        $jobpostCount = JobPost::count();
+
+        $jobposts = JobPost::search($search)->orderBy('id', 'asc')->paginate(10)->appends(['search' => $search]);
+
+        return view('pages.admin.admin_jobposts', ['jobposts' => $jobposts, 'jobpostCount' => $jobpostCount, 'search' => $search]);
+    }
+
     public function deleteJobPost($jobpostId)
     {
         Gate::policy(Admin::class, AdminPolicy::class);
@@ -152,6 +169,23 @@ class AdminController extends Controller
         return view('pages.admin.admin_applications', ['applications' => $applications, 'applicationCount' => $applicationCount,]);
     }
 
+    public function searchApplications(Request $request)
+    {
+        Gate::policy(Admin::class, AdminPolicy::class);
+        Gate::authorize('listApplications', Admin::class);
+
+        $validated = $request->validate([
+            'search' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $search = $validated['search'] ?? '';
+        $applicationCount = Application::count();
+
+        $applications = Application::search($search)->with(['user', 'jobPost'])->orderBy('id', 'asc')->paginate(10)->appends(['search' => $search]);
+
+        return view('pages.admin.admin_applications', ['applications' => $applications, 'applicationCount' => $applicationCount, 'search' => $search]);
+    }
+
     public function listJobpostApplications($jobpostId)
     {
         Gate::policy(Admin::class, AdminPolicy::class);
@@ -164,6 +198,35 @@ class AdminController extends Controller
             'applications' => $applications,
             'applicationCount' => $applicationCount,
             'jobpost' => $jobpost,
+        ]);
+    }
+
+    public function searchJobpostApplications($jobpostId, Request $request)
+    {
+        Gate::policy(Admin::class, AdminPolicy::class);
+        Gate::authorize('listApplications', Admin::class);
+
+        $validated = $request->validate([
+            'search' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $search = $validated['search'] ?? '';
+        $jobpost = JobPost::findOrFail($jobpostId);
+        
+        $applications = Application::where('jobpost_id', $jobpostId)
+            ->search($search)
+            ->with(['user', 'jobPost'])
+            ->orderBy('id', 'asc')
+            ->paginate(10)
+            ->appends(['search' => $search]);
+        
+        $applicationCount = Application::where('jobpost_id', $jobpostId)->count();
+        
+        return view('pages.admin.admin_jobpost_applications', [
+            'applications' => $applications,
+            'applicationCount' => $applicationCount,
+            'jobpost' => $jobpost,
+            'search' => $search,
         ]);
     }
 

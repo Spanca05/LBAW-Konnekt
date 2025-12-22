@@ -11,7 +11,7 @@
     <div class="row justify-content-center">
         <div class="col-12 col-md-10 col-lg-9">
             <h2 class="mb-3">Application Details</h3>
-                <a href="{{ route('admin.applications') }}" class="button button-outline mb-3">Back to Applications</a>
+                <a href="{{ route('admin.applications') }}" class="btn btn-secondary mb-3"style="color:white">Back to Applications</a>
 
                 <div class="card shadow-sm">
                     <div class="card-body p-3">

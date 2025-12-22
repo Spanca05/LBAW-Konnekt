@@ -48,7 +48,7 @@
             <!-- fav job -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">Favourite Job Posts</h5>
+                    <h5 class="mb-0">&#127775 Favourite Job Posts</h5>
                 </div>
                 <div class="card-body">
                     @if($favourites->isEmpty())

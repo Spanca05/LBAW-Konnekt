@@ -124,13 +124,13 @@
                                 @foreach($skills as $skill)
                                 <div class="form-check">
                                     <input
-                                        class="form-check-input"
+                                        class="btn-check"
                                         type="checkbox"
                                         name="skills[]"
                                         value="{{ $skill->id }}"
                                         id="skill-{{ $skill->id }}"
                                         {{ in_array($skill->id, old('skills', [])) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="skill-{{ $skill->id }}">
+                                    <label class="btn btn-outline-dark btn-lg" for="skill-{{ $skill->id }}">
                                         {{ $skill->name }}
                                     </label>
                                 </div>
@@ -199,9 +199,13 @@
                         </div>
 
                         <div class="d-flex gap-2 flex-wrap mt-4">
-                            <button type="submit" class="button">Register</button>
-                            <a class="button button-outline" href="{{ route('login') }}">Login</a>
+                            <button type="submit" class="button">Register</button> 
+                            <a class="button button-outline" href="{{ route('login') }}">Cancel</a>
                         </div>
+                            <br>
+                            <p>Do you have an Account?</p>
+                            <a class="button button-outline" href="{{ route('login') }}">Login</a>
+                       
                     </form>
                 </div>
             </div>
